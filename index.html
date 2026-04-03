@@ -69,7 +69,7 @@
                     </div>
                 </div>
                 <div class="relative">
-                    <div id="cases-track" class="flex overflow-x-auto snap-mandatory-x hide-scrollbar w-full items-stretch transition-opacity duration-300"></div>
+                    <div id="cases-track" class="ig-track flex overflow-x-auto snap-mandatory-x hide-scrollbar w-full items-stretch transition-opacity duration-300"></div>
                     <div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-full ig-counter shadow-lg hidden"></div>
                 </div>
                 <div class="p-4 bg-slate-900/30 flex justify-center gap-1.5 flex-wrap ig-dots"></div>
@@ -137,7 +137,7 @@
             try {
                 let response;
                 try {
-                    // Removido o prefixo './' para evitar erros de URL no ambiente do Canvas (blob URLs)
+                    // Cache buster para forçar carregamento atualizado
                     const urlBuster = 'data.json?t=' + new Date().getTime();
                     response = await fetch(urlBuster, { cache: 'no-store' });
                 } catch (fetchError) {
@@ -157,12 +157,11 @@
                 try {
                     globalData = await response.json();
                 } catch (parseError) {
-                    throw new Error('JSON Corrompido: Falha de sintaxe. O ficheiro data.json está truncado ou contém erros de formatação.');
+                    throw new Error('JSON Corrompido: O ficheiro data.json possui erros de formatação ou está truncado.');
                 }
                 
                 renderizarInterface(globalData);
             } catch (error) {
-                // Impressão exata do erro na UI
                 document.body.innerHTML = `<div class="p-10 text-center text-orange-500 font-bold mt-20"><i class="fa-solid fa-triangle-exclamation text-4xl mb-4"></i><br>Falha Crítica no Sistema<br><span class="text-xs text-slate-300 mt-4 block font-mono bg-slate-900 p-3 rounded border border-slate-700">${error.message}</span></div>`;
                 console.error(error);
             }
@@ -200,99 +199,85 @@
                         "galeria": [
                             "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80"
                         ]
-                    },
-                    {
-                        "id": "marmorato",
-                        "icone": "fa-wand-magic-sparkles",
-                        "titulo": "Marmorato",
-                        "descricao": "Efeito mármore polido.",
-                        "galeria": [
-                            "https://images.unsplash.com/photo-1615873968403-89e068629275?w=800&q=80"
-                        ]
-                    },
-                    {
-                        "id": "cimento",
-                        "icone": "fa-cubes",
-                        "titulo": "Cimento Queimado",
-                        "descricao": "Estética industrial.",
-                        "galeria": [
-                            "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=800&q=80"
-                        ]
                     }
                 ],
                 "cases": [
                     {
                         "imagem": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=1000&fit=crop",
                         "estrelas": 5,
-                        "comentario": "Execução técnica impecável. A equipa cumpriu rigorosamente o cronograma e o acabamento acetinado superou as expectativas do nosso conselho.",
+                        "comentario": "Execução técnica impecável. A equipa cumpriu rigorosamente o cronograma.",
                         "cliente": "Construtora Alpha"
-                    },
-                    {
-                        "imagem": "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800&h=1000&fit=crop",
-                        "estrelas": 5,
-                        "comentario": "O cimento queimado aplicado na nossa sede mudou completamente a identidade do escritório. Profissionalismo de ponta do início ao fim.",
-                        "cliente": "Tech Solutions LTDA"
-                    },
-                    {
-                        "imagem": "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&h=1000&fit=crop",
-                        "estrelas": 4.5,
-                        "comentario": "Excelente engenharia de preparação e pintura Airless. O canteiro de obras esteve sempre limpo e altamente organizado.",
-                        "cliente": "Residencial Lago Sul"
                     }
                 ]
             };
         }
 
         function renderizarInterface(data) {
+            if (!data) return;
+            
             const navBrand = document.getElementById('nav-brand');
-            if(data.empresa.logo_url) {
-                navBrand.innerHTML = `<img src="${data.empresa.logo_url}" alt="Logo" class="h-8 object-contain">`;
-            } else {
-                navBrand.innerHTML = `<span class="text-xl font-black tracking-tighter text-white">${data.empresa.nome}<span class="text-orange-500">.</span></span>`;
+            if(navBrand) {
+                if(data.empresa.logo_url) {
+                    navBrand.innerHTML = `<img src="${data.empresa.logo_url}" alt="Logo" class="h-8 object-contain">`;
+                } else {
+                    navBrand.innerHTML = `<span class="text-xl font-black tracking-tighter text-white">${data.empresa.nome}<span class="text-orange-500">.</span></span>`;
+                }
             }
 
-            document.getElementById('hero-title').innerHTML = data.empresa.hero_titulo.replace(/\n/g, '<br>');
-            document.getElementById('hero-subtitle').innerText = data.empresa.hero_subtitulo;
-            document.getElementById('sobre-texto').innerText = data.empresa.sobre_texto;
-            document.getElementById('missao-texto').innerText = data.empresa.missao_texto;
-            document.getElementById('anos-experiencia').innerText = data.empresa.anos_experiencia;
-            document.getElementById('obras-entregues').innerText = data.empresa.obras_entregues;
-            document.getElementById('btn-whatsapp').href = `https://wa.me/${data.empresa.whatsapp}`;
+            const heroTitle = document.getElementById('hero-title');
+            const heroSubtitle = document.getElementById('hero-subtitle');
+            const sobreTexto = document.getElementById('sobre-texto');
+            const missaoTexto = document.getElementById('missao-texto');
+            const anosExp = document.getElementById('anos-experiencia');
+            const obrasEnt = document.getElementById('obras-entregues');
+            const btnWpp = document.getElementById('btn-whatsapp');
+
+            if(heroTitle) heroTitle.innerHTML = data.empresa.hero_titulo.replace(/\n/g, '<br>');
+            if(heroSubtitle) heroSubtitle.innerText = data.empresa.hero_subtitulo;
+            if(sobreTexto) sobreTexto.innerText = data.empresa.sobre_texto;
+            if(missaoTexto) missaoTexto.innerText = data.empresa.missao_texto;
+            if(anosExp) anosExp.innerText = data.empresa.anos_experiencia;
+            if(obrasEnt) obrasEnt.innerText = data.empresa.obras_entregues;
+            if(btnWpp) btnWpp.href = `https://wa.me/${data.empresa.whatsapp}`;
 
             const gridServicos = document.getElementById('grid-servicos');
-            let htmlServicos = '';
-            data.servicos.forEach(serv => {
-                htmlServicos += `
-                <div class="glass-card p-5 text-center cursor-pointer hover:border-orange-500/50 active:scale-95 transition-all group" onclick="openGallery('${serv.id}', '${serv.titulo}')">
-                    <i class="fa-solid ${serv.icone} text-orange-500 text-2xl mb-3 block group-hover:scale-110 transition-transform"></i>
-                    <h3 class="text-[10px] font-black uppercase text-white">${serv.titulo}</h3>
-                    <p class="text-[9px] text-slate-400 mt-1">${serv.descricao}</p>
-                    <p class="text-[8px] font-bold text-orange-500 mt-3 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-regular fa-images"></i> VER FOTOS</p>
-                </div>`;
-            });
-            gridServicos.innerHTML = htmlServicos;
+            if(gridServicos) {
+                let htmlServicos = '';
+                data.servicos.forEach(serv => {
+                    htmlServicos += `
+                    <div class="glass-card p-5 text-center cursor-pointer hover:border-orange-500/50 active:scale-95 transition-all group" onclick="openGallery('${serv.id}', '${serv.titulo}')">
+                        <i class="fa-solid ${serv.icone} text-orange-500 text-2xl mb-3 block group-hover:scale-110 transition-transform"></i>
+                        <h3 class="text-[10px] font-black uppercase text-white">${serv.titulo}</h3>
+                        <p class="text-[9px] text-slate-400 mt-1">${serv.descricao}</p>
+                        <p class="text-[8px] font-bold text-orange-500 mt-3 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-regular fa-images"></i> VER FOTOS</p>
+                    </div>`;
+                });
+                gridServicos.innerHTML = htmlServicos;
+            }
 
             const trackCases = document.getElementById('cases-track');
-            let htmlCases = '';
-            data.cases.forEach(item => {
-                let starsHtml = '';
-                for(let i = 1; i <= 5; i++) {
-                    if (i <= item.estrelas) starsHtml += '<i class="fa-solid fa-star"></i>';
-                    else if (i - 0.5 === item.estrelas) starsHtml += '<i class="fa-solid fa-star-half-stroke"></i>';
-                    else starsHtml += '<i class="fa-regular fa-star"></i>';
-                }
-                htmlCases += `
-                <div class="w-full flex-none snap-center relative aspect-[4/5]">
-                    <img src="${item.imagem}" class="absolute inset-0 w-full h-full object-cover bg-slate-900" alt="Case">
-                    <div class="absolute inset-x-0 bottom-0 p-5 bg-slate-900/60 backdrop-blur-xl border-t border-white/10 flex flex-col justify-end">
-                        <div class="flex gap-1 text-orange-500 text-[10px] mb-2">${starsHtml}</div>
-                        <p class="text-xs text-white font-medium leading-relaxed drop-shadow-md">"${item.comentario}"</p>
-                        <span class="text-[9px] font-black text-orange-400 uppercase tracking-widest mt-3 block">- ${item.cliente}</span>
-                    </div>
-                </div>`;
-            });
-            trackCases.innerHTML = htmlCases;
-            inicializarCarrossel(document.querySelector('.ig-carousel'));
+            if(trackCases) {
+                let htmlCases = '';
+                data.cases.forEach(item => {
+                    let starsHtml = '';
+                    for(let i = 1; i <= 5; i++) {
+                        if (i <= item.estrelas) starsHtml += '<i class="fa-solid fa-star"></i>';
+                        else if (i - 0.5 === item.estrelas) starsHtml += '<i class="fa-solid fa-star-half-stroke"></i>';
+                        else starsHtml += '<i class="fa-regular fa-star"></i>';
+                    }
+                    htmlCases += `
+                    <div class="w-full flex-none snap-center relative aspect-[4/5]">
+                        <img src="${item.imagem}" class="absolute inset-0 w-full h-full object-cover bg-slate-900" alt="Case">
+                        <div class="absolute inset-x-0 bottom-0 p-5 bg-slate-900/60 backdrop-blur-xl border-t border-white/10 flex flex-col justify-end">
+                            <div class="flex gap-1 text-orange-500 text-[10px] mb-2">${starsHtml}</div>
+                            <p class="text-xs text-white font-medium leading-relaxed drop-shadow-md">"${item.comentario}"</p>
+                            <span class="text-[9px] font-black text-orange-400 uppercase tracking-widest mt-3 block">- ${item.cliente}</span>
+                        </div>
+                    </div>`;
+                });
+                trackCases.innerHTML = htmlCases;
+                inicializarCarrossel(document.querySelector('.ig-carousel'));
+            }
         }
 
         function openGallery(servicoId, title) {
@@ -310,6 +295,8 @@
             const dotsContainer = document.getElementById('modal-dots');
             const counter = document.getElementById('modal-counter');
             
+            if(!track || !dotsContainer || !counter) return;
+
             track.innerHTML = ''; 
             dotsContainer.innerHTML = '';
 
@@ -347,31 +334,41 @@
             track.addEventListener('scroll', modalScrollHandler);
 
             const modal = document.getElementById('gallery-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.remove('opacity-0')));
-            document.body.style.overflow = 'hidden';
+            if(modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.remove('opacity-0')));
+                document.body.style.overflow = 'hidden';
+            }
         }
 
         function closeGallery() {
             const modal = document.getElementById('gallery-modal');
-            modal.classList.add('opacity-0');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-                document.body.style.overflow = '';
-            }, 300);
+            if(modal) {
+                modal.classList.add('opacity-0');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                    document.body.style.overflow = '';
+                }, 300);
+            }
         }
 
         function inicializarCarrossel(carousel) {
+            if (!carousel) return;
+            
             const track = carousel.querySelector('.ig-track');
             const counter = carousel.querySelector('.ig-counter');
             const dotsContainer = carousel.querySelector('.ig-dots');
+            
+            if(!track || !counter || !dotsContainer) return;
+
             const slides = track.querySelectorAll('.snap-center');
             const total = slides.length;
 
             if(total === 0) return;
             counter.classList.remove('hidden');
+            dotsContainer.innerHTML = '';
             
             slides.forEach((_, idx) => {
                 const dot = document.createElement('div');
