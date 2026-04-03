@@ -1,0 +1,72 @@
+{
+    "empresa": {
+        "nome": "PREMIUM",
+        "logo_url": "",
+        "whatsapp": "5511999999999",
+        "hero_titulo": "Padrão Técnico de Engenharia",
+        "hero_subtitulo": "Revestimentos de Alta Performance",
+        "sobre_texto": "Especialistas na execução de projetos de acabamento de luxo. Garantimos precisão geométrica, proteção hidrorrepelente e estética impecável em todas as superfícies tratadas.",
+        "missao_texto": "Elevar o padrão da engenharia de superfícies através de rigor técnico, pontualidade e transparência, entregando não apenas acabamentos, mas durabilidade e sofisticação inigualáveis.",
+        "anos_experiencia": "10+",
+        "obras_entregues": "500+"
+    },
+    "servicos": [
+        {
+            "id": "airless",
+            "icone": "fa-brush",
+            "titulo": "Pintura Airless",
+            "descricao": "Acabamento sem marcas.",
+            "galeria": [
+                "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800&q=80",
+                "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=800&q=80"
+            ]
+        },
+        {
+            "id": "texturas",
+            "icone": "fa-layer-group",
+            "titulo": "Texturas Nobres",
+            "descricao": "Grafiato e Projetada.",
+            "galeria": [
+                "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80"
+            ]
+        },
+        {
+            "id": "marmorato",
+            "icone": "fa-wand-magic-sparkles",
+            "titulo": "Marmorato",
+            "descricao": "Efeito mármore polido.",
+            "galeria": [
+                "https://images.unsplash.com/photo-1615873968403-89e068629275?w=800&q=80"
+            ]
+        },
+        {
+            "id": "cimento",
+            "icone": "fa-cubes",
+            "titulo": "Cimento Queimado",
+            "descricao": "Estética industrial.",
+            "galeria": [
+                "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=800&q=80"
+            ]
+        }
+    ],
+    "cases": [
+        {
+            "imagem": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=1000&fit=crop",
+            "estrelas": 5,
+            "comentario": "Execução técnica impecável. A equipa cumpriu rigorosamente o cronograma e o acabamento acetinado superou as expectativas do nosso conselho.",
+            "cliente": "Construtora Alpha"
+        },
+        {
+            "imagem": "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800&h=1000&fit=crop",
+            "estrelas": 5,
+            "comentario": "O cimento queimado aplicado na nossa sede mudou completamente a identidade do escritório. Profissionalismo de ponta do início ao fim.",
+            "cliente": "Tech Solutions LTDA"
+        },
+        {
+            "imagem": "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&h=1000&fit=crop",
+            "estrelas": 4.5,
+            "comentario": "Excelente engenharia de preparação e pintura Airless. O canteiro de obras esteve sempre limpo e altamente organizado.",
+            "cliente": "Residencial Lago Sul"
+        }
+    ]
+}
