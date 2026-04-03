@@ -37,9 +37,7 @@
     <div class="glass-overlay"></div>
 
     <nav class="sticky top-0 z-50 w-full bg-slate-950/70 backdrop-blur-xl border-b border-white/10">
-        <div class="max-w-md mx-auto px-4 py-4 flex justify-center items-center" id="nav-brand">
-            <!-- Renderização dinâmica combinada -->
-        </div>
+        <div class="max-w-md mx-auto px-4 py-4 flex justify-center items-center" id="nav-brand"></div>
     </nav>
 
     <main class="max-w-md mx-auto px-4 pt-8 relative z-10 space-y-12">
@@ -65,13 +63,13 @@
                             <i class="fa-solid fa-medal text-orange-500 text-sm"></i>
                         </div>
                         <div>
-                            <h3 class="text-sm font-black leading-tight text-white tracking-wide">Avaliações</h3>
-                            <p class="text-[10px] text-slate-400 uppercase tracking-widest mt-0.5">Depoimentos</p>
+                            <h3 class="text-sm font-black leading-tight text-white tracking-wide">Avaliações de Clientes</h3>
+                            <p class="text-[10px] text-slate-400 uppercase tracking-widest mt-0.5">Deslize para ver</p>
                         </div>
                     </div>
                 </div>
                 <div class="relative">
-                    <div id="cases-track" class="ig-track flex overflow-x-auto snap-mandatory-x hide-scrollbar w-full items-stretch transition-opacity duration-300"></div>
+                    <div id="cases-track" class="flex overflow-x-auto snap-mandatory-x hide-scrollbar w-full items-stretch transition-opacity duration-300"></div>
                     <div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-full ig-counter shadow-lg hidden"></div>
                 </div>
                 <div class="p-4 bg-slate-900/30 flex justify-center gap-1.5 flex-wrap ig-dots"></div>
@@ -81,113 +79,182 @@
         <section id="sobre" class="glass-card p-6">
             <h2 class="section-title"><i class="fa-solid fa-building text-orange-500"></i> Sobre a Empresa</h2>
             <p id="sobre-texto" class="text-sm text-slate-300 leading-relaxed font-medium mb-6"></p>
+
+            <h3 class="text-[10px] font-black uppercase text-white tracking-widest mb-2 flex items-center gap-2"><i class="fa-solid fa-rocket text-orange-500"></i> Missão e Valores</h3>
+            <p id="missao-texto" class="text-xs text-slate-400 leading-relaxed font-medium mb-6"></p>
+
             <div class="grid grid-cols-2 gap-3">
                 <div class="bg-slate-900/50 rounded-xl p-4 text-center border border-white/5">
                     <span id="anos-experiencia" class="block text-2xl font-black text-white"></span>
-                    <span class="text-[9px] uppercase font-bold text-orange-500">Anos Exp.</span>
+                    <span class="text-[9px] uppercase font-bold text-orange-500">Anos Experiência</span>
                 </div>
                 <div class="bg-slate-900/50 rounded-xl p-4 text-center border border-white/5">
                     <span id="obras-entregues" class="block text-2xl font-black text-white"></span>
-                    <span class="text-[9px] uppercase font-bold text-orange-500">Obras</span>
+                    <span class="text-[9px] uppercase font-bold text-orange-500">Obras Entregues</span>
                 </div>
             </div>
         </section>
     </main>
 
     <div class="fixed bottom-28 left-0 right-0 z-50 px-4 max-w-md mx-auto pointer-events-none flex justify-end">
-        <a id="btn-whatsapp" href="#" target="_blank" class="pointer-events-auto w-14 h-14 bg-orange-600 rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform">
+        <a id="btn-whatsapp" href="#" target="_blank" class="pointer-events-auto w-14 h-14 bg-orange-600 rounded-full flex items-center justify-center shadow-lg shadow-orange-600/40 border border-orange-400 active:scale-95 transition-transform">
             <i class="fa-brands fa-whatsapp text-white text-3xl"></i>
         </a>
     </div>
 
+    <div class="fixed bottom-6 left-0 right-0 z-40 px-4 max-w-md mx-auto pointer-events-none">
+        <div class="bg-slate-900/80 backdrop-blur-xl border border-white/10 p-2 rounded-2xl flex justify-between gap-2 shadow-2xl pointer-events-auto">
+            <a href="#servicos" class="flex-1 text-center text-[10px] font-bold text-white uppercase py-3 rounded-xl hover:bg-white/10 transition-colors flex flex-col items-center gap-1"><i class="fa-solid fa-screwdriver-wrench text-orange-500 text-base"></i> Serviços</a>
+            <a href="#cases" class="flex-1 text-center text-[10px] font-bold text-white uppercase py-3 rounded-xl hover:bg-white/10 transition-colors flex flex-col items-center gap-1"><i class="fa-solid fa-camera-retro text-orange-500 text-base"></i> Cases</a>
+            <a href="#sobre" class="flex-1 text-center text-[10px] font-bold text-white uppercase py-3 rounded-xl hover:bg-white/10 transition-colors flex flex-col items-center gap-1"><i class="fa-solid fa-building text-orange-500 text-base"></i> Sobre</a>
+        </div>
+    </div>
+
     <div id="gallery-modal" class="fixed inset-0 hidden flex-col justify-center items-center opacity-0 transition-opacity duration-300 z-[100]">
         <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-xl"></div>
-        <div class="w-full max-w-md px-6 pt-10 pb-4 flex justify-between items-center z-10 relative text-white">
-            <h2 id="modal-title" class="text-xl font-black"></h2>
-            <button onclick="closeGallery()" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+        <div class="w-full max-w-md px-6 pt-10 pb-4 flex justify-between items-center z-10 relative">
+            <div>
+                <span class="text-[10px] text-orange-500 font-bold uppercase tracking-widest block mb-1">Galeria de Serviço</span>
+                <h2 id="modal-title" class="text-xl font-black text-white drop-shadow-md">Título</h2>
+            </div>
+            <button onclick="closeGallery()" class="w-10 h-10 bg-white/10 rounded-full border border-white/20 flex items-center justify-center text-white active:scale-90 transition-transform">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+        <div class="w-full max-w-md px-6 pb-2 flex justify-between items-center text-gray-400 text-[10px] uppercase tracking-wider font-bold z-10 relative">
+            <span><i class="fa-solid fa-arrows-left-right mr-2"></i> Deslize para explorar</span>
+            <span id="modal-counter" class="bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-full border border-white/10">0/0</span>
         </div>
         <div id="modal-track" class="w-full max-w-md modal-track mt-2 relative z-10"></div>
+        <div id="modal-dots" class="w-full max-w-md flex justify-center gap-1.5 mt-4 z-10 relative"></div>
     </div>
 
     <script>
         let globalData = null;
+        let modalScrollHandler = null;
 
         async function initApp() {
             try {
-                // Cache Buster: garante que o navegador ignore o cache local e busque o JSON novo no GitHub
-                const url = 'data.json?t=' + Date.now();
-                const response = await fetch(url, { 
-                    cache: 'no-store',
-                    headers: { 'Cache-Control': 'no-cache' }
-                });
+                // Cache Busting: Força download fresco ao invés de usar memória do browser
+                const urlBuster = 'data.json?t=' + new Date().getTime();
+                const response = await fetch(urlBuster, { cache: 'no-store' });
+                let response;
+                try {
+                    // Removido o prefixo './' para evitar erros de URL no ambiente do Canvas (blob URLs)
+                    const urlBuster = 'data.json?t=' + new Date().getTime();
+                    response = await fetch(urlBuster, { cache: 'no-store' });
+                } catch (fetchError) {
+                    console.warn("Ambiente local ou Canvas detetado. A carregar dados de demonstração.");
+                    globalData = getMockData();
+                    renderizarInterface(globalData);
+                    return;
+                }
                 
-                if (!response.ok) throw new Error('data.json não encontrado.');
+                if (!response.ok) {
+                    console.warn(`HTTP ${response.status} - O ficheiro data.json não foi encontrado. A carregar demonstração.`);
+                    globalData = getMockData();
+                    renderizarInterface(globalData);
+                    return;
+                }
+                
+                try {
+                    globalData = await response.json();
+                } catch (parseError) {
+                    throw new Error('JSON Corrompido: Falha de sintaxe. O ficheiro data.json está truncado ou contém erros de formatação.');
+                }
+
+                if (!response.ok) throw new Error('Ficheiro data.json não encontrado.');
                 globalData = await response.json();
                 renderizarInterface(globalData);
             } catch (error) {
+                document.body.innerHTML = `<div class="p-10 text-center text-orange-500 font-bold"><i class="fa-solid fa-triangle-exclamation text-4xl mb-4"></i><br>Erro de configuração.<br>Crie o ficheiro data.json na raiz do projeto.</div>`;
+                // Impressão exata do erro na UI
+                document.body.innerHTML = `<div class="p-10 text-center text-orange-500 font-bold mt-20"><i class="fa-solid fa-triangle-exclamation text-4xl mb-4"></i><br>Falha Crítica no Sistema<br><span class="text-xs text-slate-300 mt-4 block font-mono bg-slate-900 p-3 rounded border border-slate-700">${error.message}</span></div>`;
                 console.error(error);
-                document.body.innerHTML += `<div class="fixed bottom-0 w-full p-4 bg-red-600 text-white text-center z-[100]">${error.message}</div>`;
             }
+        }
+
+        function getMockData() {
+            return {
+                "empresa": {
+                    "nome": "PREMIUM",
+                    "logo_url": "",
+                    "whatsapp": "5511999999999",
+                    "hero_titulo": "Padrão Técnico de Engenharia",
+                    "hero_subtitulo": "Revestimentos de Alta Performance",
+                    "sobre_texto": "Especialistas na execução de projetos de acabamento de luxo. Garantimos precisão geométrica, proteção hidrorrepelente e estética impecável em todas as superfícies tratadas.",
+                    "missao_texto": "Elevar o padrão da engenharia de superfícies através de rigor técnico, pontualidade e transparência, entregando não apenas acabamentos, mas durabilidade e sofisticação inigualáveis.",
+                    "anos_experiencia": "10+",
+                    "obras_entregues": "500+"
+                },
+                "servicos": [
+                    {
+                        "id": "airless",
+                        "icone": "fa-brush",
+                        "titulo": "Pintura Airless",
+                        "descricao": "Acabamento sem marcas.",
+                        "galeria": [
+                            "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800&q=80",
+                            "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=800&q=80"
+                        ]
+                    },
+                    {
+                        "id": "texturas",
+                        "icone": "fa-layer-group",
+                        "titulo": "Texturas Nobres",
+                        "descricao": "Grafiato e Projetada.",
+                        "galeria": [
+                            "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80"
+                        ]
+                    },
+                    {
+                        "id": "marmorato",
+                        "icone": "fa-wand-magic-sparkles",
+                        "titulo": "Marmorato",
+                        "descricao": "Efeito mármore polido.",
+                        "galeria": [
+                            "https://images.unsplash.com/photo-1615873968403-89e068629275?w=800&q=80"
+                        ]
+                    },
+                    {
+                        "id": "cimento",
+                        "icone": "fa-cubes",
+                        "titulo": "Cimento Queimado",
+                        "descricao": "Estética industrial.",
+                        "galeria": [
+                            "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=800&q=80"
+                        ]
+                    }
+                ],
+                "cases": [
+                    {
+                        "imagem": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=1000&fit=crop",
+                        "estrelas": 5,
+                        "comentario": "Execução técnica impecável. A equipa cumpriu rigorosamente o cronograma e o acabamento acetinado superou as expectativas do nosso conselho.",
+                        "cliente": "Construtora Alpha"
+                    },
+                    {
+                        "imagem": "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800&h=1000&fit=crop",
+                        "estrelas": 5,
+                        "comentario": "O cimento queimado aplicado na nossa sede mudou completamente a identidade do escritório. Profissionalismo de ponta do início ao fim.",
+                        "cliente": "Tech Solutions LTDA"
+                    },
+                    {
+                        "imagem": "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&h=1000&fit=crop",
+                        "estrelas": 4.5,
+                        "comentario": "Excelente engenharia de preparação e pintura Airless. O canteiro de obras esteve sempre limpo e altamente organizado.",
+                        "cliente": "Residencial Lago Sul"
+                    }
+                ]
+            };
         }
 
         function renderizarInterface(data) {
             const navBrand = document.getElementById('nav-brand');
-            
-            // CORREÇÃO PONTUAL: Renderiza Logo + Nome simultaneamente
-            let htmlBrand = "";
             if(data.empresa.logo_url) {
-                htmlBrand += `<img src="${data.empresa.logo_url}" class="h-8 mr-3 object-contain">`;
-            }
-            htmlBrand += `<span class="text-xl font-black tracking-tighter text-white uppercase">${data.empresa.nome}<span class="text-orange-500">.</span></span>`;
-            navBrand.innerHTML = htmlBrand;
-
-            document.getElementById('hero-title').innerHTML = (data.empresa.hero_titulo || '').replace(/\n/g, '<br>');
-            document.getElementById('hero-subtitle').innerText = data.empresa.hero_subtitulo || '';
-            document.getElementById('sobre-texto').innerText = data.empresa.sobre_texto || '';
-            document.getElementById('anos-experiencia').innerText = data.empresa.anos_experiencia || '';
-            document.getElementById('obras-entregues').innerText = data.empresa.obras_entregues || '';
-            document.getElementById('btn-whatsapp').href = `https://wa.me/${data.empresa.whatsapp}`;
-
-            const grid = document.getElementById('grid-servicos');
-            grid.innerHTML = data.servicos.map(serv => `
-                <div class="glass-card p-5 text-center cursor-pointer group active:scale-95 transition-all" onclick="openGallery('${serv.id}', '${serv.titulo}')">
-                    <i class="fa-solid ${serv.icone || 'fa-paint-roller'} text-orange-500 text-2xl mb-3 block"></i>
-                    <h3 class="text-[10px] font-black uppercase text-white">${serv.titulo}</h3>
-                    <p class="text-[9px] text-slate-400 mt-1">${serv.descricao}</p>
-                </div>
-            `).join('');
-
-            const track = document.getElementById('cases-track');
-            track.innerHTML = data.cases.map(c => `
-                <div class="w-full flex-none snap-center relative aspect-[4/5]">
-                    <img src="${c.imagem}" class="absolute inset-0 w-full h-full object-cover">
-                    <div class="absolute inset-x-0 bottom-0 p-5 bg-slate-900/60 backdrop-blur-xl border-t border-white/10">
-                        <p class="text-xs text-white font-medium">"${c.comentario}"</p>
-                        <span class="text-[9px] font-black text-orange-400 uppercase mt-3 block">- ${c.cliente}</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function openGallery(id, title) {
-            const serv = globalData.servicos.find(s => s.id === id);
-            if(!serv || !serv.galeria.length) return alert('Sem fotos para este serviço.');
-            document.getElementById('modal-title').innerText = title;
-            const track = document.getElementById('modal-track');
-            track.innerHTML = serv.galeria.map(img => `<img src="${img}" class="modal-img">`).join('');
-            const modal = document.getElementById('gallery-modal');
-            modal.classList.remove('hidden');
-            setTimeout(() => modal.classList.add('opacity-100', 'flex'), 10);
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeGallery() {
-            const modal = document.getElementById('gallery-modal');
-            modal.classList.remove('opacity-100');
-            setTimeout(() => { modal.classList.add('hidden'); document.body.style.overflow = ''; }, 300);
-        }
-
+@@ -300,4 +395,4 @@
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
+</html>
 </html>
