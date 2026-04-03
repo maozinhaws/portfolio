@@ -10,182 +10,203 @@
         body { background: #020617; color: #e2e8f0; font-family: -apple-system, system-ui, sans-serif; }
         .glass-panel { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(16px); }
         .input-dark { background: #0f172a; border: 1px solid #334155; color: white; width: 100%; padding: 0.75rem; border-radius: 0.5rem; transition: border-color 0.2s; }
+        .input-dark:focus { outline: none; border-color: #f97316; }
         .tab-btn.active { background: #f97316; color: white; border-color: #ea580c; }
     </style>
 </head>
 <body class="flex h-screen overflow-hidden">
 
-    <aside class="w-64 glass-panel border-r border-slate-800 flex flex-col justify-between z-20 relative">
-        <div>
-            <div class="p-6 border-b border-slate-800">
-                <h1 class="text-xl font-black text-white tracking-tighter">PREMIUM<span class="text-orange-500">.</span></h1>
-                <p class="text-[10px] text-slate-400 uppercase tracking-widest mt-1">Painel de Controlo</p>
+    <aside class="w-64 glass-panel border-r border-slate-800 flex flex-col justify-between p-4 z-10">
+        <div class="space-y-4">
+            <div class="p-2 border-b border-slate-800 mb-6">
+                <h1 class="text-xl font-black text-white">CMS PREMIUM</h1>
             </div>
-            <nav class="p-4 space-y-2">
-                <button onclick="changeTab('empresa')" id="tab-empresa" class="tab-btn active w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-300 hover:bg-slate-800 transition-colors border border-transparent"><i class="fa-solid fa-building w-6"></i> Empresa</button>
-                <button onclick="changeTab('servicos')" id="tab-servicos" class="tab-btn w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-300 hover:bg-slate-800 transition-colors border border-transparent"><i class="fa-solid fa-screwdriver-wrench w-6"></i> Serviços</button>
-                <button onclick="changeTab('cases')" id="tab-cases" class="tab-btn w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-300 hover:bg-slate-800 transition-colors border border-transparent"><i class="fa-solid fa-medal w-6"></i> Cases</button>
+            <nav class="space-y-2">
+                <button onclick="changeTab('empresa')" id="tab-empresa" class="tab-btn active w-full text-left p-3 rounded-xl text-sm font-bold transition-all hover:bg-slate-800">Empresa</button>
+                <button onclick="changeTab('servicos')" id="tab-servicos" class="tab-btn w-full text-left p-3 rounded-xl text-sm font-bold transition-all hover:bg-slate-800">Serviços</button>
+                <button onclick="changeTab('cases')" id="tab-cases" class="tab-btn w-full text-left p-3 rounded-xl text-sm font-bold transition-all hover:bg-slate-800">Cases</button>
             </nav>
         </div>
-        <div class="p-4 border-t border-slate-800">
-            <button onclick="exportJSON()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl shadow-lg shadow-green-600/20 transition-all flex justify-center items-center gap-2">
-                <i class="fa-solid fa-download"></i> Guardar (data.json)
-            </button>
-        </div>
+        <button onclick="exportJSON()" class="w-full bg-green-600 p-4 rounded-xl font-bold hover:bg-green-500 shadow-lg shadow-green-900/20 transition-all text-white">BAIXAR DATA.JSON</button>
     </aside>
 
-    <main class="flex-1 h-screen overflow-y-auto p-8 relative">
-        <div class="max-w-4xl mx-auto space-y-8" id="editor-container">
-            <div class="flex items-center justify-center h-64 text-slate-500">
-                <i class="fa-solid fa-spinner animate-spin text-3xl text-orange-500"></i>
-            </div>
+    <main class="flex-1 overflow-y-auto p-10 relative">
+        <div id="editor-container" class="max-w-4xl mx-auto space-y-6">
+            <div class="text-center py-20 text-slate-500 animate-pulse">Carregando dados sincronizados...</div>
         </div>
     </main>
 
     <script>
-        let db = { empresa: {}, servicos: [], cases: [] };
+        let db = null;
         let currentTab = 'empresa';
 
         async function initCMS() {
             try {
-                // CORREÇÃO PONTUAL: Adicionado Cache Buster (?t=timestamp) para forçar o carregamento do JSON do servidor
-                const url = 'data.json?t=' + Date.now();
-                const res = await fetch(url, { 
-                    cache: 'no-store',
-                    headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
-                });
+                let url = 'data.json';
+                if (!window.location.protocol.startsWith('blob')) {
+                    url += '?t=' + Date.now();
+                }
+                const res = await fetch(url, { cache: 'no-store' });
                 
                 if (res.ok) {
                     db = await res.json();
                 } else {
-                    initEmptyDB();
+                    throw new Error("Arquivo não encontrado");
                 }
             } catch (e) {
-                initEmptyDB();
+                console.warn("Iniciando com estrutura padrão limpa.");
+                db = {
+                    empresa: { nome: "PREMIUM", logo_url: "", whatsapp: "", hero_titulo: "", hero_subtitulo: "", sobre_texto: "", missao_texto: "", anos_experiencia: "", obras_entregues: "" },
+                    servicos: [],
+                    cases: []
+                };
             }
             renderTab();
         }
 
-        function initEmptyDB() {
-            db = {
-                empresa: { nome: "PREMIUM", logo_url: "", whatsapp: "", hero_titulo: "", hero_subtitulo: "", sobre_texto: "", missao_texto: "", anos_experiencia: "", obras_entregues: "" },
-                servicos: [],
-                cases: []
-            };
-        }
-
-        function changeTab(tabName) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active', 'bg-orange-500', 'text-white'));
-            document.getElementById(`tab-${tabName}`).classList.add('active');
-            currentTab = tabName;
+        function changeTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            currentTab = tab;
             renderTab();
         }
 
         function renderTab() {
             const container = document.getElementById('editor-container');
-            container.innerHTML = ''; 
+            container.innerHTML = '';
 
-            if (currentTab === 'empresa') renderEmpresa(container);
-            if (currentTab === 'servicos') renderServicos(container);
-            if (currentTab === 'cases') renderCases(container);
-        }
-
-        function renderEmpresa(container) {
-            const obj = db.empresa;
-            container.innerHTML = `
-                <div class="glass-panel p-8 rounded-2xl">
-                    <h2 class="text-xl font-bold text-white mb-6"><i class="fa-solid fa-building text-orange-500 mr-2"></i> Identidade e Contactos</h2>
-                    <div class="grid grid-cols-2 gap-6">
-                        <div><label class="text-xs text-slate-400 font-bold uppercase block mb-2">Nome da Empresa</label>
-                        <input type="text" class="input-dark" value="${obj.nome || ''}" onchange="updateDB('empresa', 'nome', this.value)"></div>
+            if (currentTab === 'empresa') {
+                container.innerHTML = `
+                    <div class="glass-panel p-8 rounded-2xl space-y-6 shadow-xl">
+                        <h2 class="text-xl font-bold border-b border-slate-700 pb-4 text-white">Dados da Empresa</h2>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="text-xs font-bold text-slate-400 block mb-2 uppercase">Nome Exibido</label>
+                            <input type="text" class="input-dark w-full" value="${db.empresa.nome || ''}" onchange="db.empresa.nome = this.value"></div>
+                            
+                            <div><label class="text-xs font-bold text-slate-400 block mb-2 uppercase">Logótipo (Opcional)</label>
+                            <input type="file" accept="image/*" class="input-dark w-full text-xs" onchange="uploadImg(this, 'empresa', 'logo_url')"></div>
+                        </div>
+                        <div><label class="text-xs font-bold text-slate-400 block mb-2 uppercase">WhatsApp (Apenas números)</label>
+                        <input type="text" class="input-dark w-full" value="${db.empresa.whatsapp || ''}" onchange="db.empresa.whatsapp = this.value"></div>
                         
-                        <div><label class="text-xs text-slate-400 font-bold uppercase block mb-2">Logótipo (Upload)</label>
-                        <input type="file" accept="image/*" class="input-dark text-sm" onchange="handleSingleUpload('empresa', 'logo_url', this)">
-                        ${obj.logo_url ? `<img src="${obj.logo_url}" class="h-10 mt-2 object-contain rounded">` : ''}</div>
-                    </div>
-                </div>
-            `;
-        }
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="text-xs font-bold text-slate-400 block mb-2 uppercase text-orange-500">Anos Exp.</label>
+                            <input type="text" class="input-dark w-full" value="${db.empresa.anos_experiencia || ''}" onchange="db.empresa.anos_experiencia = this.value"></div>
+                            <div><label class="text-xs font-bold text-slate-400 block mb-2 uppercase text-orange-500">Obras Entregues</label>
+                            <input type="text" class="input-dark w-full" value="${db.empresa.obras_entregues || ''}" onchange="db.empresa.obras_entregues = this.value"></div>
+                        </div>
 
-        function renderServicos(container) {
-            container.innerHTML = `<button onclick="addArrayItem('servicos', {id: 's'+Date.now(), titulo: 'Novo', descricao: '', galeria: []})" class="bg-orange-600 px-6 py-2 rounded-xl mb-4 font-bold text-white">+ Serviço</button>`;
-            db.servicos.forEach((s, idx) => {
-                container.innerHTML += `
-                    <div class="glass-panel p-6 rounded-xl mb-4 relative">
-                        <button onclick="removeArrayItem('servicos', ${idx})" class="absolute top-4 right-4 text-red-500"><i class="fa-solid fa-trash"></i></button>
-                        <input type="text" class="input-dark mb-4" value="${s.titulo}" placeholder="Título" onchange="db.servicos[${idx}].titulo = this.value">
-                        <input type="file" multiple class="input-dark text-xs" onchange="handleMultipleUpload(${idx}, this)">
-                    </div>
-                `;
-            });
-        }
-
-        function renderCases(container) {
-            container.innerHTML = `<button onclick="addArrayItem('cases', {cliente: 'Novo', comentario: '', imagem: ''})" class="bg-orange-600 px-6 py-2 rounded-xl mb-4 font-bold text-white">+ Case</button>`;
-            db.cases.forEach((c, idx) => {
-                container.innerHTML += `
-                    <div class="glass-panel p-6 rounded-xl mb-4 relative">
-                        <button onclick="removeArrayItem('cases', ${idx})" class="absolute top-4 right-4 text-red-500"><i class="fa-solid fa-trash"></i></button>
-                        <input type="text" class="input-dark mb-4" value="${c.cliente}" onchange="db.cases[${idx}].cliente = this.value">
-                        <input type="file" class="input-dark text-xs" onchange="handleArrayUpload('cases', ${idx}, 'imagem', this)">
+                        <div><label class="text-xs font-bold text-slate-400 block mb-2 uppercase">Título Hero</label>
+                        <textarea class="input-dark w-full h-20" onchange="db.empresa.hero_titulo = this.value">${db.empresa.hero_titulo || ''}</textarea></div>
+                        
+                        <div><label class="text-xs font-bold text-slate-400 block mb-2 uppercase">Subtítulo Hero</label>
+                        <input type="text" class="input-dark w-full" value="${db.empresa.hero_subtitulo || ''}" onchange="db.empresa.hero_subtitulo = this.value"></div>
+                        
+                        <div><label class="text-xs font-bold text-slate-400 block mb-2 uppercase">Texto 'Sobre'</label>
+                        <textarea class="input-dark w-full h-20" onchange="db.empresa.sobre_texto = this.value">${db.empresa.sobre_texto || ''}</textarea></div>
+                        
+                        <div><label class="text-xs font-bold text-slate-400 block mb-2 uppercase">Missão e Valores</label>
+                        <textarea class="input-dark w-full h-20" onchange="db.empresa.missao_texto = this.value">${db.empresa.missao_texto || ''}</textarea></div>
                     </div>
                 `;
-            });
+            } else if (currentTab === 'servicos') {
+                container.innerHTML = `<button onclick="addArrayItem('servicos', {id: 's'+Date.now(), titulo: 'Novo Serviço', descricao: '', icone: 'fa-paint-roller', galeria: []})" class="bg-orange-600 px-6 py-3 rounded-xl font-bold text-white mb-6 hover:bg-orange-500 transition-colors">+ Novo Serviço</button>`;
+                db.servicos.forEach((s, i) => {
+                    container.innerHTML += `
+                        <div class="glass-panel p-6 rounded-2xl relative mb-4 shadow-lg border-l-4 border-l-orange-500">
+                            <button onclick="removeArrayItem('servicos', ${i})" class="absolute top-4 right-4 text-red-500 hover:scale-110 transition-transform"><i class="fa-solid fa-trash-can"></i></button>
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="text" placeholder="Título do Serviço" class="input-dark" value="${s.titulo}" onchange="db.servicos[${i}].titulo = this.value">
+                                <input type="text" placeholder="Ícone (ex: fa-brush)" class="input-dark" value="${s.icone}" onchange="db.servicos[${i}].icone = this.value">
+                            </div>
+                            <input type="text" placeholder="Breve descrição" class="input-dark w-full mt-4" value="${s.descricao}" onchange="db.servicos[${i}].descricao = this.value">
+                            <div class="mt-4 border-t border-slate-700 pt-4">
+                                <label class="text-xs font-bold text-slate-400 block mb-2">Imagens da Galeria</label>
+                                <input type="file" multiple class="input-dark w-full text-xs" onchange="uploadGaleria(this, ${i})">
+                                <div class="flex gap-2 mt-3 overflow-x-auto p-2">${s.galeria.map(img => `<img src="${img}" class="h-12 w-12 object-cover rounded shadow-md border border-slate-700">`).join('')}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else if (currentTab === 'cases') {
+                container.innerHTML = `<button onclick="addArrayItem('cases', {cliente: 'Novo Case', comentario: '', imagem: '', estrelas: 5})" class="bg-orange-600 px-6 py-3 rounded-xl font-bold text-white mb-6 hover:bg-orange-500 transition-colors">+ Novo Case</button>`;
+                db.cases.forEach((c, i) => {
+                    container.innerHTML += `
+                        <div class="glass-panel p-6 rounded-2xl relative mb-4 shadow-lg border-l-4 border-l-orange-500">
+                            <button onclick="removeArrayItem('cases', ${i})" class="absolute top-4 right-4 text-red-500 hover:scale-110 transition-transform"><i class="fa-solid fa-trash-can"></i></button>
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="text" placeholder="Nome do Cliente/Obra" class="input-dark" value="${c.cliente}" onchange="db.cases[${i}].cliente = this.value">
+                                <input type="file" class="input-dark text-xs" onchange="uploadImg(this, 'cases', 'imagem', ${i})">
+                            </div>
+                            <div class="mt-4">
+                                <label class="text-xs font-bold text-slate-400 block mb-2">Estrelas (1 a 5)</label>
+                                <input type="number" min="1" max="5" step="0.5" class="input-dark w-full" value="${c.estrelas}" onchange="db.cases[${i}].estrelas = parseFloat(this.value)">
+                            </div>
+                            <textarea placeholder="Comentário do Cliente" class="input-dark w-full mt-4 h-20" onchange="db.cases[${i}].comentario = this.value">${c.comentario}</textarea>
+                        </div>
+                    `;
+                });
+            }
         }
 
-        async function compressImage(file) {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = event => {
-                    const img = new Image();
-                    img.src = event.target.result;
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const maxWidth = 800; 
-                        const scaleSize = maxWidth / img.width;
-                        canvas.width = maxWidth;
-                        canvas.height = img.height * scaleSize;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.7)); 
-                    };
-                };
-            });
-        }
-
-        async function handleSingleUpload(section, key, input) {
-            if (!input.files.length) return;
-            db[section][key] = await compressImage(input.files[0]);
+        async function uploadImg(input, section, key, index = null) {
+            if(!input.files[0]) return;
+            const b64 = await compress(input.files[0]);
+            if(index !== null) db[section][index][key] = b64;
+            else db[section][key] = b64;
             renderTab();
         }
 
-        async function handleArrayUpload(section, index, key, input) {
-            if (!input.files.length) return;
-            db[section][index][key] = await compressImage(input.files[0]);
-            renderTab();
-        }
-
-        async function handleMultipleUpload(servicoIndex, input) {
-            for (let file of input.files) {
-                const b64 = await compressImage(file);
-                db.servicos[servicoIndex].galeria.push(b64);
+        async function uploadGaleria(input, index) {
+            for(let f of input.files) {
+                const b64 = await compress(f);
+                db.servicos[index].galeria.push(b64);
             }
             renderTab();
         }
 
-        function updateDB(section, key, value) { db[section][key] = value; }
-        function addArrayItem(section, template) { db[section].push(template); renderTab(); }
-        function removeArrayItem(section, index) { if(confirm("Excluir item?")) { db[section].splice(index, 1); renderTab(); } }
+        function compress(file) {
+            return new Promise(res => {
+                const r = new FileReader();
+                r.readAsDataURL(file);
+                r.onload = e => {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const size = 800;
+                        const scale = size / Math.max(img.width, img.height);
+                        canvas.width = img.width * scale;
+                        canvas.height = img.height * scale;
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        res(canvas.toDataURL('image/jpeg', 0.7));
+                    }
+                }
+            });
+        }
+
+        function addArrayItem(section, template) {
+            db[section].push(template);
+            renderTab();
+        }
+
+        function removeArrayItem(section, i) {
+            if(confirm("Tem certeza que deseja excluir permanentemente este item?")) { 
+                db[section].splice(i, 1); 
+                renderTab(); 
+            }
+        }
 
         function exportJSON() {
-            const blob = new Blob([JSON.stringify(db, null, 4)], { type: "application/json" });
+            const blob = new Blob([JSON.stringify(db, null, 2)], { type: "application/json" });
             const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = url;
-            link.download = "data.json";
-            link.click();
-            alert("data.json pronto. Substitua no GitHub e aguarde 2 minutos para o deploy terminar.");
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "data.json";
+            a.click();
+            URL.revokeObjectURL(url);
+            alert("Sucesso! Substitua o arquivo data.json no GitHub.");
         }
 
         document.addEventListener('DOMContentLoaded', initCMS);
