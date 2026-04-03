@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS | Painel de Manutenção</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background: #020617; color: #e2e8f0; font-family: -apple-system, system-ui, sans-serif; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(16px); }
+        .input-dark { background: #0f172a; border: 1px solid #334155; color: white; width: 100%; padding: 0.75rem; border-radius: 0.5rem; transition: border-color 0.2s; }
+        .input-dark:focus { outline: none; border-color: #f97316; }
+        .tab-btn.active { background: #f97316; color: white; border-color: #ea580c; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <!-- Sidebar Navegação -->
+    <aside class="w-64 glass-panel border-r border-slate-800 flex flex-col justify-between z-20 relative">
+        <div>
+            <div class="p-6 border-b border-slate-800">
+                <h1 class="text-xl font-black text-white tracking-tighter">PREMIUM<span class="text-orange-500">.</span></h1>
+                <p class="text-[10px] text-slate-400 uppercase tracking-widest mt-1">Painel de Controlo</p>
+            </div>
+            <nav class="p-4 space-y-2">
+                <button onclick="changeTab('empresa')" id="tab-empresa" class="tab-btn active w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-300 hover:bg-slate-800 transition-colors border border-transparent"><i class="fa-solid fa-building w-6"></i> Empresa</button>
+                <button onclick="changeTab('servicos')" id="tab-servicos" class="tab-btn w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-300 hover:bg-slate-800 transition-colors border border-transparent"><i class="fa-solid fa-screwdriver-wrench w-6"></i> Serviços</button>
+                <button onclick="changeTab('cases')" id="tab-cases" class="tab-btn w-full text-left px-4 py-3 rounded-xl text-sm font-bold text-slate-300 hover:bg-slate-800 transition-colors border border-transparent"><i class="fa-solid fa-medal w-6"></i> Cases</button>
+            </nav>
+        </div>
+        <div class="p-4 border-t border-slate-800">
+            <button onclick="exportJSON()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl shadow-lg shadow-green-600/20 transition-all flex justify-center items-center gap-2">
+                <i class="fa-solid fa-download"></i> Guardar (data.json)
+            </button>
+        </div>
+    </aside>
+
+    <!-- Área Principal de Edição -->
+    <main class="flex-1 h-screen overflow-y-auto p-8 relative">
+        <div class="max-w-4xl mx-auto space-y-8" id="editor-container">
+            <!-- Os formulários serão injetados aqui via JS -->
+            <div class="flex items-center justify-center h-64 text-slate-500">
+                <i class="fa-solid fa-spinner animate-spin text-3xl text-orange-500"></i>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Estado global da aplicação
+        let db = { empresa: {}, servicos: [], cases: [] };
+        let currentTab = 'empresa';
+
+        // 1. Inicialização e Fetch
+        async function initCMS() {
+            try {
+                const res = await fetch('data.json');
+                if (res.ok) {
+                    db = await res.json();
+                } else {
+                    console.warn("data.json não encontrado. A iniciar base vazia.");
+                    initEmptyDB();
+                }
+            } catch (e) {
+                initEmptyDB();
+            }
+            renderTab();
+        }
+
+        function initEmptyDB() {
+            db = {
+                empresa: { nome: "PREMIUM", logo_url: "", whatsapp: "", hero_titulo: "", hero_subtitulo: "", sobre_texto: "", missao_texto: "", anos_experiencia: "", obras_entregues: "" },
+                servicos: [],
+                cases: []
+            };
+        }
+
+        // 2. Gestão de Tabs
+        function changeTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active', 'bg-orange-500', 'text-white'));
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            currentTab = tabName;
+            renderTab();
+        }
+
+        function renderTab() {
+            const container = document.getElementById('editor-container');
+            container.innerHTML = ''; // Clear
+
+            if (currentTab === 'empresa') renderEmpresa(container);
+            if (currentTab === 'servicos') renderServicos(container);
+            if (currentTab === 'cases') renderCases(container);
+        }
+
+        // 3. Renderizadores de Formulário
+        function renderEmpresa(container) {
+            const obj = db.empresa;
+            container.innerHTML = `
+                <div class="glass-panel p-8 rounded-2xl">
+                    <h2 class="text-xl font-bold text-white mb-6"><i class="fa-solid fa-building text-orange-500 mr-2"></i> Identidade e Contactos</h2>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div><label class="text-xs text-slate-400 font-bold uppercase block mb-2">Nome da Empresa</label>
+                        <input type="text" class="input-dark" value="${obj.nome || ''}" onchange="updateDB('empresa', 'nome', this.value)"></div>
+                        
+                        <div><label class="text-xs text-slate-400 font-bold uppercase block mb-2">Logótipo (Upload)</label>
+                        <input type="file" accept="image/*" class="input-dark text-sm file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:bg-orange-500 file:text-white" onchange="handleSingleUpload('empresa', 'logo_url', this)">
+                        ${obj.logo_url ? `<img src="${obj.logo_url}" class="h-10 mt-2 object-contain rounded">` : ''}</div>
+                        
+                        <div class="col-span-2"><label class="text-xs text-slate-400 font-bold uppercase block mb-2">Número WhatsApp</label>
+                        <input type="text" class="input-dark" value="${obj.whatsapp || ''}" placeholder="Ex: 5511999999999" onchange="updateDB('empresa', 'whatsapp', this.value)"></div>
+                    </div>
+
+                    <h2 class="text-xl font-bold text-white mt-8 mb-6 border-t border-slate-700 pt-8"><i class="fa-solid fa-font text-orange-500 mr-2"></i> Textos Principais</h2>
+                    <div class="space-y-6">
+                        <div><label class="text-xs text-slate-400 font-bold uppercase block mb-2">Título Principal (Hero)</label>
+                        <textarea class="input-dark h-24" onchange="updateDB('empresa', 'hero_titulo', this.value)">${obj.hero_titulo || ''}</textarea></div>
+                        
+                        <div><label class="text-xs text-slate-400 font-bold uppercase block mb-2">Subtítulo (Hero)</label>
+                        <input type="text" class="input-dark" value="${obj.hero_subtitulo || ''}" onchange="updateDB('empresa', 'hero_subtitulo', this.value)"></div>
+                        
+                        <div><label class="text-xs text-slate-400 font-bold uppercase block mb-2">Texto "Sobre a Empresa"</label>
+                        <textarea class="input-dark h-32" onchange="updateDB('empresa', 'sobre_texto', this.value)">${obj.sobre_texto || ''}</textarea></div>
+
+                        <div><label class="text-xs text-slate-400 font-bold uppercase block mb-2">Texto "Missão e Valores"</label>
+                        <textarea class="input-dark h-32" onchange="updateDB('empresa', 'missao_texto', this.value)">${obj.missao_texto || ''}</textarea></div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-6 mt-6">
+                        <div><label class="text-xs text-slate-400 font-bold uppercase block mb-2">Anos de Experiência (Ex: 10+)</label>
+                        <input type="text" class="input-dark" value="${obj.anos_experiencia || ''}" onchange="updateDB('empresa', 'anos_experiencia', this.value)"></div>
+                        
+                        <div><label class="text-xs text-slate-400 font-bold uppercase block mb-2">Obras Entregues (Ex: 500+)</label>
+                        <input type="text" class="input-dark" value="${obj.obras_entregues || ''}" onchange="updateDB('empresa', 'obras_entregues', this.value)"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderServicos(container) {
+            let html = `
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-white"><i class="fa-solid fa-screwdriver-wrench text-orange-500 mr-2"></i> Gestão de Serviços</h2>
+                    <button onclick="addArrayItem('servicos', {id: 'servico-' + Date.now(), icone: 'fa-star', titulo: 'Novo Serviço', descricao: '', galeria: []})" class="bg-orange-600 hover:bg-orange-500 px-4 py-2 rounded-lg text-sm font-bold text-white transition-colors">+ Adicionar Serviço</button>
+                </div>
+            `;
+
+            db.servicos.forEach((serv, idx) => {
+                html += `
+                <div class="glass-panel p-6 rounded-xl mb-6 relative">
+                    <button type="button" onclick="removeArrayItem('servicos', ${idx})" class="absolute top-4 right-4 text-red-500 hover:text-red-400 text-xl cursor-pointer p-2"><i class="fa-solid fa-trash"></i></button>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="col-span-2 md:col-span-1"><label class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Título do Serviço</label>
+                        <input type="text" class="input-dark" value="${serv.titulo}" onchange="updateArrayDB('servicos', ${idx}, 'titulo', this.value)"></div>
+                        
+                        <div class="col-span-2 md:col-span-1"><label class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Descrição Curta</label>
+                        <input type="text" class="input-dark" value="${serv.descricao}" onchange="updateArrayDB('servicos', ${idx}, 'descricao', this.value)"></div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-slate-700">
+                        <label class="text-xs text-orange-500 font-bold uppercase block mb-2"><i class="fa-solid fa-images"></i> Galeria de Fotos (Upload Múltiplo)</label>
+                        <input type="file" accept="image/*" multiple class="input-dark text-sm file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:bg-orange-500 file:text-white cursor-pointer" onchange="handleMultipleUpload(${idx}, this)">
+                        <div class="flex gap-2 mt-3 overflow-x-auto pb-2">
+                            ${serv.galeria.map((imgB64, imgIdx) => `
+                                <div class="relative flex-shrink-0">
+                                    <img src="${imgB64}" class="h-16 w-16 object-cover rounded border border-white/20">
+                                    <button onclick="removerFotoServico(${idx}, ${imgIdx})" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px]"><i class="fa-solid fa-xmark"></i></button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function renderCases(container) {
+            let html = `
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-white"><i class="fa-solid fa-medal text-orange-500 mr-2"></i> Cases de Sucesso (Depoimentos)</h2>
+                    <button onclick="addArrayItem('cases', {imagem: '', estrelas: 5, comentario: '', cliente: 'Novo Cliente'})" class="bg-orange-600 hover:bg-orange-500 px-4 py-2 rounded-lg text-sm font-bold text-white transition-colors">+ Adicionar Case</button>
+                </div>
+            `;
+
+            db.cases.forEach((caseItem, idx) => {
+                html += `
+                <div class="glass-panel p-6 rounded-xl mb-6 relative">
+                    <button type="button" onclick="removeArrayItem('cases', ${idx})" class="absolute top-4 right-4 text-red-500 hover:text-red-400 text-xl cursor-pointer p-2"><i class="fa-solid fa-trash"></i></button>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Nome do Cliente/Empresa</label>
+                        <input type="text" class="input-dark" value="${caseItem.cliente}" onchange="updateArrayDB('cases', ${idx}, 'cliente', this.value)"></div>
+                        
+                        <div><label class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Classificação (Estrelas 1 a 5)</label>
+                        <input type="number" step="0.5" min="1" max="5" class="input-dark" value="${caseItem.estrelas}" onchange="updateArrayDB('cases', ${idx}, 'estrelas', parseFloat(this.value))"></div>
+                        
+                        <div class="col-span-2"><label class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Imagem da Obra (Upload)</label>
+                        <input type="file" accept="image/*" class="input-dark text-sm file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:bg-orange-500 file:text-white" onchange="handleArrayUpload('cases', ${idx}, 'imagem', this)">
+                        ${caseItem.imagem ? `<img src="${caseItem.imagem}" class="h-20 mt-2 object-cover rounded border border-white/20">` : ''}</div>
+                        
+                        <div class="col-span-2"><label class="text-[10px] text-slate-400 uppercase font-bold block mb-1">Comentário / Depoimento</label>
+                        <textarea class="input-dark h-20" onchange="updateArrayDB('cases', ${idx}, 'comentario', this.value)">${caseItem.comentario}</textarea></div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // 4. Lógica de Mutação de Estado e Upload de Imagens
+        
+        // --- Motor de Compressão (Canvas) Otimizado para JSON ---
+        async function compressImage(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = event => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const maxWidth = 800; // Limite de largura para não sobrecarregar o JSON
+                        const scaleSize = maxWidth / img.width;
+                        canvas.width = img.width > maxWidth ? maxWidth : img.width;
+                        canvas.height = img.width > maxWidth ? img.height * scaleSize : img.height;
+                        
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.7)); // Qualidade 70%
+                    };
+                    img.onerror = error => reject(error);
+                };
+            });
+        }
+
+        async function handleSingleUpload(section, key, inputElement) {
+            if (!inputElement.files.length) return;
+            const base64Img = await compressImage(inputElement.files[0]);
+            updateDB(section, key, base64Img);
+            renderTab();
+        }
+
+        async function handleArrayUpload(section, index, key, inputElement) {
+            if (!inputElement.files.length) return;
+            const base64Img = await compressImage(inputElement.files[0]);
+            updateArrayDB(section, index, key, base64Img);
+            renderTab();
+        }
+
+        async function handleMultipleUpload(servicoIndex, inputElement) {
+            if (!inputElement.files.length) return;
+            const files = Array.from(inputElement.files);
+            
+            for (let file of files) {
+                const base64Img = await compressImage(file);
+                db.servicos[servicoIndex].galeria.push(base64Img);
+            }
+            renderTab();
+        }
+
+        function removerFotoServico(servicoIndex, imgIndex) {
+            db.servicos[servicoIndex].galeria.splice(imgIndex, 1);
+            renderTab();
+        }
+
+        function updateDB(section, key, value) {
+            db[section][key] = value;
+        }
+
+        function updateArrayDB(section, index, key, value) {
+            db[section][index][key] = value;
+        }
+
+        function updateGaleria(servicoIndex, textValue) {
+            // Converte linhas de texto num array, removendo linhas vazias
+            const urls = textValue.split('\n').map(u => u.trim()).filter(u => u !== '');
+            db.servicos[servicoIndex].galeria = urls;
+        }
+
+        function addArrayItem(section, template) {
+            db[section].push(template);
+            renderTab();
+        }
+
+        function removeArrayItem(section, index) {
+            if(window.confirm("⚠️ ATENÇÃO: Tem a certeza que deseja excluir permanentemente este item? Esta ação não pode ser desfeita.")) {
+                db[section].splice(index, 1);
+                renderTab();
+            }
+        }
+
+        // 5. Motor de Exportação (Download)
+        function exportJSON() {
+            const dataStr = JSON.stringify(db, null, 4);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "data.json";
+            document.body.appendChild(link);
+            link.click();
+            
+            // Limpeza
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            alert("Ficheiro data.json gerado! Faça o upload/substituição no GitHub para aplicar as alterações ao site.");
+        }
+
+        // Boot
+        document.addEventListener('DOMContentLoaded', initCMS);
+    </script>
+</body>
+</html>

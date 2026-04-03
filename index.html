@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-pt" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Premium | Engenharia de Superfícies</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --paint-orange: #f97316;
+            --paint-cyan: #06b6d4;
+            --paint-magenta: #d946ef;
+        }
+
+        body {
+            background: #020617;
+            margin: 0;
+            overflow-x: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+            color: white;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Motor de Fundo (Acelerado por Hardware) */
+        .paint-canvas { position: fixed; inset: 0; z-index: -1; overflow: hidden; }
+        .paint-roller {
+            position: absolute; width: 150px; height: 0; opacity: 0.4; filter: blur(60px);
+            animation: rolling 12s infinite ease-in-out; will-change: top, height;
+        }
+        .r1 { background: var(--paint-orange); left: 15%; animation-delay: 0s; }
+        .r2 { background: var(--paint-cyan); left: 55%; animation-delay: -4s; }
+        .r3 { background: var(--paint-magenta); left: 85%; animation-delay: -8s; }
+
+        @keyframes rolling {
+            0% { top: -20%; height: 0; opacity: 0; }
+            20% { height: 50%; opacity: 0.5; }
+            80% { top: 100%; height: 20%; opacity: 0.2; }
+            100% { top: 130%; height: 0; opacity: 0; }
+        }
+
+        .glass-overlay {
+            position: fixed; inset: 0; backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+            background: rgba(2, 6, 23, 0.6); z-index: 0; pointer-events: none;
+        }
+
+        /* Componentes Base UI */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+        }
+
+        section { scroll-margin-top: 100px; } 
+        
+        .section-title {
+            color: #ffffff;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            font-size: 0.75rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Carrossel Core (Snap Scroll) */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .snap-mandatory-x { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+        .snap-center { scroll-snap-align: center; }
+
+        /* Paginação */
+        .dot { transition: all 0.2s ease; }
+        .dot.active { background-color: var(--paint-orange); transform: scale(1.2); }
+
+        /* Modal Gallery Core */
+        .modal-track {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 12px;
+            padding: 0 20px 40px 20px;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+        .modal-track::-webkit-scrollbar { display: none; }
+        .modal-img {
+            flex: 0 0 85%;
+            height: 60vh;
+            scroll-snap-align: center;
+            object-fit: cover;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background-color: #1e293b;
+        }
+    </style>
+</head>
+<body class="pb-28">
+
+    <!-- Fundo -->
+    <div class="paint-canvas">
+        <div class="paint-roller r1"></div><div class="paint-roller r2"></div><div class="paint-roller r3"></div>
+    </div>
+    <div class="glass-overlay"></div>
+
+    <!-- Topbar Simplificada -->
+    <nav class="sticky top-0 z-50 w-full bg-slate-950/70 backdrop-blur-xl border-b border-white/10">
+        <div class="max-w-md mx-auto px-4 py-4 flex justify-center items-center">
+            <span class="text-xl font-black tracking-tighter text-white">PREMIUM<span class="text-orange-500">.</span></span>
+        </div>
+    </nav>
+
+    <main class="max-w-md mx-auto px-4 pt-8 relative z-10 space-y-12">
+
+        <!-- Hero -->
+        <header class="text-center py-6">
+            <h1 class="text-3xl font-black leading-tight mb-3">Padrão Técnico de <br><span class="text-orange-500 italic">Engenharia</span></h1>
+            <p class="text-[11px] text-slate-400 uppercase font-bold tracking-widest">Revestimentos de Alta Performance</p>
+        </header>
+
+        <!-- Secção 1: Serviços -->
+        <section id="servicos">
+            <h2 class="section-title">
+                <i class="fa-solid fa-screwdriver-wrench text-orange-500"></i> Serviços Prestados 
+                <span class="text-[9px] font-normal normal-case tracking-normal text-slate-400 ml-1 mt-0.5">(clique para visualizar)</span>
+            </h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="glass-card p-5 text-center cursor-pointer hover:border-orange-500/50 active:scale-95 transition-all group" onclick="openGallery('airless', 'Pintura Airless')">
+                    <i class="fa-solid fa-brush text-orange-500 text-2xl mb-3 block group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-[10px] font-black uppercase text-white">Pintura Airless</h3>
+                    <p class="text-[9px] text-slate-400 mt-1">Acabamento sem marcas.</p>
+                    <p class="text-[8px] font-bold text-orange-500 mt-3 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-regular fa-images"></i> VER FOTOS</p>
+                </div>
+                <div class="glass-card p-5 text-center cursor-pointer hover:border-orange-500/50 active:scale-95 transition-all group" onclick="openGallery('texturas', 'Texturas Nobres')">
+                    <i class="fa-solid fa-layer-group text-orange-500 text-2xl mb-3 block group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-[10px] font-black uppercase text-white">Texturas Nobres</h3>
+                    <p class="text-[9px] text-slate-400 mt-1">Grafiato e Projetada.</p>
+                    <p class="text-[8px] font-bold text-orange-500 mt-3 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-regular fa-images"></i> VER FOTOS</p>
+                </div>
+                <div class="glass-card p-5 text-center cursor-pointer hover:border-orange-500/50 active:scale-95 transition-all group" onclick="openGallery('marmorato', 'Marmorato')">
+                    <i class="fa-solid fa-wand-magic-sparkles text-orange-500 text-2xl mb-3 block group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-[10px] font-black uppercase text-white">Marmorato</h3>
+                    <p class="text-[9px] text-slate-400 mt-1">Efeito mármore polido.</p>
+                    <p class="text-[8px] font-bold text-orange-500 mt-3 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-regular fa-images"></i> VER FOTOS</p>
+                </div>
+                <div class="glass-card p-5 text-center cursor-pointer hover:border-orange-500/50 active:scale-95 transition-all group" onclick="openGallery('cimento', 'Cimento Queimado')">
+                    <i class="fa-solid fa-cubes text-orange-500 text-2xl mb-3 block group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-[10px] font-black uppercase text-white">Cimento Queimado</h3>
+                    <p class="text-[9px] text-slate-400 mt-1">Estética industrial.</p>
+                    <p class="text-[8px] font-bold text-orange-500 mt-3 opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-regular fa-images"></i> VER FOTOS</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Secção 2: Cases (Carregado via JSON) -->
+        <section id="cases">
+            <h2 class="section-title"><i class="fa-solid fa-camera-retro text-orange-500"></i> Cases de Sucesso</h2>
+            
+            <article class="glass-card overflow-hidden mb-6 ig-carousel">
+                <div class="p-4 flex items-center justify-between border-b border-white/5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full border-2 border-orange-500 flex items-center justify-center bg-slate-900 shadow-lg">
+                            <i class="fa-solid fa-medal text-orange-500 text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-black leading-tight text-white tracking-wide">Avaliações de Clientes</h3>
+                            <p class="text-[10px] text-slate-400 uppercase tracking-widest mt-0.5">Deslize para ver os depoimentos</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="relative">
+                    <div id="cases-track" class="flex overflow-x-auto snap-mandatory-x hide-scrollbar w-full items-stretch transition-opacity duration-300">
+                        <!-- Loader temporário -->
+                        <div class="w-full py-20 text-center text-slate-400 text-xs">
+                            <i class="fa-solid fa-spinner animate-spin text-2xl text-orange-500 mb-2"></i><br>A carregar avaliações...
+                        </div>
+                    </div>
+                    <div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-full ig-counter shadow-lg hidden">0/0</div>
+                </div>
+                
+                <div class="p-4 bg-slate-900/30 flex justify-center gap-1.5 flex-wrap ig-dots"></div>
+            </article>
+        </section>
+
+        <!-- Secção 3: Sobre -->
+        <section id="sobre" class="glass-card p-6">
+            <h2 class="section-title"><i class="fa-solid fa-building text-orange-500"></i> Sobre a Empresa</h2>
+            <p class="text-sm text-slate-300 leading-relaxed font-medium mb-6">
+                Especialistas na execução de projetos de acabamento de luxo. Garantimos precisão geométrica, proteção hidrorrepelente e estética impecável em todas as superfícies tratadas.
+            </p>
+            
+            <h3 class="text-[10px] font-black uppercase text-white tracking-widest mb-2 flex items-center gap-2"><i class="fa-solid fa-rocket text-orange-500"></i> Missão e Valores</h3>
+            <p class="text-xs text-slate-400 leading-relaxed font-medium mb-6">
+                Elevar o padrão da engenharia de superfícies através de rigor técnico, pontualidade e transparência, entregando não apenas acabamentos, mas durabilidade e sofisticação inigualáveis.
+            </p>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-slate-900/50 rounded-xl p-4 text-center border border-white/5">
+                    <span class="block text-2xl font-black text-white">10+</span>
+                    <span class="text-[9px] uppercase font-bold text-orange-500">Anos Experiência</span>
+                </div>
+                <div class="bg-slate-900/50 rounded-xl p-4 text-center border border-white/5">
+                    <span class="block text-2xl font-black text-white">500+</span>
+                    <span class="text-[9px] uppercase font-bold text-orange-500">Obras Entregues</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FAB: WhatsApp Isolado -->
+    <div class="fixed bottom-28 left-0 right-0 z-50 px-4 max-w-md mx-auto pointer-events-none flex justify-end">
+        <a href="https://wa.me/5511999999999" class="pointer-events-auto w-14 h-14 bg-orange-600 rounded-full flex items-center justify-center shadow-lg shadow-orange-600/40 border border-orange-400 active:scale-95 transition-transform">
+            <i class="fa-brands fa-whatsapp text-white text-3xl"></i>
+        </a>
+    </div>
+
+    <!-- Dock: Navegação Inferior -->
+    <div class="fixed bottom-6 left-0 right-0 z-40 px-4 max-w-md mx-auto pointer-events-none">
+        <div class="bg-slate-900/80 backdrop-blur-xl border border-white/10 p-2 rounded-2xl flex justify-between gap-2 shadow-2xl pointer-events-auto">
+            <a href="#servicos" class="flex-1 text-center text-[10px] font-bold text-white uppercase py-3 rounded-xl hover:bg-white/10 transition-colors flex flex-col items-center gap-1">
+                <i class="fa-solid fa-screwdriver-wrench text-orange-500 text-base"></i> Serviços
+            </a>
+            <a href="#cases" class="flex-1 text-center text-[10px] font-bold text-white uppercase py-3 rounded-xl hover:bg-white/10 transition-colors flex flex-col items-center gap-1">
+                <i class="fa-solid fa-camera-retro text-orange-500 text-base"></i> Cases
+            </a>
+            <a href="#sobre" class="flex-1 text-center text-[10px] font-bold text-white uppercase py-3 rounded-xl hover:bg-white/10 transition-colors flex flex-col items-center gap-1">
+                <i class="fa-solid fa-building text-orange-500 text-base"></i> Sobre
+            </a>
+        </div>
+    </div>
+
+    <!-- Modal Dinâmico: Galeria -->
+    <div id="gallery-modal" class="fixed inset-0 hidden flex-col justify-center items-center opacity-0 transition-opacity duration-300 z-[100]">
+        <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-xl"></div>
+        
+        <div class="w-full max-w-md px-6 pt-10 pb-4 flex justify-between items-center z-10 relative">
+            <div>
+                <span class="text-[10px] text-orange-500 font-bold uppercase tracking-widest block mb-1">Galeria de Serviço</span>
+                <h2 id="modal-title" class="text-xl font-black text-white drop-shadow-md">Título</h2>
+            </div>
+            <button onclick="closeGallery()" class="w-10 h-10 bg-white/10 rounded-full border border-white/20 flex items-center justify-center text-white active:scale-90 transition-transform">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+        
+        <div class="w-full max-w-md px-6 pb-2 flex justify-between items-center text-gray-400 text-[10px] uppercase tracking-wider font-bold z-10 relative">
+            <span><i class="fa-solid fa-arrows-left-right mr-2"></i> Deslize para explorar</span>
+            <span id="modal-counter" class="bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-full border border-white/10">1/10</span>
+        </div>
+        
+        <div id="modal-track" class="w-full max-w-md modal-track mt-2 relative z-10"></div>
+        <div id="modal-dots" class="w-full max-w-md flex justify-center gap-1.5 mt-4 z-10 relative"></div>
+    </div>
+
+    <!-- Scripts da Aplicação -->
+    <script>
+        /* --- 1. LÓGICA DO MODAL (SERVIÇOS) --- */
+        const modal = document.getElementById('gallery-modal');
+        const modalTrack = document.getElementById('modal-track');
+        const modalTitle = document.getElementById('modal-title');
+        const modalCounter = document.getElementById('modal-counter');
+        const modalDots = document.getElementById('modal-dots');
+        let modalScrollHandler = null;
+
+        function openGallery(categorySeed, title) {
+            modalTitle.innerText = title;
+            modalTrack.innerHTML = ''; 
+            modalDots.innerHTML = '';
+            const totalImages = 10;
+
+            const fragment = document.createDocumentFragment();
+            const dotsFragment = document.createDocumentFragment();
+
+            for(let i = 1; i <= totalImages; i++) {
+                const img = document.createElement('img');
+                img.className = 'modal-img animate-pulse w-full flex-none snap-center'; 
+                img.src = `https://picsum.photos/seed/${categorySeed}${i}/800/1000`; // Algoritmo de Seed para 10 imagens únicas
+                img.onload = () => img.classList.remove('animate-pulse');
+                fragment.appendChild(img);
+
+                const dot = document.createElement('div');
+                dot.className = `w-1.5 h-1.5 rounded-full dot transition-all ${i === 1 ? 'bg-orange-500 scale-125' : 'bg-white/30'}`;
+                dotsFragment.appendChild(dot);
+            }
+            modalTrack.appendChild(fragment);
+            modalDots.appendChild(dotsFragment);
+
+            modalCounter.innerText = `1/${totalImages}`;
+            modalTrack.scrollLeft = 0;
+
+            if(modalScrollHandler) modalTrack.removeEventListener('scroll', modalScrollHandler);
+            
+            modalScrollHandler = () => {
+                const currentIndex = Math.round(modalTrack.scrollLeft / modalTrack.clientWidth);
+                modalCounter.innerText = `${currentIndex + 1}/${totalImages}`;
+                Array.from(modalDots.children).forEach((dot, idx) => {
+                    dot.classList.toggle('bg-orange-500', idx === currentIndex);
+                    dot.classList.toggle('scale-125', idx === currentIndex);
+                    dot.classList.toggle('bg-white/30', idx !== currentIndex);
+                });
+            };
+            modalTrack.addEventListener('scroll', modalScrollHandler);
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.remove('opacity-0')));
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeGallery() {
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = '';
+            }, 300);
+        }
+
+        /* --- 2. LÓGICA DE DADOS (CASES VIA JSON) --- */
+        async function carregarCases() {
+            const track = document.getElementById('cases-track');
+            
+            try {
+                const response = await fetch('data.json');
+                if (!response.ok) throw new Error('Ficheiro não encontrado');
+                const dados = await response.json();
+                
+                track.innerHTML = ''; 
+
+                dados.forEach(item => {
+                    let starsHtml = '';
+                    for(let i = 1; i <= 5; i++) {
+                        if (i <= item.estrelas) {
+                            starsHtml += '<i class="fa-solid fa-star"></i>';
+                        } else if (i - 0.5 === item.estrelas) {
+                            starsHtml += '<i class="fa-solid fa-star-half-stroke"></i>';
+                        } else {
+                            starsHtml += '<i class="fa-regular fa-star"></i>';
+                        }
+                    }
+
+                    const slide = `
+                        <div class="w-full flex-none snap-center relative aspect-[4/5]">
+                            <img src="${item.imagem}" class="absolute inset-0 w-full h-full object-cover bg-slate-900" alt="Case de Sucesso">
+                            <div class="absolute inset-x-0 bottom-0 p-5 bg-slate-900/60 backdrop-blur-xl border-t border-white/10 flex flex-col justify-end">
+                                <div class="flex gap-1 text-orange-500 text-[10px] mb-2">${starsHtml}</div>
+                                <p class="text-xs text-white font-medium leading-relaxed drop-shadow-md">"${item.comentario}"</p>
+                                <span class="text-[9px] font-black text-orange-400 uppercase tracking-widest mt-3 block">- ${item.cliente}</span>
+                            </div>
+                        </div>
+                    `;
+                    track.insertAdjacentHTML('beforeend', slide);
+                });
+
+                inicializarCarrosselCases();
+
+            } catch (error) {
+                track.innerHTML = `<div class="w-full py-20 text-center text-slate-400 text-xs">A configurar os casos de sucesso.<br>Adicione o ficheiro data.json.</div>`;
+            }
+        }
+
+        function inicializarCarrosselCases() {
+            const carousel = document.querySelector('.ig-carousel');
+            const track = document.getElementById('cases-track');
+            const counter = carousel.querySelector('.ig-counter');
+            const dotsContainer = carousel.querySelector('.ig-dots');
+            const slides = track.querySelectorAll('.snap-center');
+            const total = slides.length;
+
+            if(total === 0) return;
+
+            counter.classList.remove('hidden');
+            dotsContainer.innerHTML = '';
+            
+            slides.forEach((_, idx) => {
+                const dot = document.createElement('div');
+                dot.className = `w-1.5 h-1.5 rounded-full dot transition-all ${idx === 0 ? 'bg-orange-500 scale-125' : 'bg-white/30'}`;
+                dotsContainer.appendChild(dot);
+            });
+
+            const dots = dotsContainer.querySelectorAll('.dot');
+
+            track.addEventListener('scroll', () => {
+                const currentIndex = Math.round(track.scrollLeft / track.clientWidth);
+                counter.innerText = `${currentIndex + 1}/${total}`;
+                
+                dots.forEach((dot, idx) => {
+                    dot.classList.toggle('bg-orange-500', idx === currentIndex);
+                    dot.classList.toggle('scale-125', idx === currentIndex);
+                    dot.classList.toggle('bg-white/30', idx !== currentIndex);
+                });
+            });
+
+            counter.innerText = `1/${total}`;
+        }
+
+        // Executar o *Fetch API* no load
+        document.addEventListener('DOMContentLoaded', carregarCases);
+    </script>
+</body>
+</html>
