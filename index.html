@@ -1,416 +1,259 @@
 <!DOCTYPE html>
-<html lang="pt-br" class="scroll-smooth" data-theme="dark">
+<html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Premium - Engenharia de Superfícies</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS | Painel de Manutenção</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script>
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const initialTheme = savedTheme ? savedTheme : (prefersDark ? 'dark' : 'light');
-        document.documentElement.setAttribute('data-theme', initialTheme);
-    </script>
     <style>
-        /* Padrão Estrito Apple: macOS Sonoma / iOS 17 Thin Materials */
-        :root { 
-            --bg-color: #000000; 
-            --text-color: #f5f5f7;
-            --glass-bg: rgba(28, 28, 30, 0.12); 
-            --glass-border: rgba(255, 255, 255, 0.08); 
-            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            --glass-inset: inset 0 1px 1px rgba(255, 255, 255, 0.1);
-            --text-dynamic: #ffffff; 
-            --text-muted: #a1a1a6; 
-            --blur-effect: blur(50px) saturate(210%);
-            --star-color: #1a1a1a;
-            --dot-inactive: rgba(255, 255, 255, 0.2);
-        }
-
-        html[data-theme="light"] {
-            --bg-color: #f2f2f7; 
-            --text-color: #1d1d1f;
-            --glass-bg: rgba(255, 255, 255, 0.18); 
-            --glass-border: rgba(0, 0, 0, 0.05); 
-            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-            --glass-inset: inset 0 1px 1px rgba(255, 255, 255, 0.5);
-            --text-dynamic: #000000; 
-            --text-muted: #3a3a3c; 
-            --blur-effect: blur(50px) saturate(190%) contrast(1.1);
-            --star-color: #ffffff;
-            --dot-inactive: rgba(0, 0, 0, 0.15);
-        }
-
-        body { 
-            background: var(--bg-color); color: var(--text-color); margin: 0; overflow-x: hidden; 
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; 
-            -webkit-tap-highlight-color: transparent; 
-            transition: background-color 0.4s ease, color 0.4s ease; 
-        }
-
-        .ios-glass { 
-            background: var(--glass-bg); 
-            border: 1px solid var(--glass-border); 
-            box-shadow: var(--glass-shadow), var(--glass-inset); 
-            backdrop-filter: var(--blur-effect); 
-            -webkit-backdrop-filter: var(--blur-effect); 
-            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .text-dynamic { color: var(--text-dynamic); transition: color 0.3s ease; }
-        .text-muted { color: var(--text-muted); transition: color 0.3s ease; }
-        
-        .paint-canvas { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
-        
-        section { scroll-margin-top: 100px; } 
-        .section-title { font-weight: 900; text-transform: uppercase; letter-spacing: 0.2em; font-size: 0.75rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .snap-mandatory-x { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
-        .snap-center { scroll-snap-align: center; }
-
-        @keyframes ios-spring {
-            from { transform: scale(0.95); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        .animate-spring { animation: ios-spring 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-
-        /* Dot Dinâmico Baseado em Variável */
-        .dot-base { 
-            background-color: var(--dot-inactive);
-            transition: all 0.3s ease;
-        }
-        .dot-active {
-            background-color: #f97316 !important;
-            width: 1rem !important;
-        }
+        body { background: #020617; color: #e2e8f0; font-family: -apple-system, system-ui, sans-serif; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(16px); }
+        .input-dark { background: #0f172a; border: 1px solid #334155; color: white; width: 100%; padding: 0.75rem; border-radius: 0.5rem; transition: border-color 0.2s; }
+        .input-dark:focus { outline: none; border-color: #f97316; }
+        .tab-btn { padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: bold; transition: 0.3s; border: 1px solid transparent; }
+        .tab-btn.active { background: #f97316; color: white; border-color: #ea580c; }
+        .tab-btn:not(.active):hover { background: rgba(255,255,255,0.05); }
     </style>
 </head>
-<body class="pb-10">
-    <div class="paint-canvas" id="main-canvas"></div>
+<body class="p-4 md:p-8">
 
-    <header class="sticky top-0 z-40 w-full ios-glass border-x-0 border-t-0 rounded-b-[2.5rem] mb-6">
-        <div class="max-w-md mx-auto px-6 py-4 flex items-center justify-between">
-            <div id="nav-brand" class="flex-1 flex items-center gap-3 overflow-hidden"></div>
-            
-            <label class="relative inline-flex items-center cursor-pointer ml-3 shrink-0" title="Alternar Tema">
-                <input type="checkbox" id="theme-toggle" class="sr-only peer" onchange="toggleTheme()">
-                <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-orange-500 shadow-sm"></div>
-                <i class="fa-solid fa-moon absolute right-1.5 text-[10px] text-white/80 pointer-events-none peer-checked:opacity-0 transition-opacity"></i>
-                <i class="fa-solid fa-sun absolute left-1.5 text-[10px] text-white/80 pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity"></i>
-            </label>
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-8 bg-slate-900/50 p-6 rounded-2xl border border-white/5">
+            <div>
+                <h1 class="text-2xl font-black text-white uppercase tracking-tight">Painel de Controlo</h1>
+                <p class="text-xs text-orange-500 font-bold uppercase tracking-widest">Gestão de Portfólio Premium</p>
+            </div>
+            <button onclick="exportJSON()" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg shadow-green-900/20">
+                <i class="fa-solid fa-download"></i> EXPORTAR DATA.JSON
+            </button>
+        </header>
+
+        <!-- Tabs -->
+        <div class="flex gap-2 mb-6 overflow-x-auto pb-2 hide-scrollbar">
+            <button onclick="switchTab('empresa')" id="tab-empresa" class="tab-btn active shrink-0">Empresa</button>
+            <button onclick="switchTab('servicos')" id="tab-servicos" class="tab-btn shrink-0">Serviços</button>
+            <button onclick="switchTab('cases')" id="tab-cases" class="tab-btn shrink-0">Casos de Sucesso</button>
         </div>
-    </header>
 
-    <nav class="fixed right-3 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3 ios-glass p-2 rounded-full">
-        <a href="#servicos" class="w-11 h-11 rounded-full flex items-center justify-center text-orange-500 active:scale-90 transition-all ios-glass hover:bg-orange-500/10" title="Serviços">
-            <div class="relative w-6 h-6 flex items-center justify-center">
-                <i class="fa-solid fa-paint-brush absolute text-[16px]" style="transform: rotate(-45deg) translateX(-1px);"></i>
-                <i class="fa-solid fa-paint-brush absolute text-[16px]" style="transform: rotate(45deg) scaleX(-1) translateX(-1px);"></i>
-            </div>
-        </a>
-        <a href="#cases" class="w-11 h-11 rounded-full flex items-center justify-center text-orange-500 active:scale-90 transition-all ios-glass hover:bg-orange-500/10" title="Cases">
-            <div class="relative w-6 h-6 flex items-center justify-center">
-                <i class="fa-solid fa-comment text-[22px]"></i>
-                <i class="fa-solid fa-star absolute text-[9px] pb-[2px]" style="color: var(--star-color); transition: color 0.3s ease;"></i>
-            </div>
-        </a>
-        <a href="#sobre" class="w-11 h-11 rounded-full flex items-center justify-center text-orange-500 active:scale-90 transition-all ios-glass hover:bg-orange-500/10" title="Sobre">
-            <i class="fa-solid fa-building text-lg"></i>
-        </a>
-    </nav>
-
-    <main class="max-w-md mx-auto pl-4 pr-16 relative z-10 space-y-12">
-        <section class="text-center py-6 ios-glass rounded-[2.5rem] p-8 animate-spring">
-            <h1 id="hero-title" class="text-3xl font-black leading-tight mb-2 text-dynamic tracking-tight"></h1>
-            <p id="hero-subtitle" class="text-[11px] text-orange-500 uppercase font-bold tracking-[0.3em]"></p>
-        </section>
-
-        <section id="servicos">
-            <h2 class="section-title text-dynamic">
-                <i class="fa-solid fa-screwdriver-wrench text-orange-500"></i> Nossos Serviços 
-            </h2>
-            <div id="grid-servicos" class="grid grid-cols-2 gap-4"></div>
-        </section>
-
-        <section id="cases">
-            <h2 class="section-title text-dynamic"><i class="fa-solid fa-camera-retro text-orange-500"></i> Depoimentos</h2>
-            <article class="ios-glass rounded-[2.5rem] overflow-hidden py-6 shadow-2xl">
-                <div class="relative w-full">
-                    <div id="cases-track" class="ig-track flex overflow-x-auto snap-mandatory-x hide-scrollbar w-full items-stretch px-4 gap-5"></div>
-                </div>
-                <div id="carousel-dots" class="flex justify-center gap-2 pt-6 items-center"></div>
-            </article>
-        </section>
-
-        <section id="sobre" class="ios-glass rounded-[2.5rem] p-8 shadow-2xl">
-            <h2 class="section-title text-dynamic"><i class="fa-solid fa-building text-orange-500"></i> A Empresa</h2>
-            <p id="sobre-texto" class="text-sm text-muted leading-relaxed font-medium mb-8"></p>
-
-            <h3 class="text-[10px] font-black uppercase text-dynamic tracking-widest mb-3 flex items-center gap-2"><i class="fa-solid fa-rocket text-orange-500"></i> Missão</h3>
-            <p id="missao-texto" class="text-xs text-muted leading-relaxed font-medium mb-8"></p>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div class="ios-glass rounded-[1.8rem] p-5 text-center border-none">
-                    <span id="anos-experiencia" class="block text-3xl font-black text-dynamic"></span>
-                    <span class="text-[10px] uppercase font-bold text-orange-500 tracking-wider">Anos Exp.</span>
-                </div>
-                <div class="ios-glass rounded-[1.8rem] p-5 text-center border-none">
-                    <span id="obras-entregues" class="block text-3xl font-black text-dynamic"></span>
-                    <span class="text-[10px] uppercase font-bold text-orange-500 tracking-wider">Projetos</span>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <div class="fixed bottom-6 left-6 z-50 pointer-events-none">
-        <a id="btn-whatsapp" href="#" target="_blank" class="pointer-events-auto w-16 h-16 bg-[#25D366] rounded-full flex items-center justify-center shadow-2xl active:scale-90 transition-transform text-white ios-glass border-none">
-            <i class="fa-brands fa-whatsapp text-3xl drop-shadow-lg"></i>
-        </a>
-    </div>
-
-    <div id="gallery-modal" onclick="handleModalClick(event)" class="fixed inset-0 hidden flex-col opacity-0 transition-opacity duration-[450ms] z-[100] ios-glass">
-        <div id="modal-content" class="flex flex-col h-full w-full scale-90 opacity-0 transition-all duration-[450ms] ease-[cubic-bezier(0.32,0.72,0,1)] transform-gpu">
-            <div class="w-full max-w-md mx-auto px-6 pt-14 pb-4 flex justify-between items-center text-dynamic">
-                <div class="flex flex-col">
-                    <span class="text-[10px] font-black text-orange-500 uppercase tracking-widest">Galeria Premium</span>
-                    <h2 id="modal-title" class="text-2xl font-black tracking-tight"></h2>
-                </div>
-                <button onclick="closeGallery()" class="w-11 h-11 ios-glass rounded-full flex items-center justify-center active:scale-90 transition-transform border-none"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <div class="relative w-full max-w-md mx-auto flex-1 flex flex-col justify-center">
-                <div id="modal-track" class="w-full flex overflow-x-auto snap-mandatory-x hide-scrollbar items-stretch px-6 gap-6"></div>
-                <div id="modal-dots" class="flex justify-center gap-2 pt-8 items-center"></div>
-            </div>
-            <div class="w-full max-w-md mx-auto pb-14 pt-4 text-center text-[11px] uppercase font-bold text-muted tracking-[0.2em]">Deslize para navegar</div>
+        <!-- Content Area -->
+        <div id="cms-content" class="glass-panel p-6 md:p-8 rounded-[2rem] shadow-2xl">
+            <!-- Injetado dinamicamente -->
         </div>
     </div>
 
     <script>
-        let globalData = null;
-        const colors = ['#f97316', '#06b6d4', '#d946ef', '#eab308', '#22c55e', '#ef4444', '#3b82f6', '#8b5cf6', '#14b8a6', '#f43f5e', '#a855f7', '#fb923c', '#4ade80'];
+        // Estrutura de dados padrão (Backup)
+        let db = {
+            "empresa": {
+                "nome": "PREMIUM",
+                "logo_url": "",
+                "bg_url": "",
+                "whatsapp": "5511999999999",
+                "hero_titulo": "Engenharia de Alto Padrão",
+                "hero_subtitulo": "Excelência em Acabamentos",
+                "sobre_texto": "Especialistas em projetos de luxo.",
+                "missao_texto": "Elevar o padrão do mercado.",
+                "anos_experiencia": "10+",
+                "obras_entregues": "500+"
+            },
+            "servicos": [],
+            "cases": []
+        };
 
-        function initParallax() {
-            const canvas = document.getElementById('main-canvas');
-            if(!canvas) return;
-            canvas.innerHTML = '';
-            const drops = [];
-            
-            for(let i=0; i < 28; i++) {
-                const drop = document.createElement('div');
-                const size = Math.random() * 90 + 35;
-                const speed = Math.random() * 0.65 + 0.15;
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                const initialRotation = Math.random() * 360;
-                
-                drop.className = 'absolute pointer-events-none';
-                drop.style.left = `${Math.random() * 95}%`;
-                drop.style.top = `${Math.random() * 200 - 30}vh`; 
-                drop.style.opacity = (Math.random() * 0.45 + 0.35).toFixed(2);
-                drop.style.width = `${size}px`; 
-                drop.style.height = `${size}px`;
-                drop.dataset.speed = speed;
-                drop.dataset.rotation = initialRotation;
-                drop.style.willChange = 'transform';
-                drop.style.transform = `translateY(0px) rotate(${initialRotation}deg)`;
+        let currentTab = 'empresa';
 
-                const core = document.createElement('div');
-                core.className = 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2';
-                core.style.width = '55%'; core.style.height = '55%';
-                core.style.backgroundColor = color;
-                core.style.borderRadius = `${30+Math.random()*40}% ${30+Math.random()*40}% ${30+Math.random()*40}% ${30+Math.random()*40}% / ${30+Math.random()*40}% ${30+Math.random()*40}% ${30+Math.random()*40}% ${30+Math.random()*40}%`;
-                drop.appendChild(core);
-
-                for(let j=0; j < (Math.floor(Math.random()*5)+3); j++){
-                    const s = document.createElement('div');
-                    s.className = 'absolute top-1/2 left-1/2 origin-left rounded-full';
-                    s.style.backgroundColor = color;
-                    s.style.width = `${Math.random()*60 + 25}%`;
-                    s.style.height = `${Math.random()*4 + 1.5}px`;
-                    s.style.transform = `translateY(-50%) rotate(${Math.random()*360}deg)`;
-                    drop.appendChild(s);
-                }
-
-                for(let j=0; j < (Math.floor(Math.random()*10)+5); j++){
-                    const p = document.createElement('div');
-                    const ang = Math.random()*Math.PI*2;
-                    const dist = Math.random()*(size*0.6) + (size*0.1);
-                    p.className = 'absolute rounded-full';
-                    p.style.backgroundColor = color;
-                    const ps = Math.random()*6 + 2.5;
-                    p.style.width = `${ps}px`; p.style.height = `${ps}px`;
-                    p.style.left = `calc(50% + ${Math.cos(ang)*dist}px)`;
-                    p.style.top = `calc(50% + ${Math.sin(ang)*dist}px)`;
-                    drop.appendChild(p);
-                }
-                
-                canvas.appendChild(drop);
-                drops.push(drop);
-            }
-
-            window.addEventListener('scroll', () => {
-                const scrollY = window.scrollY;
-                requestAnimationFrame(() => {
-                    drops.forEach(drop => {
-                        drop.style.transform = `translateY(${scrollY * -drop.dataset.speed}px) rotate(${drop.dataset.rotation}deg)`;
-                    });
-                });
-            }, { passive: true });
-        }
-
-        function toggleTheme() {
-            const isDark = document.getElementById('theme-toggle').checked;
-            const newTheme = isDark ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-        }
-
-        async function initApp() {
-            initParallax();
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const themeToggle = document.getElementById('theme-toggle');
-            if(themeToggle) themeToggle.checked = currentTheme === 'dark';
-
+        async function initCMS() {
             try {
-                let url = 'data.json';
-                if (!window.location.protocol.startsWith('blob')) url += '?t=' + new Date().getTime();
-                const response = await fetch(url, { cache: 'no-store' }).catch(() => null);
-                globalData = (!response || !response.ok) ? getMockData() : await response.json();
-                renderizarInterface(globalData);
-            } catch (error) { console.error("Erro no Init:", error); }
+                const response = await fetch('data.json');
+                if(response.ok) db = await response.json();
+            } catch(e) { console.warn("Usando base de dados local."); }
+            renderTab();
         }
 
-        function getMockData() {
-            return {
-                "empresa": {
-                    "nome": "PREMIUM", "logo_url": "", "bg_url": "", "whatsapp": "5511999999999", "hero_titulo": "Engenharia de Alto Padrão",
-                    "hero_subtitulo": "Excelência em Acabamentos", "sobre_texto": "Especialistas em projetos de luxo com rigor técnico e pontualidade britânica.",
-                    "missao_texto": "Elevar o padrão do mercado de revestimentos através de tecnologia e precisão.", "anos_experiencia": "10+", "obras_entregues": "500+"
-                },
-                "servicos": [
-                    { "id": "airless", "titulo": "Pintura Airless", "descricao": "Acabamento espelhado e mecanizado de alta performance.", "galeria": ["https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800", "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=800", "https://images.unsplash.com/photo-1595844730298-b960ff98fee0?w=800", "https://images.unsplash.com/photo-1502672260266-1c1c24240f38?w=800", "https://images.unsplash.com/photo-1574360773950-9343ee0fb2dd?w=800"] },
-                    { "id": "marmorato", "titulo": "Marmorato Nobre", "descricao": "Efeito mármore polido de alto brilho para ambientes exclusivos.", "galeria": ["https://images.unsplash.com/photo-1615873968403-89e068629275?w=800", "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800", "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800", "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800", "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800"] }
-                ],
-                "cases": [
-                    { "imagem": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800", "cliente": "Construtora Alpha", "comentario": "Execução técnica impecável no projeto.", "estrelas": 5 },
-                    { "imagem": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800", "cliente": "Arquiteta Maria F.", "comentario": "Excelente qualidade no cimento queimado.", "estrelas": 5 }
-                ]
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            renderTab();
+        }
+
+        function renderTab() {
+            const container = document.getElementById('cms-content');
+            let html = '';
+
+            if(currentTab === 'empresa') {
+                html = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <label class="block text-xs font-black uppercase text-slate-400">Nome da Empresa</label>
+                            <input class="input-dark" value="${db.empresa.nome}" onchange="updateField('empresa.nome', this.value)">
+                            
+                            <label class="block text-xs font-black uppercase text-slate-400">WhatsApp (apenas números)</label>
+                            <input class="input-dark" value="${db.empresa.whatsapp}" onchange="updateField('empresa.whatsapp', this.value)">
+
+                            <label class="block text-xs font-black uppercase text-slate-400">Título Principal (Hero)</label>
+                            <textarea class="input-dark h-24" onchange="updateField('empresa.hero_titulo', this.value)">${db.empresa.hero_titulo}</textarea>
+                        </div>
+                        <div class="space-y-4">
+                            <label class="block text-xs font-black uppercase text-slate-400">Logótipo (Upload)</label>
+                            <div class="flex gap-4 items-center">
+                                <input type="file" onchange="handleFile(this, 'empresa.logo_url')" class="text-xs">
+                                ${db.empresa.logo_url ? `<img src="${db.empresa.logo_url}" class="h-12 rounded border">` : ''}
+                            </div>
+                            
+                            <label class="block text-xs font-black uppercase text-slate-400">Fundo do Site (Upload)</label>
+                            <div class="flex gap-4 items-center">
+                                <input type="file" onchange="handleFile(this, 'empresa.bg_url')" class="text-xs">
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-black uppercase text-slate-400">Anos Exp.</label>
+                                    <input class="input-dark" value="${db.empresa.anos_experiencia}" onchange="updateField('empresa.anos_experiencia', this.value)">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-black uppercase text-slate-400">Obras</label>
+                                    <input class="input-dark" value="${db.empresa.obras_entregues}" onchange="updateField('empresa.obras_entregues', this.value)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if(currentTab === 'servicos') {
+                html = `
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-black uppercase text-sm">Lista de Serviços</h3>
+                        <button onclick="addArrayItem('servicos', {id: Date.now().toString(), titulo: 'Novo Serviço', descricao: '', icone: 'fa-brush', galeria: []})" class="bg-orange-500 text-white px-4 py-2 rounded-lg font-bold text-xs"><i class="fa-solid fa-plus"></i> NOVO SERVIÇO</button>
+                    </div>
+                    <div class="space-y-4">
+                        ${db.servicos.map((s, i) => `
+                            <div class="bg-slate-800/50 p-4 rounded-xl border border-white/5">
+                                <div class="flex justify-between gap-4 mb-4">
+                                    <input class="input-dark font-bold" value="${s.titulo}" onchange="updateField('servicos.${i}.titulo', this.value)">
+                                    <button onclick="removeArrayItem('servicos', ${i})" class="text-red-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                                <textarea class="input-dark text-xs mb-4" placeholder="Descrição curta" onchange="updateField('servicos.${i}.descricao', this.value)">${s.descricao}</textarea>
+                                
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black uppercase text-slate-500">Galeria de Fotos (Múltiplas)</label>
+                                    <input type="file" multiple onchange="handleMultipleFiles(this, 'servicos.${i}.galeria')" class="block w-full text-xs">
+                                    <div class="flex gap-2 overflow-x-auto py-2">
+                                        ${s.galeria.map(img => `<img src="${img}" class="h-16 w-16 object-cover rounded border border-white/10">`).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else if(currentTab === 'cases') {
+                html = `
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-black uppercase text-sm">Cases & Avaliações</h3>
+                        <button onclick="addArrayItem('cases', {imagem: '', cliente: 'Nome do Cliente', comentario: '', estrelas: 5})" class="bg-orange-500 text-white px-4 py-2 rounded-lg font-bold text-xs"><i class="fa-solid fa-plus"></i> NOVO CASE</button>
+                    </div>
+                    <div class="space-y-4">
+                        ${db.cases.map((c, i) => `
+                            <div class="bg-slate-800/50 p-4 rounded-xl border border-white/5 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-3">
+                                    <input class="input-dark font-bold" value="${c.cliente}" onchange="updateField('cases.${i}.cliente', this.value)">
+                                    <textarea class="input-dark text-xs h-20" placeholder="Comentário do cliente" onchange="updateField('cases.${i}.comentario', this.value)">${c.comentario}</textarea>
+                                    <div class="flex items-center gap-2">
+                                        <label class="text-[10px] font-black uppercase">Estrelas (1-5):</label>
+                                        <input type="number" min="1" max="5" value="${c.estrelas}" class="input-dark w-16 text-center" onchange="updateField('cases.${i}.estrelas', parseFloat(this.value))">
+                                    </div>
+                                </div>
+                                <div class="space-y-3">
+                                    <label class="text-[10px] font-black uppercase">Imagem do Projeto</label>
+                                    <input type="file" onchange="handleFile(this, 'cases.${i}.imagem')" class="text-xs">
+                                    ${c.imagem ? `<img src="${c.imagem}" class="h-32 w-full object-cover rounded">` : ''}
+                                    <button onclick="removeArrayItem('cases', ${i})" class="text-red-500 text-xs font-bold uppercase"><i class="fa-solid fa-trash"></i> Excluir Case</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function updateField(path, value) {
+            const parts = path.split('.');
+            let current = db;
+            for(let i = 0; i < parts.length - 1; i++) {
+                current = current[parts[i]];
+            }
+            current[parts[parts.length - 1]] = value;
+            console.log("DB Updated:", db);
+        }
+
+        function handleFile(input, path) {
+            const file = input.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64 = e.target.result;
+                // Otimização automática de imagem (Compressão básica via canvas opcional aqui)
+                updateField(path, base64);
+                renderTab();
             };
+            reader.readAsDataURL(file);
         }
 
-        function renderizarInterface(data) {
-            if (!data) return;
-            const navBrand = document.getElementById('nav-brand');
-            let bHtml = `<div class="flex items-center gap-3 shrink-0">`;
-            if(data.empresa.logo_url) bHtml += `<img src="${data.empresa.logo_url}" class="h-9 object-contain rounded-lg">`;
-            else bHtml += `<div class="w-9 h-9 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-lg"><i class="fa-solid fa-brush text-white text-sm"></i></div>`;
-            bHtml += `<div class="text-left"><h1 class="text-base font-black tracking-tight text-dynamic uppercase leading-none truncate">${data.empresa.nome}</h1><p class="text-orange-500 font-bold text-[7px] uppercase tracking-[0.25em] mt-1">Acabamentos</p></div></div>`;
-            navBrand.innerHTML = bHtml;
-
-            document.getElementById('hero-title').innerHTML = (data.empresa.hero_titulo || '').replace(/\n/g, '<br>');
-            document.getElementById('hero-subtitle').innerText = data.empresa.hero_subtitulo || '';
-            document.getElementById('sobre-texto').innerText = data.empresa.sobre_texto || '';
-            document.getElementById('missao-texto').innerText = data.empresa.missao_texto || '';
-            document.getElementById('anos-experiencia').innerText = data.empresa.anos_experiencia || '';
-            document.getElementById('obras-entregues').innerText = data.empresa.obras_entregues || '';
-            document.getElementById('btn-whatsapp').href = `https://wa.me/${data.empresa.whatsapp}`;
-
-            const grid = document.getElementById('grid-servicos');
-            grid.innerHTML = (data.servicos || []).map(s => `
-                <div class="ios-glass rounded-[1.8rem] p-6 text-center cursor-pointer active:scale-95 transition-transform flex flex-col justify-center min-h-[120px] shadow-lg border-white/5" onclick="openGallery('${s.id}', '${s.titulo}')">
-                    <h3 class="text-[12px] font-black uppercase text-dynamic leading-tight tracking-wide">${s.titulo}</h3>
-                    <p class="text-[9px] text-muted mt-2 line-clamp-2 leading-relaxed font-medium">${s.descricao}</p>
-                </div>`).join('');
-
-            const track = document.getElementById('cases-track');
-            const dots = document.getElementById('carousel-dots');
-            const cData = data.cases || [];
-            track.innerHTML = cData.map(c => {
-                let st = '';
-                for(let i=1; i<=5; i++) st += `<i class="fa-solid fa-star text-[9px] ${i<=c.estrelas ? 'text-orange-500' : 'text-gray-400/20'}"></i>`;
-                return `
-                <div class="w-[92%] flex-none snap-center ios-glass rounded-[2.5rem] p-5 flex flex-col justify-between shadow-2xl">
-                    <div class="w-full h-52 relative rounded-[1.8rem] overflow-hidden mb-5 border border-white/10 shadow-inner">
-                        <img src="${c.imagem}" class="absolute inset-0 w-full h-full object-cover">
-                    </div>
-                    <div class="flex flex-col flex-1 px-2">
-                        <div class="flex gap-1 mb-3">${st}</div>
-                        <p class="text-sm text-dynamic font-medium italic leading-relaxed">"${c.comentario}"</p>
-                        <span class="text-[10px] font-black text-orange-500 uppercase mt-5 tracking-[0.2em]">- ${c.cliente}</span>
-                    </div>
-                </div>`;
-            }).join('');
-
-            if (dots && cData.length > 0) {
-                dots.innerHTML = cData.map((_, i) => `<div class="transition-all duration-300 rounded-full h-1.5 dot-base ${i === 0 ? 'dot-active' : ''}" id="dot-${i}"></div>`).join('');
-                track.addEventListener('scroll', () => {
-                    const idx = Math.round(track.scrollLeft / track.clientWidth);
-                    cData.forEach((_, i) => {
-                        const d = document.getElementById(`dot-${i}`);
-                        if (d) {
-                            if (i === idx) d.classList.add('dot-active');
-                            else d.classList.remove('dot-active');
+        async function handleMultipleFiles(input, path) {
+            const files = Array.from(input.files);
+            const base64Promises = files.map(file => {
+                return new Promise((res) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = (e) => {
+                        const img = new Image();
+                        img.src = e.target.result;
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            const ctx = canvas.getContext('2d');
+                            const size = 800;
+                            const scale = size / Math.max(img.width, img.height);
+                            canvas.width = img.width * scale;
+                            canvas.height = img.height * scale;
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            res(canvas.toDataURL('image/jpeg', 0.7));
                         }
-                    });
-                }, { passive: true });
+                    }
+                });
+            });
+            const results = await Promise.all(base64Promises);
+            const parts = path.split('.');
+            db[parts[0]][parts[1]][parts[2]] = results;
+            renderTab();
+        }
+
+        function addArrayItem(section, template) {
+            db[section].push(template);
+            renderTab();
+        }
+
+        function removeArrayItem(section, i) {
+            if(confirm("Tem certeza que deseja excluir permanentemente este item?")) { 
+                db[section].splice(i, 1); 
+                renderTab(); 
             }
         }
 
-        function openGallery(sid, title) {
-            const s = globalData.servicos.find(x => x.id === sid);
-            if (!s || !s.galeria.length) return;
-            document.getElementById('modal-title').innerText = title;
-            const track = document.getElementById('modal-track');
-            const dots = document.getElementById('modal-dots');
-            
-            track.innerHTML = s.galeria.map(img => `
-                <div class="w-full flex-none snap-center relative aspect-[4/3] rounded-[2.2rem] overflow-hidden shadow-2xl border border-white/10 ios-glass">
-                    <img src="${img}" class="absolute inset-0 w-full h-full object-cover">
-                </div>`).join('');
-            track.scrollLeft = 0;
-
-            if (dots) {
-                dots.innerHTML = s.galeria.map((_, i) => `<div class="transition-all duration-300 rounded-full h-1.5 dot-base ${i === 0 ? 'dot-active' : ''}" id="m-dot-${i}"></div>`).join('');
-                const scrollHandler = () => {
-                    const idx = Math.round(track.scrollLeft / track.clientWidth);
-                    s.galeria.forEach((_, i) => {
-                        const d = document.getElementById(`m-dot-${i}`);
-                        if (d) {
-                            if (i === idx) d.classList.add('dot-active');
-                            else d.classList.remove('dot-active');
-                        }
-                    });
-                };
-                track.addEventListener('scroll', scrollHandler, { passive: true });
-            }
-
-            const modal = document.getElementById('gallery-modal');
-            const content = document.getElementById('modal-content');
-            modal.classList.remove('hidden'); modal.classList.add('flex');
-            void modal.offsetWidth;
-            modal.classList.remove('opacity-0');
-            content.classList.remove('scale-90', 'opacity-0');
-            content.classList.add('scale-100', 'opacity-100');
-            document.body.style.overflow = 'hidden';
+        function exportJSON() {
+            const blob = new Blob([JSON.stringify(db, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "data.json";
+            a.click();
+            URL.revokeObjectURL(url);
+            alert("Sucesso! Substitua o ficheiro data.json no GitHub.");
         }
 
-        function closeGallery() {
-            const modal = document.getElementById('gallery-modal');
-            const content = document.getElementById('modal-content');
-            modal.classList.add('opacity-0');
-            content.classList.remove('scale-100', 'opacity-100');
-            content.classList.add('scale-90', 'opacity-0');
-            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); document.body.style.overflow = ''; }, 450); 
-        }
-
-        function handleModalClick(e) {
-            const m = document.getElementById('gallery-modal');
-            const c = document.getElementById('modal-content');
-            if (e.target === m || e.target === c) closeGallery();
-        }
-
-        document.addEventListener('DOMContentLoaded', initApp);
+        document.addEventListener('DOMContentLoaded', initCMS);
     </script>
 </body>
 </html>
