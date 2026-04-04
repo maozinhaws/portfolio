@@ -3,58 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CMS | Painel de Manutenção</title>
+    <title>CMS | Painel de Gestão Técnica</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { background: #020617; color: #e2e8f0; font-family: -apple-system, system-ui, sans-serif; }
-        .glass-panel { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(16px); }
-        .input-dark { background: #0f172a; border: 1px solid #334155; color: white; width: 100%; padding: 0.75rem; border-radius: 0.5rem; transition: border-color 0.2s; }
-        .input-dark:focus { outline: none; border-color: #f97316; }
-        .tab-btn { padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: bold; transition: 0.3s; border: 1px solid transparent; }
-        .tab-btn.active { background: #f97316; color: white; border-color: #ea580c; }
-        .tab-btn:not(.active):hover { background: rgba(255,255,255,0.05); }
+        :root {
+            --accent: #f97316;
+            --bg: #020617;
+            --panel: rgba(30, 41, 59, 0.5);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+        body { 
+            background: var(--bg); 
+            color: #f1f5f9; 
+            font-family: -apple-system, system-ui, sans-serif; 
+            min-height: 100vh;
+        }
+        .glass { 
+            background: var(--panel); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid var(--border);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .input-field {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border);
+            color: white;
+            transition: all 0.2s;
+        }
+        .input-field:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+        }
+        .tab-btn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .tab-btn.active { 
+            background: var(--accent); 
+            color: white;
+            box-shadow: 0 10px 15px -3px rgba(249, 115, 22, 0.4);
+        }
+        .icon-broca { width: 20px; height: 20px; fill: currentColor; }
     </style>
 </head>
 <body class="p-4 md:p-8">
-
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-5xl mx-auto">
         <!-- Header -->
-        <header class="flex justify-between items-center mb-8 bg-slate-900/50 p-6 rounded-2xl border border-white/5">
-            <div>
-                <h1 class="text-2xl font-black text-white uppercase tracking-tight">Painel de Controlo</h1>
-                <p class="text-xs text-orange-500 font-bold uppercase tracking-widest">Gestão de Portfólio Premium</p>
+        <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <svg class="icon-broca text-white" viewBox="0 0 24 24">
+                        <path d="M10,2h4a1,1,0,0,1,1,1v4a1,1,0,0,1-1,1h-4a1,1,0,0,1-1-1v-4A1,1,0,0,1,10,2z" />
+                        <path d="M4,8h16a1,1,0,0,1,1,1v3H3V9A1,1,0,0,1,4,8z" />
+                        <path d="M3,12h18v7a2,2,0,0,1-2,2H5a2,2,0,0,1-2-2v-7zm2,2v5h2v-5H5zm3,0v5h2v-5H8zm3,0v5h2v-5h-2zm3,0v5h2v-5h-2zm3,0v5h2v-5h-2z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight">PAINEL DE MANUTENÇÃO</h1>
+                    <p class="text-xs font-bold text-orange-500 tracking-widest uppercase">Gestão de Engenharia de Superfícies</p>
+                </div>
             </div>
-            <button onclick="exportJSON()" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg shadow-green-900/20">
-                <i class="fa-solid fa-download"></i> EXPORTAR DATA.JSON
+            <button onclick="exportJSON()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg active:scale-95">
+                <i class="fa-solid fa-file-export"></i> EXPORTAR DATA.JSON
             </button>
         </header>
 
         <!-- Tabs -->
         <div class="flex gap-2 mb-6 overflow-x-auto pb-2 hide-scrollbar">
-            <button onclick="switchTab('empresa')" id="tab-empresa" class="tab-btn active shrink-0">Empresa</button>
-            <button onclick="switchTab('servicos')" id="tab-servicos" class="tab-btn shrink-0">Serviços</button>
-            <button onclick="switchTab('cases')" id="tab-cases" class="tab-btn shrink-0">Casos de Sucesso</button>
+            <button onclick="switchTab('geral')" id="btn-geral" class="tab-btn active px-5 py-2.5 rounded-lg glass font-bold text-xs uppercase tracking-widest flex-none">Geral</button>
+            <button onclick="switchTab('servicos')" id="btn-servicos" class="tab-btn px-5 py-2.5 rounded-lg glass font-bold text-xs uppercase tracking-widest flex-none">Serviços</button>
+            <button onclick="switchTab('cases')" id="btn-cases" class="tab-btn px-5 py-2.5 rounded-lg glass font-bold text-xs uppercase tracking-widest flex-none">Depoimentos</button>
         </div>
 
-        <!-- Content Area -->
-        <div id="cms-content" class="glass-panel p-6 md:p-8 rounded-[2rem] shadow-2xl">
-            <!-- Injetado dinamicamente -->
+        <!-- Main Panel -->
+        <div id="editor-container" class="glass rounded-[2rem] p-6 md:p-10 animate-spring">
+            <!-- Dynamic Content Load -->
         </div>
     </div>
 
     <script>
-        // Estrutura de dados padrão (Backup)
         let db = {
             "empresa": {
                 "nome": "PREMIUM",
-                "logo_url": "",
-                "bg_url": "",
                 "whatsapp": "5511999999999",
                 "hero_titulo": "Engenharia de Alto Padrão",
                 "hero_subtitulo": "Excelência em Acabamentos",
-                "sobre_texto": "Especialistas em projetos de luxo.",
-                "missao_texto": "Elevar o padrão do mercado.",
+                "sobre_texto": "Especialistas na execução de projetos de acabamento de luxo com rigor técnico.",
+                "missao_texto": "Elevar o padrão do mercado de revestimentos através de inovação técnica.",
                 "anos_experiencia": "10+",
                 "obras_entregues": "500+"
             },
@@ -62,198 +96,152 @@
             "cases": []
         };
 
-        let currentTab = 'empresa';
-
-        async function initCMS() {
-            try {
-                const response = await fetch('data.json');
-                if(response.ok) db = await response.json();
-            } catch(e) { console.warn("Usando base de dados local."); }
-            renderTab();
-        }
+        let currentTab = 'geral';
 
         function switchTab(tab) {
             currentTab = tab;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`tab-${tab}`).classList.add('active');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-${tab}`).classList.add('active');
             renderTab();
         }
 
         function renderTab() {
-            const container = document.getElementById('cms-content');
-            let html = '';
+            const container = document.getElementById('editor-container');
+            container.innerHTML = '';
 
-            if(currentTab === 'empresa') {
-                html = `
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-4">
-                            <label class="block text-xs font-black uppercase text-slate-400">Nome da Empresa</label>
-                            <input class="input-dark" value="${db.empresa.nome}" onchange="updateField('empresa.nome', this.value)">
-                            
-                            <label class="block text-xs font-black uppercase text-slate-400">WhatsApp (apenas números)</label>
-                            <input class="input-dark" value="${db.empresa.whatsapp}" onchange="updateField('empresa.whatsapp', this.value)">
-
-                            <label class="block text-xs font-black uppercase text-slate-400">Título Principal (Hero)</label>
-                            <textarea class="input-dark h-24" onchange="updateField('empresa.hero_titulo', this.value)">${db.empresa.hero_titulo}</textarea>
-                        </div>
-                        <div class="space-y-4">
-                            <label class="block text-xs font-black uppercase text-slate-400">Logótipo (Upload)</label>
-                            <div class="flex gap-4 items-center">
-                                <input type="file" onchange="handleFile(this, 'empresa.logo_url')" class="text-xs">
-                                ${db.empresa.logo_url ? `<img src="${db.empresa.logo_url}" class="h-12 rounded border">` : ''}
-                            </div>
-                            
-                            <label class="block text-xs font-black uppercase text-slate-400">Fundo do Site (Upload)</label>
-                            <div class="flex gap-4 items-center">
-                                <input type="file" onchange="handleFile(this, 'empresa.bg_url')" class="text-xs">
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs font-black uppercase text-slate-400">Anos Exp.</label>
-                                    <input class="input-dark" value="${db.empresa.anos_experiencia}" onchange="updateField('empresa.anos_experiencia', this.value)">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-black uppercase text-slate-400">Obras</label>
-                                    <input class="input-dark" value="${db.empresa.obras_entregues}" onchange="updateField('empresa.obras_entregues', this.value)">
-                                </div>
-                            </div>
-                        </div>
+            if (currentTab === 'geral') {
+                container.innerHTML = `
+                    <div class="grid md:grid-cols-2 gap-6">
+                        ${renderInput('Nome da Empresa', 'empresa.nome')}
+                        ${renderInput('WhatsApp (c/ DDI)', 'empresa.whatsapp')}
+                        ${renderInput('Título Hero', 'empresa.hero_titulo')}
+                        ${renderInput('Subtítulo Hero', 'empresa.hero_subtitulo')}
+                        ${renderTextarea('Sobre a Empresa', 'empresa.sobre_texto')}
+                        ${renderTextarea('Missão Técnica', 'empresa.missao_texto')}
+                        ${renderInput('Anos de Exp.', 'empresa.anos_experiencia')}
+                        ${renderInput('Projetos Concluídos', 'empresa.obras_entregues')}
                     </div>
                 `;
-            } else if(currentTab === 'servicos') {
-                html = `
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="font-black uppercase text-sm">Lista de Serviços</h3>
-                        <button onclick="addArrayItem('servicos', {id: Date.now().toString(), titulo: 'Novo Serviço', descricao: '', icone: 'fa-brush', galeria: []})" class="bg-orange-500 text-white px-4 py-2 rounded-lg font-bold text-xs"><i class="fa-solid fa-plus"></i> NOVO SERVIÇO</button>
+            } else if (currentTab === 'servicos') {
+                container.innerHTML = `
+                    <div class="flex justify-between items-center mb-8">
+                        <h3 class="font-black text-xl tracking-tight uppercase">Catálogo de Serviços</h3>
+                        <button onclick="addItem('servicos')" class="bg-orange-600 px-4 py-2 rounded-lg text-xs font-bold uppercase">Novo Serviço</button>
                     </div>
-                    <div class="space-y-4">
+                    <div class="space-y-6">
                         ${db.servicos.map((s, i) => `
-                            <div class="bg-slate-800/50 p-4 rounded-xl border border-white/5">
-                                <div class="flex justify-between gap-4 mb-4">
-                                    <input class="input-dark font-bold" value="${s.titulo}" onchange="updateField('servicos.${i}.titulo', this.value)">
-                                    <button onclick="removeArrayItem('servicos', ${i})" class="text-red-500 hover:text-red-400"><i class="fa-solid fa-trash"></i></button>
+                            <div class="p-6 bg-slate-900/50 rounded-2xl border border-white/5">
+                                <div class="flex justify-between mb-4">
+                                    <span class="text-[10px] font-black text-orange-500 uppercase tracking-widest">ID: ${s.id}</span>
+                                    <button onclick="removeItem('servicos', ${i})" class="text-red-400 hover:text-red-300 text-sm"><i class="fa-solid fa-trash"></i></button>
                                 </div>
-                                <textarea class="input-dark text-xs mb-4" placeholder="Descrição curta" onchange="updateField('servicos.${i}.descricao', this.value)">${s.descricao}</textarea>
-                                
-                                <div class="space-y-2">
-                                    <label class="text-[10px] font-black uppercase text-slate-500">Galeria de Fotos (Múltiplas)</label>
-                                    <input type="file" multiple onchange="handleMultipleFiles(this, 'servicos.${i}.galeria')" class="block w-full text-xs">
-                                    <div class="flex gap-2 overflow-x-auto py-2">
-                                        ${s.galeria.map(img => `<img src="${img}" class="h-16 w-16 object-cover rounded border border-white/10">`).join('')}
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    ${renderInput('Título', `servicos.${i}.titulo`)}
+                                    ${renderInput('ID Interno', `servicos.${i}.id`)}
+                                    ${renderTextarea('Descrição', `servicos.${i}.descricao`, 'md:col-span-2')}
+                                    <div class="md:col-span-2">
+                                        <label class="block text-[10px] font-black uppercase mb-2 text-slate-400">URLs das Imagens (Separadas por vírgula)</label>
+                                        <textarea onchange="updateArrayValue('servicos', ${i}, 'galeria', this.value)" class="input-field w-full rounded-xl p-3 text-sm h-24">${s.galeria.join(', ')}</textarea>
                                     </div>
                                 </div>
                             </div>
                         `).join('')}
                     </div>
                 `;
-            } else if(currentTab === 'cases') {
-                html = `
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="font-black uppercase text-sm">Cases & Avaliações</h3>
-                        <button onclick="addArrayItem('cases', {imagem: '', cliente: 'Nome do Cliente', comentario: '', estrelas: 5})" class="bg-orange-500 text-white px-4 py-2 rounded-lg font-bold text-xs"><i class="fa-solid fa-plus"></i> NOVO CASE</button>
+            } else if (currentTab === 'cases') {
+                container.innerHTML = `
+                    <div class="flex justify-between items-center mb-8">
+                        <h3 class="font-black text-xl tracking-tight uppercase">Depoimentos & Cases</h3>
+                        <button onclick="addItem('cases')" class="bg-orange-600 px-4 py-2 rounded-lg text-xs font-bold uppercase">Novo Caso</button>
                     </div>
-                    <div class="space-y-4">
+                    <div class="grid md:grid-cols-2 gap-6">
                         ${db.cases.map((c, i) => `
-                            <div class="bg-slate-800/50 p-4 rounded-xl border border-white/5 grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="space-y-3">
-                                    <input class="input-dark font-bold" value="${c.cliente}" onchange="updateField('cases.${i}.cliente', this.value)">
-                                    <textarea class="input-dark text-xs h-20" placeholder="Comentário do cliente" onchange="updateField('cases.${i}.comentario', this.value)">${c.comentario}</textarea>
-                                    <div class="flex items-center gap-2">
-                                        <label class="text-[10px] font-black uppercase">Estrelas (1-5):</label>
-                                        <input type="number" min="1" max="5" value="${c.estrelas}" class="input-dark w-16 text-center" onchange="updateField('cases.${i}.estrelas', parseFloat(this.value))">
-                                    </div>
+                            <div class="p-6 bg-slate-900/50 rounded-2xl border border-white/5">
+                                <div class="flex justify-between mb-4">
+                                    <span class="text-[10px] font-black text-orange-500 uppercase tracking-widest">Depoimento #${i+1}</span>
+                                    <button onclick="removeItem('cases', ${i})" class="text-red-400 hover:text-red-300 text-sm"><i class="fa-solid fa-trash"></i></button>
                                 </div>
-                                <div class="space-y-3">
-                                    <label class="text-[10px] font-black uppercase">Imagem do Projeto</label>
-                                    <input type="file" onchange="handleFile(this, 'cases.${i}.imagem')" class="text-xs">
-                                    ${c.imagem ? `<img src="${c.imagem}" class="h-32 w-full object-cover rounded">` : ''}
-                                    <button onclick="removeArrayItem('cases', ${i})" class="text-red-500 text-xs font-bold uppercase"><i class="fa-solid fa-trash"></i> Excluir Case</button>
+                                <div class="space-y-4">
+                                    ${renderInput('Nome do Cliente', `cases.${i}.cliente`)}
+                                    ${renderInput('URL da Imagem', `cases.${i}.imagem`)}
+                                    ${renderTextarea('Comentário', `cases.${i}.comentario`)}
                                 </div>
                             </div>
                         `).join('')}
                     </div>
                 `;
             }
-
-            container.innerHTML = html;
         }
 
-        function updateField(path, value) {
+        function renderInput(label, path) {
+            const val = getPath(db, path);
+            return `
+                <div>
+                    <label class="block text-[10px] font-black uppercase mb-2 text-slate-400 tracking-widest">${label}</label>
+                    <input type="text" value="${val}" oninput="setPath(db, '${path}', this.value)" class="input-field w-full rounded-xl p-3 text-sm">
+                </div>
+            `;
+        }
+
+        function renderTextarea(label, path, span = '') {
+            const val = getPath(db, path);
+            return `
+                <div class="${span}">
+                    <label class="block text-[10px] font-black uppercase mb-2 text-slate-400 tracking-widest">${label}</label>
+                    <textarea oninput="setPath(db, '${path}', this.value)" class="input-field w-full rounded-xl p-3 text-sm h-24">${val}</textarea>
+                </div>
+            `;
+        }
+
+        function getPath(obj, path) {
+            return path.split('.').reduce((o, i) => o[i], obj);
+        }
+
+        function setPath(obj, path, value) {
             const parts = path.split('.');
-            let current = db;
-            for(let i = 0; i < parts.length - 1; i++) {
-                current = current[parts[i]];
+            const last = parts.pop();
+            const deep = parts.reduce((o, i) => o[i], obj);
+            deep[last] = value;
+        }
+
+        function updateArrayValue(section, index, key, value) {
+            if(key === 'galeria') {
+                db[section][index][key] = value.split(',').map(s => s.trim()).filter(s => s !== '');
+            } else {
+                db[section][index][key] = value;
             }
-            current[parts[parts.length - 1]] = value;
-            console.log("DB Updated:", db);
         }
 
-        function handleFile(input, path) {
-            const file = input.files[0];
-            if(!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const base64 = e.target.result;
-                // Otimização automática de imagem (Compressão básica via canvas opcional aqui)
-                updateField(path, base64);
+        function addItem(type) {
+            if(type === 'servicos') {
+                db.servicos.push({ "id": "novo-id", "titulo": "Novo Serviço", "descricao": "", "galeria": [] });
+            } else {
+                db.cases.push({ "imagem": "", "cliente": "Nome do Cliente", "comentario": "", "estrelas": 5 });
+            }
+            renderTab();
+        }
+
+        function removeItem(type, i) {
+            if(confirm("Deseja eliminar este registo permanentemente?")) {
+                db[type].splice(i, 1);
                 renderTab();
-            };
-            reader.readAsDataURL(file);
-        }
-
-        async function handleMultipleFiles(input, path) {
-            const files = Array.from(input.files);
-            const base64Promises = files.map(file => {
-                return new Promise((res) => {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = (e) => {
-                        const img = new Image();
-                        img.src = e.target.result;
-                        img.onload = () => {
-                            const canvas = document.createElement('canvas');
-                            const ctx = canvas.getContext('2d');
-                            const size = 800;
-                            const scale = size / Math.max(img.width, img.height);
-                            canvas.width = img.width * scale;
-                            canvas.height = img.height * scale;
-                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                            res(canvas.toDataURL('image/jpeg', 0.7));
-                        }
-                    }
-                });
-            });
-            const results = await Promise.all(base64Promises);
-            const parts = path.split('.');
-            db[parts[0]][parts[1]][parts[2]] = results;
-            renderTab();
-        }
-
-        function addArrayItem(section, template) {
-            db[section].push(template);
-            renderTab();
-        }
-
-        function removeArrayItem(section, i) {
-            if(confirm("Tem certeza que deseja excluir permanentemente este item?")) { 
-                db[section].splice(i, 1); 
-                renderTab(); 
             }
         }
 
         function exportJSON() {
-            const blob = new Blob([JSON.stringify(db, null, 2)], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = "data.json";
-            a.click();
-            URL.revokeObjectURL(url);
-            alert("Sucesso! Substitua o ficheiro data.json no GitHub.");
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 2));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "data.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
         }
 
-        document.addEventListener('DOMContentLoaded', initCMS);
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTab();
+        });
     </script>
 </body>
 </html>

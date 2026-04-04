@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br" class="scroll-smooth">
+<html lang="pt-pt" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -24,8 +24,6 @@
 
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
             checkTheme();
-            const themeToggle = document.getElementById('theme-toggle');
-            if(themeToggle) themeToggle.checked = e.matches;
             if(typeof initParallax === 'function') initParallax();
         });
     </script>
@@ -76,13 +74,13 @@
         }
         
         .ios-glass:active { transform: scale(0.98); }
-        .text-dynamic { color: var(--text-dynamic); transition: color 0.3s ease; }
-        .text-muted { color: var(--text-muted); transition: color 0.3s ease; }
-        .text-accent { color: var(--accent-color); transition: color 0.3s ease; }
-        .bg-accent { background-color: var(--accent-color); transition: background-color 0.3s ease; }
+        .text-dynamic { color: var(--text-dynamic); }
+        .text-muted { color: var(--text-muted); }
+        .text-accent { color: var(--accent-color); }
+        
         .paint-canvas { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
-        section { scroll-margin-top: 100px; } 
         .section-title { font-weight: 900; text-transform: uppercase; letter-spacing: 0.2em; font-size: 0.7rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; }
+        
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .snap-mandatory-x { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
@@ -93,23 +91,11 @@
             to { transform: scale(1); opacity: 1; }
         }
         .animate-spring { animation: ios-spring 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
         .dot-base { background-color: var(--dot-inactive); transition: all 0.3s ease; }
         .dot-active { background-color: var(--accent-color) !important; width: 1.1rem !important; }
 
-        .color-slider {
-            -webkit-appearance: none;
-            width: 80px; height: 4px;
-            background: linear-gradient(to right, #f97316, #06b6d4, #d946ef, #eab308, #22c55e, #ef4444);
-            border-radius: 5px; outline: none; cursor: pointer;
-        }
-        .color-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 14px; height: 14px; background: white;
-            border: 2px solid var(--accent-color); border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        /* Ícone Técnico Broca (Redesenhado) */
+        /* Ícone Técnico da Broca */
         .icon-broca { width: 24px; height: 24px; fill: currentColor; }
     </style>
 </head>
@@ -123,35 +109,24 @@
             <div class="flex items-center gap-4 shrink-0">
                 <div class="flex flex-col items-center gap-1">
                     <span class="text-[7px] uppercase font-bold text-muted tracking-widest">Matiz</span>
-                    <input type="range" min="0" max="11" value="0" class="color-slider" oninput="changeAccent(this.value)">
+                    <input type="range" min="0" max="11" value="0" class="w-20 h-1 bg-slate-300 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-orange-500" oninput="changeAccent(this.value)">
                 </div>
-
-                <label class="relative inline-flex items-center cursor-pointer shrink-0">
-                    <input type="checkbox" id="theme-toggle" class="sr-only peer" onchange="toggleTheme()">
-                    <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-accent shadow-sm"></div>
-                    <i class="fa-solid fa-moon absolute right-1.5 text-[10px] text-white/80 pointer-events-none peer-checked:opacity-0 transition-opacity"></i>
-                    <i class="fa-solid fa-sun absolute left-1.5 text-[10px] text-white/80 pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity"></i>
-                </label>
             </div>
         </div>
     </header>
 
     <nav class="fixed right-2.5 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3 ios-glass p-1.5 rounded-full shadow-xl">
-        <a href="#servicos" class="w-11 h-11 rounded-full flex items-center justify-center text-accent active:scale-90 transition-all ios-glass border-none hover:bg-white/5" title="Serviços">
-            <!-- SVG Broca Técnica: Cabo, Virola e Cerdas -->
+        <a href="#servicos" class="w-11 h-11 rounded-full flex items-center justify-center text-accent active:scale-90 transition-all ios-glass border-none" title="Serviços">
             <svg class="icon-broca" viewBox="0 0 24 24">
-                <path d="M10,2h4a1,1,0,0,1,1,1v4a1,1,0,0,1-1,1h-4a1,1,0,0,1-1-1v-4A1,1,0,0,1,10,2z" />
-                <path d="M4,8h16a1,1,0,0,1,1,1v3H3V9A1,1,0,0,1,4,8z" />
-                <path d="M3,12h18v7a2,2,0,0,1-2,2H5a2,2,0,0,1-2-2v-7zm2,2v5h2v-5H5zm3,0v5h2v-5H8zm3,0v5h2v-5h-2zm3,0v5h2v-5h-2zm3,0v5h2v-5h-2z" />
+                <path d="M9,2h6c0.55,0,1,0.45,1,1v5H8V3C8,2.45,8.45,2,9,2z"/>
+                <rect x="4" y="8" width="16" height="4" rx="1"/>
+                <path d="M5,12h14v7c0,1.1-0.9,2-2,2H7c-1.1,0-2-0.9-2-2V12z M8,14v5 M12,14v5 M16,14v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
         </a>
-        <a href="#cases" class="w-11 h-11 rounded-full flex items-center justify-center text-accent active:scale-90 transition-all ios-glass border-none hover:bg-white/5" title="Cases">
-            <div class="relative w-6 h-6 flex items-center justify-center">
-                <i class="fa-solid fa-comment text-[22px]"></i>
-                <i class="fa-solid fa-star absolute text-[9px] pb-[2px]" style="color: var(--star-color); transition: color 0.3s ease;"></i>
-            </div>
+        <a href="#cases" class="w-11 h-11 rounded-full flex items-center justify-center text-accent active:scale-90 transition-all ios-glass border-none" title="Cases">
+            <i class="fa-solid fa-star text-lg"></i>
         </a>
-        <a href="#sobre" class="w-11 h-11 rounded-full flex items-center justify-center text-accent active:scale-90 transition-all ios-glass border-none hover:bg-white/5" title="Sobre">
+        <a href="#sobre" class="w-11 h-11 rounded-full flex items-center justify-center text-accent active:scale-90 transition-all ios-glass border-none" title="Sobre">
             <i class="fa-solid fa-building text-lg"></i>
         </a>
     </nav>
@@ -172,10 +147,8 @@
         <section id="cases">
             <h2 class="section-title text-dynamic"><i class="fa-solid fa-camera-retro text-accent"></i> Depoimentos</h2>
             <article class="ios-glass rounded-[2.5rem] overflow-hidden py-8 shadow-2xl">
-                <div class="relative w-full max-w-4xl mx-auto">
-                    <div id="cases-track" class="ig-track flex overflow-x-auto snap-mandatory-x hide-scrollbar w-full items-stretch px-4 gap-6"></div>
-                </div>
-                <div id="carousel-dots" class="flex justify-center gap-1.5 pt-6 items-center"></div>
+                <div id="cases-track" class="flex overflow-x-auto snap-mandatory-x hide-scrollbar px-4 gap-6"></div>
+                <div id="carousel-dots" class="flex justify-center gap-1.5 pt-6"></div>
             </article>
         </section>
 
@@ -187,12 +160,12 @@
                 <p id="missao-texto" class="text-xs md:text-sm text-muted leading-relaxed font-medium"></p>
             </div>
             <div class="grid grid-cols-2 gap-4">
-                <div class="ios-glass rounded-[2rem] p-6 text-center border-none bg-white/5">
-                    <span id="anos-experiencia" class="block text-3xl md:text-4xl font-black text-dynamic"></span>
+                <div class="ios-glass rounded-[2rem] p-6 text-center bg-white/5 border-none">
+                    <span id="anos-experiencia" class="block text-3xl font-black text-dynamic"></span>
                     <span class="text-[10px] uppercase font-bold text-accent tracking-wider">Anos Exp.</span>
                 </div>
-                <div class="ios-glass rounded-[2rem] p-6 text-center border-none bg-white/5">
-                    <span id="obras-entregues" class="block text-3xl md:text-4xl font-black text-dynamic"></span>
+                <div class="ios-glass rounded-[2rem] p-6 text-center bg-white/5 border-none">
+                    <span id="obras-entregues" class="block text-3xl font-black text-dynamic"></span>
                     <span class="text-[10px] uppercase font-bold text-accent tracking-wider">Projetos</span>
                 </div>
             </div>
@@ -200,25 +173,24 @@
     </main>
 
     <div class="fixed bottom-6 left-5 z-50 pointer-events-none">
-        <a id="btn-whatsapp" href="#" target="_blank" class="pointer-events-auto w-14 h-14 md:w-16 md:h-16 bg-[#25D366] rounded-full flex items-center justify-center shadow-2xl active:scale-90 transition-transform text-white ios-glass border-none">
-            <i class="fa-brands fa-whatsapp text-2xl md:text-3xl drop-shadow-md"></i>
+        <a id="btn-whatsapp" href="#" target="_blank" class="pointer-events-auto w-14 h-14 bg-[#25D366] rounded-full flex items-center justify-center shadow-2xl active:scale-90 transition-transform text-white ios-glass border-none">
+            <i class="fa-brands fa-whatsapp text-2xl"></i>
         </a>
     </div>
 
-    <div id="gallery-modal" onclick="handleModalClick(event)" class="fixed inset-0 hidden flex-col opacity-0 transition-opacity duration-[400ms] z-[100] ios-glass">
-        <div id="modal-content" class="flex flex-col h-full w-full scale-95 opacity-0 transition-all duration-[400ms] ease-[cubic-bezier(0.2,0.8,0.2,1)] transform-gpu">
+    <div id="gallery-modal" onclick="handleModalClick(event)" class="fixed inset-0 hidden flex-col opacity-0 transition-opacity duration-300 z-[100] ios-glass">
+        <div id="modal-content" class="flex flex-col h-full w-full scale-90 opacity-0 transition-all duration-300">
             <div class="w-full max-w-4xl mx-auto px-6 pt-12 pb-4 flex justify-between items-center text-dynamic">
                 <div class="flex flex-col">
                     <span class="text-[9px] font-black text-accent uppercase tracking-widest">Galeria</span>
-                    <h2 id="modal-title" class="text-xl md:text-2xl font-black tracking-tight"></h2>
+                    <h2 id="modal-title" class="text-xl md:text-2xl font-black"></h2>
                 </div>
-                <button onclick="closeGallery()" class="w-10 h-10 md:w-12 md:h-12 ios-glass rounded-full flex items-center justify-center active:scale-90 transition-transform border-none"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <button onclick="closeGallery()" class="w-10 h-10 ios-glass rounded-full border-none"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="relative w-full max-w-4xl mx-auto flex-1 flex flex-col justify-center">
-                <div id="modal-track" class="w-full flex overflow-x-auto snap-mandatory-x hide-scrollbar items-stretch px-5 gap-8"></div>
-                <div id="modal-dots" class="flex justify-center gap-2 pt-8 items-center"></div>
+            <div class="relative w-full max-w-4xl mx-auto flex-1 flex flex-col justify-center overflow-hidden">
+                <div id="modal-track" class="w-full flex overflow-x-auto snap-mandatory-x hide-scrollbar px-5 gap-8"></div>
+                <div id="modal-dots" class="flex justify-center gap-2 pt-8"></div>
             </div>
-            <div class="w-full max-w-4xl mx-auto pb-12 pt-4 text-center text-[10px] uppercase font-bold text-muted tracking-[0.2em]">Deslize para navegar</div>
         </div>
     </div>
 
@@ -230,7 +202,6 @@
             const newColor = colors[index];
             document.documentElement.style.setProperty('--accent-color', newColor);
             localStorage.setItem('accentColor', newColor);
-            localStorage.setItem('accentIndex', index);
             initParallax(); 
         }
 
@@ -251,14 +222,12 @@
                 drop.className = 'absolute pointer-events-none';
                 drop.style.left = `${Math.random() * 100}%`;
                 drop.style.top = `${Math.random() * 200 - 30}vh`; 
-                const baseOpacity = theme === 'light' ? 0.65 : 0.45;
-                drop.style.opacity = (Math.random() * 0.2 + baseOpacity).toFixed(2);
+                drop.style.opacity = theme === 'light' ? 0.65 : 0.45;
                 drop.style.width = `${size}px`; drop.style.height = `${size}px`;
                 drop.dataset.speed = speed;
-                const saturation = theme === 'light' ? 'saturate(200%) contrast(1.2)' : 'saturate(100%)';
-                drop.style.filter = `blur(12px) ${saturation}`;
+                drop.style.filter = theme === 'light' ? 'blur(12px) saturate(200%)' : 'blur(12px)';
                 const core = document.createElement('div');
-                core.className = 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[65%] h-[65%] transition-colors duration-500';
+                core.className = 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[65%] h-[65%]';
                 core.style.backgroundColor = color;
                 core.style.borderRadius = '35% 65% 70% 30% / 30% 30% 70% 70%';
                 drop.appendChild(core);
@@ -276,44 +245,28 @@
             window.addEventListener('scroll', window.parallaxScroll, { passive: true });
         }
 
-        function toggleTheme() {
-            const isDark = document.getElementById('theme-toggle').checked;
-            const newTheme = isDark ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            if (newTheme === 'dark') document.documentElement.classList.add('dark');
-            else document.documentElement.classList.remove('dark');
-            localStorage.setItem('theme', newTheme);
-            initParallax(); 
-        }
-
         async function initApp() {
+            const savedAccent = localStorage.getItem('accentColor');
+            if (savedAccent) document.documentElement.style.setProperty('--accent-color', savedAccent);
+
+            initParallax();
+
             globalData = {
                 "empresa": {
                     "nome": "PREMIUM", "whatsapp": "5511999999999", "hero_titulo": "Engenharia de Alto Padrão",
-                    "hero_subtitulo": "Excelência em Acabamentos", "sobre_texto": "Especialistas na execução de projetos de acabamento de luxo com rigor técnico e pontualidade.",
+                    "hero_subtitulo": "Excelência em Acabamentos", "sobre_texto": "Especialistas na execução de projetos de acabamento de luxo com rigor técnico e pontualidade britânica.",
                     "missao_texto": "Elevar o padrão do mercado de revestimentos através de inovação técnica.", "anos_experiencia": "10+", "obras_entregues": "500+"
                 },
                 "servicos": [
-                    { "id": "airless", "titulo": "Pintura Airless", "descricao": "Acabamento espelhado de alta performance mecanizada.", "galeria": ["https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800"] },
-                    { "id": "texturas", "titulo": "Texturas Nobres", "descricao": "Efeitos decorativos e marmorato exclusivo premium.", "galeria": ["https://images.unsplash.com/photo-1615873968403-89e068629275?w=800"] },
-                    { "id": "cimento", "titulo": "Cimento Queimado", "descricao": "Estética industrial sofisticada de alta durabilidade.", "galeria": ["https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=800"] }
+                    { "id": "airless", "titulo": "Pintura Airless", "descricao": "Acabamento espelhado de alta performance.", "galeria": ["https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800"] },
+                    { "id": "texturas", "titulo": "Texturas Nobres", "descricao": "Efeitos decorativos e marmorato exclusivo.", "galeria": ["https://images.unsplash.com/photo-1615873968403-89e068629275?w=800"] },
+                    { "id": "cimento", "titulo": "Cimento Queimado", "descricao": "Estética industrial de alta durabilidade.", "galeria": ["https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=800"] }
                 ],
                 "cases": [
-                    { "imagem": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800", "cliente": "Construtora Alpha", "comentario": "Execução técnica impecável em todos os detalhes do projeto.", "estrelas": 5 }
+                    { "imagem": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800", "cliente": "Construtora Alpha", "comentario": "Execução impecável em todos os detalhes do projeto." }
                 ]
             };
 
-            const savedAccent = localStorage.getItem('accentColor');
-            const savedIndex = localStorage.getItem('accentIndex');
-            if (savedAccent) {
-                document.documentElement.style.setProperty('--accent-color', savedAccent);
-                const slider = document.querySelector('.color-slider');
-                if (slider) slider.value = savedIndex || 0;
-            }
-
-            initParallax();
-            const themeToggle = document.getElementById('theme-toggle');
-            if(themeToggle) themeToggle.checked = document.documentElement.getAttribute('data-theme') === 'dark';
             renderizarInterface(globalData);
         }
 
@@ -322,14 +275,14 @@
             navBrand.innerHTML = `<div class="flex items-center gap-3 shrink-0">
                 <div class="w-10 h-10 bg-accent rounded-xl flex items-center justify-center shadow-lg">
                     <svg class="icon-broca text-white" viewBox="0 0 24 24">
-                        <path d="M10,2h4a1,1,0,0,1,1,1v4a1,1,0,0,1-1,1h-4a1,1,0,0,1-1-1v-4A1,1,0,0,1,10,2z" />
-                        <path d="M4,8h16a1,1,0,0,1,1,1v3H3V9A1,1,0,0,1,4,8z" />
-                        <path d="M3,12h18v7a2,2,0,0,1-2,2H5a2,2,0,0,1-2-2v-7zm2,2v5h2v-5H5zm3,0v5h2v-5H8zm3,0v5h2v-5h-2zm3,0v5h2v-5h-2zm3,0v5h2v-5h-2z" />
+                        <path d="M9,2h6c0.55,0,1,0.45,1,1v5H8V3C8,2.45,8.45,2,9,2z"/>
+                        <rect x="4" y="8" width="16" height="4" rx="1"/>
+                        <path d="M5,12h14v7c0,1.1-0.9,2-2,2H7c-1.1,0-2-0.9-2-2V12z M8,14v5 M12,14v5 M16,14v5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                     </svg>
                 </div>
                 <div class="text-left">
-                    <h1 class="text-base md:text-lg font-black tracking-tight text-dynamic uppercase leading-none truncate">${data.empresa.nome}</h1>
-                    <p class="text-accent font-bold text-[7px] md:text-[8px] uppercase tracking-[0.25em] mt-1">Acabamentos</p>
+                    <h1 class="text-base font-black tracking-tight text-dynamic uppercase leading-none">${data.empresa.nome}</h1>
+                    <p class="text-accent font-bold text-[7px] uppercase tracking-[0.25em] mt-1">Acabamentos</p>
                 </div></div>`;
             
             document.getElementById('hero-title').innerHTML = data.empresa.hero_titulo;
@@ -342,27 +295,37 @@
             
             const grid = document.getElementById('grid-servicos');
             grid.innerHTML = data.servicos.map(s => `
-                <div class="ios-glass rounded-[1.8rem] p-6 text-center cursor-pointer active:scale-95 transition-transform flex flex-col justify-center min-h-[120px]" onclick="openGallery('${s.id}', '${s.titulo}')">
-                    <h3 class="text-[11px] md:text-[12px] font-black uppercase text-dynamic leading-tight tracking-wide">${s.titulo}</h3>
-                    <p class="text-[9px] text-muted mt-2 font-medium line-clamp-2">${s.descricao}</p>
+                <div class="ios-glass rounded-[1.8rem] p-6 text-center cursor-pointer active:scale-95 transition-transform" onclick="openGallery('${s.id}', '${s.titulo}')">
+                    <h3 class="text-[11px] font-black uppercase text-dynamic leading-tight">${s.titulo}</h3>
+                    <p class="text-[9px] text-muted mt-2 line-clamp-2">${s.descricao}</p>
                 </div>
             `).join('');
             
             const track = document.getElementById('cases-track');
-            track.innerHTML = data.cases.map(c => `<div class="w-full flex-none snap-center ios-glass rounded-[2.5rem] p-6 flex flex-col md:flex-row gap-6 justify-between shadow-xl"><div class="w-full md:w-1/2 h-56 md:h-72 relative rounded-[1.8rem] overflow-hidden border border-white/5 shadow-inner"><img src="${c.imagem}" class="absolute inset-0 w-full h-full object-cover"></div><div class="flex flex-col flex-1 px-2 justify-center"><p class="text-sm md:text-base text-dynamic font-medium italic leading-relaxed">"${c.comentario}"</p><span class="text-[10px] md:text-xs font-black text-accent uppercase mt-4 tracking-widest">- ${c.cliente}</span></div></div>`).join('');
+            track.innerHTML = data.cases.map(c => `
+                <div class="w-full flex-none snap-center ios-glass rounded-[2.5rem] p-6 flex flex-col md:flex-row gap-6 shadow-xl">
+                    <div class="w-full md:w-1/2 aspect-video rounded-[1.8rem] overflow-hidden">
+                        <img src="${c.imagem}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex flex-col flex-1 justify-center">
+                        <p class="text-sm text-dynamic font-medium italic">"${c.comentario}"</p>
+                        <span class="text-[10px] font-black text-accent uppercase mt-4 tracking-widest">- ${c.cliente}</span>
+                    </div>
+                </div>
+            `).join('');
         }
 
         function openGallery(sid, title) {
             const s = globalData.servicos.find(x => x.id === sid);
             document.getElementById('modal-title').innerText = title;
             const track = document.getElementById('modal-track');
-            track.innerHTML = s.galeria.map(img => `<div class="w-full flex-none snap-center relative aspect-video md:aspect-[21/9] rounded-[2.2rem] overflow-hidden shadow-2xl border border-white/10 ios-glass"><img src="${img}" class="absolute inset-0 w-full h-full object-cover"></div>`).join('');
+            track.innerHTML = s.galeria.map(img => `<div class="w-full flex-none snap-center aspect-video rounded-[2.2rem] overflow-hidden ios-glass"><img src="${img}" class="w-full h-full object-cover"></div>`).join('');
             const modal = document.getElementById('gallery-modal');
             const content = document.getElementById('modal-content');
             modal.classList.remove('hidden'); modal.classList.add('flex');
             void modal.offsetWidth;
             modal.classList.remove('opacity-0');
-            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.remove('scale-90', 'opacity-0');
             content.classList.add('scale-100', 'opacity-100');
             document.body.style.overflow = 'hidden';
         }
@@ -372,8 +335,8 @@
             const content = document.getElementById('modal-content');
             modal.classList.add('opacity-0');
             content.classList.remove('scale-100', 'opacity-100');
-            content.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); document.body.style.overflow = ''; }, 400); 
+            content.classList.add('scale-90', 'opacity-0');
+            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); document.body.style.overflow = ''; }, 300); 
         }
 
         function handleModalClick(e) { if (e.target === document.getElementById('gallery-modal') || e.target === document.getElementById('modal-content')) closeGallery(); }
