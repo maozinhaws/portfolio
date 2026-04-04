@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-pt" class="scroll-smooth">
+<html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -11,6 +11,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
     
+    <!-- Motor de fluidez de Scroll (Lenis) -->
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+
     <script>
         const applyTheme = (theme) => {
             document.documentElement.setAttribute('data-theme', theme);
@@ -36,23 +39,48 @@
             const appGate = document.getElementById('app-gate');
 
             gateContent.style.opacity = '0';
-            gateContent.style.transform = 'scale(0.98)';
+            gateContent.style.transform = 'scale(0.95)';
 
             setTimeout(() => {
                 bg.classList.remove('intro-mode');
                 setTimeout(() => {
                     appGate.style.display = 'none';
                     main.classList.remove('hidden');
-                    requestAnimationFrame(() => {
-                        main.style.opacity = '1';
-                    });
-                }, 1200); 
+                    // Força reflow para aplicar animações corretamente
+                    void main.offsetWidth;
+                    main.style.opacity = '1';
+                    
+                    // Inicializa o observador de interseção após o DOM principal estar visível
+                    initScrollReveal();
+                }, 1000); 
             }, 400);
         }
 
         function toggleThemeManual() {
             const isChecked = document.getElementById('theme-toggle-check').checked;
             applyTheme(isChecked ? 'dark' : 'light');
+        }
+
+        // Configuração do IntersectionObserver para animações de entrada fluidas
+        function initScrollReveal() {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px 0px -10% 0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-revealed');
+                        observer.unobserve(entry.target); // Anima apenas uma vez
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal-on-scroll').forEach(el => {
+                observer.observe(el);
+            });
         }
     </script>
     <style>
@@ -96,11 +124,16 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Padronização Absoluta de Fontes (Azul forçado em ambos os temas) */
-        .service-name-dynamic { color: var(--premium-blue) !important; transition: color 0.3s ease; text-shadow: none !important; -webkit-text-stroke: 0 !important; }
-        .group:hover .service-name-dynamic { color: #ffffff !important; }
-        
-        .section-title-blue { color: var(--premium-blue) !important; text-shadow: none !important; -webkit-text-stroke: 0 !important; }
+        /* Padronização Absoluta de Tipografia */
+        .text-premium { 
+            color: var(--premium-blue) !important; 
+            text-shadow: none !important; 
+            -webkit-text-stroke: 0 !important; 
+            transition: color 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .group:hover .text-premium-hover { 
+            color: #ffffff !important; 
+        }
 
         .label-intro { color: #ffffff !important; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important; }
         .shadow-text { text-shadow: var(--text-shadow); }
@@ -117,7 +150,7 @@
             position: fixed; inset: 0; z-index: -2;
             background-image: var(--bg-image);
             background-size: cover; background-position: center;
-            transition: filter 2s cubic-bezier(0.4, 0, 0.2, 1), transform 2s ease;
+            transition: filter 2s cubic-bezier(0.25, 1, 0.5, 1), transform 2s cubic-bezier(0.25, 1, 0.5, 1);
             filter: grayscale(0) blur(1px) brightness(0.5);
         }
 
@@ -130,7 +163,7 @@
             backdrop-filter: var(--glass-blur); 
             -webkit-backdrop-filter: var(--glass-blur); 
             box-shadow: var(--shadow-vision);
-            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
             transform: translateZ(0); 
         }
 
@@ -145,18 +178,18 @@
             align-items: center;
             gap: 8px;
             box-shadow: inset 0 1px 1px rgba(255,255,255,0.1);
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
             color: var(--label-text);
         }
 
         .liquid-glass:hover { 
-            transform: translateY(-4px) translateZ(0); 
+            transform: translateY(-6px) translateZ(0); 
             border-color: rgba(255,255,255,0.3); 
         }
 
         .bottom-dock { 
             position: fixed; bottom: 20px; 
-            left: 50%; transform: translateX(-50%);
+            left: 0; right: 0; margin-inline: auto;
             z-index: 100; display: flex; gap: 4px; padding: 6px; border-radius: 40px;
             width: fit-content; align-items: center; justify-content: center;
             pointer-events: auto;
@@ -165,7 +198,7 @@
         .nav-item { 
             width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; 
             border-radius: 50%; color: var(--nav-icon-color); 
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), background 0.4s ease;
             flex: none; transform-origin: center;
             will-change: transform;
             backface-visibility: hidden;
@@ -182,14 +215,15 @@
             background: #25D366; color: white; display: flex;
             align-items: center; justify-content: center;
             box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
         @media (min-width: 768px) {
             #wa-fab { bottom: 28px; right: 28px; width: 56px; height: 56px; }
         }
+        #wa-fab:hover { transform: scale(1.1); }
 
-        #app-gate { position: fixed; inset: 0; z-index: 500; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); padding: 1rem; }
-        #gate-content { transition: all 0.8s ease; text-align: center; width: 100%; max-width: 36rem; }
+        #app-gate { position: fixed; inset: 0; z-index: 500; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); padding: 1rem; transition: opacity 0.8s ease; }
+        #gate-content { transition: all 1s cubic-bezier(0.25, 1, 0.5, 1); text-align: center; width: 100%; max-width: 36rem; }
 
         .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; padding: 0 0.5rem; }
         .header-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
@@ -206,23 +240,35 @@
         .switch-slider {
             position: absolute; cursor: pointer; inset: 0; 
             background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border);
-            transition: .4s; border-radius: 30px;
+            transition: .4s cubic-bezier(0.25, 1, 0.5, 1); border-radius: 30px;
         }
         .switch-slider:before {
             position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 2px;
-            background: white; transition: .4s; border-radius: 50%;
+            background: white; transition: .4s cubic-bezier(0.25, 1, 0.5, 1); border-radius: 50%;
         }
         @media (min-width: 768px) { .switch-slider:before { height: 20px; width: 20px; } }
         input:checked + .switch-slider { background: var(--accent-color); }
         input:checked + .switch-slider:before { transform: translateX(20px); }
         @media (min-width: 768px) { input:checked + .switch-slider:before { transform: translateX(21px); } }
 
-        #main-content { opacity: 0; transition: opacity 1.2s ease; }
-        .fade-in-up { animation: fadeInUp 0.8s ease forwards; opacity: 0; }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        #main-content { opacity: 0; transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1); }
+        
+        /* Engenharia Cinética: Scroll Reveal Classes */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            will-change: opacity, transform;
         }
+        .reveal-on-scroll.is-revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Atrasos em cascata para Grelhas (Stagger) */
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+
         .scrollbar-hide::-webkit-scrollbar { display: none; }
     </style>
 </head>
@@ -237,7 +283,7 @@
             <div class="space-y-4 md:space-y-6">
                 <h2 id="intro-name" class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-[0.1em] text-white uppercase leading-tight shadow-text px-2"></h2>
                 <div class="flex justify-center">
-                    <span id="intro-subtitle" class="liquid-label font-bold uppercase tracking-[0.3em] md:tracking-[0.45em] text-[8px] sm:text-[9px] md:text-xs label-intro text-center"></span>
+                    <span id="intro-subtitle" class="liquid-label font-bold uppercase tracking-[0.3em] md:tracking-[0.45em] text-[8px] sm:text-[9px] md:text-xs text-center label-intro"></span>
                 </div>
             </div>
             <button onclick="startAppSequence()" class="liquid-glass border-white/20 px-8 py-4 md:px-14 md:py-6 rounded-full md:rounded-[2rem] font-black uppercase text-[10px] md:text-xs tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-lg w-[80%] md:w-auto">
@@ -271,28 +317,28 @@
         </header>
 
         <main class="max-w-6xl mx-auto px-4 md:px-6 space-y-12 md:space-y-16 pb-36 md:pb-44">
-            <section class="text-center py-12 md:py-16 liquid-glass rounded-[2.5rem] md:rounded-[3.5rem] p-6 md:p-10 max-w-3xl mx-auto fade-in-up">
+            <section class="text-center py-12 md:py-16 liquid-glass rounded-[2.5rem] md:rounded-[3.5rem] p-6 md:p-10 max-w-3xl mx-auto reveal-on-scroll">
                 <h1 id="hero-title" class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight mb-6 md:mb-8 tracking-tighter uppercase text-white smoky-highlight"></h1>
                 <div class="flex justify-center">
-                    <span id="hero-subtitle-label" class="liquid-label font-bold uppercase tracking-[0.3em] md:tracking-[0.55em] text-[8px] md:text-[10px] text-center"></span>
+                    <span id="hero-subtitle-label" class="liquid-label font-bold uppercase tracking-[0.3em] md:tracking-[0.55em] text-[8px] md:text-[10px] text-center text-premium"></span>
                 </div>
             </section>
 
-            <section id="sobre" class="liquid-glass rounded-[2.5rem] md:rounded-[3.5rem] p-6 md:p-14 grid md:grid-cols-2 gap-8 md:gap-12 items-center fade-in-up" style="animation-delay: 0.1s;">
+            <section id="sobre" class="liquid-glass rounded-[2.5rem] md:rounded-[3.5rem] p-6 md:p-14 grid md:grid-cols-2 gap-8 md:gap-12 items-center reveal-on-scroll delay-100">
                 <div class="space-y-8 md:space-y-10 text-left">
                     <div class="liquid-label">
                         <i class="fa-solid fa-building text-orange-500 text-xs md:text-sm"></i>
-                        <h2 class="text-[9px] md:text-[11px] font-black uppercase tracking-widest section-title-blue">A Empresa</h2>
+                        <h2 class="text-[9px] md:text-[11px] font-black uppercase tracking-widest text-premium">A Empresa</h2>
                     </div>
                     <p id="sobre-texto" class="text-sm md:text-base text-muted leading-relaxed font-medium"></p>
                     <div class="grid grid-cols-2 gap-3 md:gap-4">
                         <div class="liquid-glass rounded-2xl md:rounded-[2rem] p-4 md:p-6 text-center h-full flex flex-col justify-center">
-                            <span id="anos-experiencia" class="block text-3xl md:text-4xl font-black dark:text-[#170e36]"></span>
-                            <span class="text-[7px] md:text-[9px] uppercase font-black text-orange-500 tracking-widest dark:text-white mt-1">Anos Exp.</span>
+                            <span id="anos-experiencia" class="block text-3xl md:text-4xl font-black text-premium"></span>
+                            <span class="text-[7px] md:text-[9px] uppercase font-black tracking-widest mt-1 text-premium">Anos Exp.</span>
                         </div>
                         <div class="liquid-glass rounded-2xl md:rounded-[2rem] p-4 md:p-6 text-center h-full flex flex-col justify-center">
-                            <span id="obras-entregues" class="block text-3xl md:text-4xl font-black dark:text-[#170e36]"></span>
-                            <span class="text-[7px] md:text-[9px] uppercase font-black text-orange-500 tracking-widest dark:text-white mt-1">Projetos</span>
+                            <span id="obras-entregues" class="block text-3xl md:text-4xl font-black text-premium"></span>
+                            <span class="text-[7px] md:text-[9px] uppercase font-black tracking-widest mt-1 text-premium">Projetos</span>
                         </div>
                     </div>
                 </div>
@@ -301,12 +347,12 @@
                 </div>
             </section>
 
-            <section id="servicos" class="fade-in-up" style="animation-delay: 0.2s;">
-                <div class="section-header">
+            <section id="servicos">
+                <div class="section-header reveal-on-scroll">
                     <div class="header-left">
                         <div class="liquid-label">
                             <i class="fa-solid fa-paint-roller text-orange-500 text-xs md:text-sm"></i>
-                            <h2 class="text-[9px] md:text-[11px] font-black uppercase tracking-widest section-title-blue">Serviços</h2>
+                            <h2 class="text-[9px] md:text-[11px] font-black uppercase tracking-widest text-premium">Serviços</h2>
                         </div>
                         <span class="inline-hint">(Clique para visualizar)</span>
                     </div>
@@ -314,17 +360,17 @@
                 <div id="grid-servicos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 items-stretch"></div>
             </section>
 
-            <section id="cases" class="fade-in-up" style="animation-delay: 0.3s;">
-                <div class="section-header">
+            <section id="cases">
+                <div class="section-header reveal-on-scroll">
                     <div class="header-left">
                         <div class="liquid-label">
                             <i class="fa-solid fa-comment-dots text-orange-500 text-xs md:text-sm"></i>
-                            <h2 class="text-[9px] md:text-[11px] font-black uppercase tracking-widest section-title-blue">Depoimentos</h2>
+                            <h2 class="text-[9px] md:text-[11px] font-black uppercase tracking-widest text-premium">Depoimentos</h2>
                         </div>
                         <span class="inline-hint">(Clique para visualizar)</span>
                     </div>
                 </div>
-                <div id="cases-track" class="flex overflow-x-auto snap-mandatory-x scrollbar-hide gap-5 md:gap-6 pb-6 md:pb-8 items-stretch"></div>
+                <div id="cases-track" class="flex overflow-x-auto snap-mandatory-x scrollbar-hide gap-5 md:gap-6 pb-6 md:pb-8 items-stretch px-2 md:px-0"></div>
             </section>
         </main>
 
@@ -338,12 +384,12 @@
     </div>
 
     <div id="immersive-modal" onclick="handleModalClick(event)" class="fixed inset-0 hidden flex-col opacity-0 transition-opacity duration-500 z-[200] liquid-glass rounded-none border-none p-4 md:p-0">
-        <div id="modal-body" class="flex flex-col h-full w-full scale-95 opacity-0 transition-all duration-500">
+        <div id="modal-body" class="flex flex-col h-full w-full scale-95 opacity-0 transition-all duration-500 cubic-bezier(0.25, 1, 0.5, 1)">
             <div class="w-full max-w-5xl mx-auto px-4 md:px-8 pt-10 md:pt-16 pb-4 md:pb-6 flex justify-between items-center">
                 <div class="liquid-label">
-                    <h2 id="modal-header-title" class="text-[10px] md:text-xs font-black tracking-widest uppercase section-title-blue max-w-[200px] md:max-w-md truncate"></h2>
+                    <h2 id="modal-header-title" class="text-[10px] md:text-xs font-black tracking-widest uppercase text-premium max-w-[200px] md:max-w-md truncate"></h2>
                 </div>
-                <button onclick="closeModal()" class="w-10 h-10 md:w-12 md:h-12 liquid-glass rounded-full border-none flex items-center justify-center active:scale-90 flex-shrink-0"><i class="fa-solid fa-xmark text-lg md:text-xl"></i></button>
+                <button onclick="closeModal()" class="w-10 h-10 md:w-12 md:h-12 liquid-glass rounded-full border-none flex items-center justify-center active:scale-90 flex-shrink-0 transition-transform"><i class="fa-solid fa-xmark text-lg md:text-xl"></i></button>
             </div>
             <div class="relative w-full max-w-5xl mx-auto flex-1 flex flex-col justify-center overflow-hidden">
                 <div id="modal-images" class="w-full flex overflow-x-auto snap-mandatory-x scrollbar-hide gap-4 md:gap-8 pb-6 md:pb-10 items-center"></div>
@@ -354,6 +400,24 @@
 
     <script>
         let db = null;
+
+        // Inicialização do Motor Lenis (Smooth Scroll)
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
 
         async function init() {
             db = {
@@ -408,7 +472,7 @@
             
             const sobreImgEl = document.getElementById('sobre-imagem-container');
             if(db.empresa.foto_sobre && db.empresa.foto_sobre.trim() !== "") {
-                sobreImgEl.innerHTML = `<img src="${db.empresa.foto_sobre}" loading="lazy" decoding="async" class="w-[75%] h-[75%] md:w-[80%] md:h-[80%] object-contain rounded-[1.5rem] drop-shadow-2xl transition-transform hover:scale-105 duration-500">`;
+                sobreImgEl.innerHTML = `<img src="${db.empresa.foto_sobre}" loading="lazy" decoding="async" class="w-[75%] h-[75%] md:w-[80%] md:h-[80%] object-contain rounded-[1.5rem] drop-shadow-2xl transition-transform hover:scale-105 duration-700">`;
             } else if (db.empresa.logo && db.empresa.logo.trim() !== "") {
                 sobreImgEl.innerHTML = `<img src="${db.empresa.logo}" loading="lazy" decoding="async" class="w-[50%] h-[50%] object-contain opacity-40">`;
             } else {
@@ -416,23 +480,23 @@
             }
             
             const grid = document.getElementById('grid-servicos');
-            grid.innerHTML = db.servicos.map(s => `
-                <div class="liquid-glass rounded-[2rem] md:rounded-[3.5rem] p-6 md:p-12 cursor-pointer active:scale-95 group flex flex-col items-start gap-4 md:gap-8 hover:bg-orange-600 hover:border-orange-600 transition-all h-full" onclick="openServico('${s.id}')">
-                    <div class="liquid-label group-hover:bg-white/20 group-hover:border-white/30 transition-all">
-                        <h3 class="text-[9px] md:text-[11px] font-black uppercase tracking-widest service-name-dynamic">${s.titulo}</h3>
+            grid.innerHTML = db.servicos.map((s, i) => `
+                <div class="liquid-glass rounded-[2rem] md:rounded-[3.5rem] p-6 md:p-12 cursor-pointer active:scale-95 group flex flex-col items-start gap-4 md:gap-8 hover:bg-orange-600 hover:border-orange-600 transition-all h-full reveal-on-scroll delay-${(i % 3 + 1) * 100}" onclick="openServico('${s.id}')">
+                    <div class="liquid-label group-hover:bg-orange-600 group-hover:border-orange-500 transition-all">
+                        <h3 class="text-[9px] md:text-[11px] font-black uppercase tracking-widest text-premium text-premium-hover">${s.titulo}</h3>
                     </div>
                     <p class="text-sm md:text-base text-muted leading-relaxed text-left font-medium group-hover:text-white/80 flex-1">${s.descricao}</p>
                 </div>
             `).join('');
             
             const track = document.getElementById('cases-track');
-            track.innerHTML = db.cases.map(c => `
-                <div class="w-[85%] sm:w-[60%] lg:w-[45%] flex-none snap-center liquid-glass rounded-[2.5rem] md:rounded-[3.5rem] p-3 md:p-4 cursor-pointer group hover:bg-orange-600 hover:border-orange-600 transition-all h-full flex flex-col" onclick="openCase('${c.id}')">
+            track.innerHTML = db.cases.map((c, i) => `
+                <div class="w-[85%] sm:w-[60%] lg:w-[45%] flex-none snap-center liquid-glass rounded-[2.5rem] md:rounded-[3.5rem] p-3 md:p-4 cursor-pointer group hover:bg-orange-600 hover:border-orange-600 transition-all h-full flex flex-col reveal-on-scroll delay-${(i % 3 + 1) * 100}" onclick="openCase('${c.id}')">
                     <div class="aspect-video rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl relative flex-1">
-                        <img src="${c.imagem}" loading="lazy" decoding="async" class="w-full h-full object-cover">
+                        <img src="${c.imagem}" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                         <div class="absolute bottom-4 left-4 md:bottom-6 md:left-8">
-                            <div class="liquid-label group-hover:bg-white/20 group-hover:border-white/30 transition-all px-3 py-1 md:px-4 md:py-2">
-                                <h3 class="text-[8px] md:text-[11px] font-black uppercase tracking-widest service-name-dynamic truncate max-w-[120px] md:max-w-xs">${c.cliente}</h3>
+                            <div class="liquid-label group-hover:bg-orange-600 group-hover:border-orange-500 transition-all px-3 py-1 md:px-4 md:py-2">
+                                <h3 class="text-[8px] md:text-[11px] font-black uppercase tracking-widest text-premium text-premium-hover truncate max-w-[120px] md:max-w-xs">${c.cliente}</h3>
                             </div>
                         </div>
                     </div>
@@ -451,6 +515,7 @@
         }
 
         function showModal(title, images, caption) {
+            lenis.stop(); // Interrompe o scroll suave enquanto modal aberto
             document.getElementById('modal-header-title').innerText = title;
             const container = document.getElementById('modal-images');
             const capt = document.getElementById('modal-caption');
@@ -475,6 +540,7 @@
         }
 
         function closeModal() {
+            lenis.start(); // Retoma o scroll
             const modal = document.getElementById('immersive-modal');
             const body = document.getElementById('modal-body');
             modal.classList.add('opacity-0');
@@ -484,7 +550,24 @@
         }
 
         function handleModalClick(e) { if (e.target.id === 'immersive-modal' || e.target.id === 'modal-body') closeModal(); }
-        document.addEventListener('DOMContentLoaded', init);
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+
+            // INTEGRAÇÃO: Scroll suave para âncoras de navegação usando o motor Lenis
+            document.querySelectorAll('.bottom-dock .nav-item').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault(); // Impede o salto brusco padrão do HTML
+                    const targetId = link.getAttribute('href');
+                    
+                    lenis.scrollTo(targetId, {
+                        offset: -100, // Margem de compensação para não encostar no topo/header
+                        duration: 1.5,
+                        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+                    });
+                });
+            });
+        });
     </script>
 </body>
 </html>
