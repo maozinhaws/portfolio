@@ -5,14 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Premium - Engenharia de Superfícies</title>
     
+    <!-- Otimização: Resolução antecipada de DNS e Preconnect para CDNs -->
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+    <link rel="dns-prefetch" href="https://images.unsplash.com">
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    
+    <!-- Otimização: Preload da imagem LCP (Fundo) para acesso instantâneo -->
+    <link rel="preload" as="image" href="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1080&q=40&fm=webp">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
     
-    <!-- Motor de fluidez de Scroll (Lenis) -->
-    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+    <!-- Motor de fluidez de Scroll (Lenis) com defer para não bloquear renderização -->
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js" defer></script>
 
     <script>
         const applyTheme = (theme) => {
@@ -46,11 +53,9 @@
                 setTimeout(() => {
                     appGate.style.display = 'none';
                     main.classList.remove('hidden');
-                    // Força reflow para aplicar animações corretamente
-                    void main.offsetWidth;
+                    void main.offsetWidth; // Força reflow
                     main.style.opacity = '1';
                     
-                    // Inicializa o observador de interseção após o DOM principal estar visível
                     initScrollReveal();
                 }, 1000); 
             }, 400);
@@ -61,31 +66,24 @@
             applyTheme(isChecked ? 'dark' : 'light');
         }
 
-        // Configuração do IntersectionObserver para animações de entrada fluidas
         function initScrollReveal() {
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px 0px -10% 0px',
-                threshold: 0.1
-            };
-
+            const observerOptions = { root: null, rootMargin: '0px 0px -10% 0px', threshold: 0.1 };
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('is-revealed');
-                        observer.unobserve(entry.target); // Anima apenas uma vez
+                        observer.unobserve(entry.target);
                     }
                 });
             }, observerOptions);
 
-            document.querySelectorAll('.reveal-on-scroll').forEach(el => {
-                observer.observe(el);
-            });
+            document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
         }
     </script>
     <style>
         :root { 
-            --bg-image: url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1920&q=50&fm=webp');
+            /* Otimização: Imagem reduzida para w=1080 e q=40 (poupança massiva de dados, mantém estética com blur) */
+            --bg-image: url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1080&q=40&fm=webp');
             --accent-color: #f97316;
             --premium-blue: #170e36; 
             
@@ -124,7 +122,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Padronização Absoluta de Tipografia */
         .text-premium { 
             color: var(--premium-blue) !important; 
             text-shadow: none !important; 
@@ -253,18 +250,13 @@
 
         #main-content { opacity: 0; transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1); }
         
-        /* Engenharia Cinética: Scroll Reveal Classes */
         .reveal-on-scroll {
             opacity: 0;
             transform: translateY(40px);
             transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
             will-change: opacity, transform;
         }
-        .reveal-on-scroll.is-revealed {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        /* Atrasos em cascata para Grelhas (Stagger) */
+        .reveal-on-scroll.is-revealed { opacity: 1; transform: translateY(0); }
         .delay-100 { transition-delay: 100ms; }
         .delay-200 { transition-delay: 200ms; }
         .delay-300 { transition-delay: 300ms; }
@@ -277,9 +269,7 @@
 
     <div id="app-gate">
         <div id="gate-content" class="space-y-8 md:space-y-12">
-            <div id="intro-logo-container" class="w-20 h-20 md:w-24 md:h-24 bg-orange-600 rounded-[2rem] md:rounded-[2.5rem] mx-auto flex items-center justify-center shadow-2xl liquid-glass border-white/30 overflow-hidden flex-shrink-0">
-                <!-- Ícone ou logo via JS -->
-            </div>
+            <div id="intro-logo-container" class="w-20 h-20 md:w-24 md:h-24 bg-orange-600 rounded-[2rem] md:rounded-[2.5rem] mx-auto flex items-center justify-center shadow-2xl liquid-glass border-white/30 overflow-hidden flex-shrink-0"></div>
             <div class="space-y-4 md:space-y-6">
                 <h2 id="intro-name" class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-[0.1em] text-white uppercase leading-tight shadow-text px-2"></h2>
                 <div class="flex justify-center">
@@ -296,9 +286,7 @@
         <header class="sticky top-0 z-40 w-full liquid-glass border-x-0 border-t-0 rounded-b-[2rem] md:rounded-b-[2.5rem] mb-8 md:mb-12">
             <div class="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-5 flex items-center justify-between">
                 <div id="nav-brand" class="flex items-center gap-3 md:gap-4">
-                    <div id="header-logo-container" class="w-10 h-10 md:w-12 md:h-12 bg-orange-600 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg overflow-hidden flex-shrink-0">
-                        <!-- Ícone ou logo via JS -->
-                    </div>
+                    <div id="header-logo-container" class="w-10 h-10 md:w-12 md:h-12 bg-orange-600 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg overflow-hidden flex-shrink-0"></div>
                     <div class="text-left">
                         <h1 id="brand-name" class="text-sm md:text-lg font-black tracking-tighter uppercase leading-none shadow-text truncate max-w-[150px] sm:max-w-xs"></h1>
                         <p class="text-orange-500 font-bold text-[6px] md:text-[8px] uppercase tracking-[0.3em] mt-1">Engenharia</p>
@@ -342,9 +330,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="sobre-imagem-container" class="aspect-square rounded-[2rem] md:rounded-[3rem] overflow-hidden liquid-glass p-1 shadow-2xl h-full flex items-center justify-center">
-                    <!-- Imagem via JS -->
-                </div>
+                <div id="sobre-imagem-container" class="aspect-square rounded-[2rem] md:rounded-[3rem] overflow-hidden liquid-glass p-1 shadow-2xl h-full flex items-center justify-center"></div>
             </section>
 
             <section id="servicos">
@@ -401,23 +387,28 @@
     <script>
         let db = null;
 
-        // Inicialização do Motor Lenis (Smooth Scroll)
-        const lenis = new Lenis({
-            duration: 1.2,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
-            direction: 'vertical',
-            gestureDirection: 'vertical',
-            smooth: true,
-            mouseMultiplier: 1,
-            smoothTouch: false,
-            touchMultiplier: 2,
-        });
+        // Otimização: O Lenis é carregado via defer, garantimos que é instanciado quando disponível
+        let lenis;
+        window.addEventListener('load', () => {
+            if(window.Lenis) {
+                lenis = new Lenis({
+                    duration: 1.2,
+                    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
+                    direction: 'vertical',
+                    gestureDirection: 'vertical',
+                    smooth: true,
+                    mouseMultiplier: 1,
+                    smoothTouch: false,
+                    touchMultiplier: 2,
+                });
 
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
+                function raf(time) {
+                    lenis.raf(time);
+                    requestAnimationFrame(raf);
+                }
+                requestAnimationFrame(raf);
+            }
+        });
 
         async function init() {
             db = {
@@ -429,13 +420,14 @@
                     "anos_experiencia": "12+", "obras_entregues": "640+"
                 },
                 "servicos": [
-                    { "id": "airless", "titulo": "Pintura Airless", "descricao": "Acabamento mecanizado de alta precisão para superfícies espelhadas.", "fotos": ["https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800&q=60&fm=webp"] },
-                    { "id": "textura", "titulo": "Textura Nobre", "descricao": "Revestimentos técnicos com proteção hidrorrepelente de longa duração.", "fotos": ["https://images.unsplash.com/photo-1615873968403-89e068629275?w=800&q=60&fm=webp"] },
-                    { "id": "marmorato", "titulo": "Marmorato Polido", "descricao": "Efeito mármore de luxo com brilho vitrificado e profundidade visual.", "fotos": ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=60&fm=webp"] }
+                    // Otimização: Imagens da DB reduzidas a w=600 e q=50 para máxima velocidade móvel
+                    { "id": "airless", "titulo": "Pintura Airless", "descricao": "Acabamento mecanizado de alta precisão para superfícies espelhadas.", "fotos": ["https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=600&q=50&fm=webp"] },
+                    { "id": "textura", "titulo": "Textura Nobre", "descricao": "Revestimentos técnicos com proteção hidrorrepelente de longa duração.", "fotos": ["https://images.unsplash.com/photo-1615873968403-89e068629275?w=600&q=50&fm=webp"] },
+                    { "id": "marmorato", "titulo": "Marmorato Polido", "descricao": "Efeito mármore de luxo com brilho vitrificado e profundidade visual.", "fotos": ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=50&fm=webp"] }
                 ],
                 "cases": [
-                    { "id": "c1", "imagem": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=60&fm=webp", "cliente": "Construtora Alpha", "comentario": "Execução técnica impecável. A equipe cumpriu rigorosamente o cronograma estipulado." },
-                    { "id": "c2", "imagem": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=60&fm=webp", "cliente": "Arquiteta Maria F.", "comentario": "Excelente qualidade no acabamento em cimento queimado. Total profissionalismo." }
+                    { "id": "c1", "imagem": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=50&fm=webp", "cliente": "Construtora Alpha", "comentario": "Execução técnica impecável. A equipe cumpriu rigorosamente o cronograma estipulado." },
+                    { "id": "c2", "imagem": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=50&fm=webp", "cliente": "Arquiteta Maria F.", "comentario": "Excelente qualidade no acabamento em cimento queimado. Total profissionalismo." }
                 ]
             };
             renderApp();
@@ -449,8 +441,8 @@
             const headerLogoEl = document.getElementById('header-logo-container');
             
             if(db.empresa.logo && db.empresa.logo.trim() !== "") {
-                introLogoEl.innerHTML = `<img src="${db.empresa.logo}" class="w-full h-full object-contain p-2 md:p-3">`;
-                headerLogoEl.innerHTML = `<img src="${db.empresa.logo}" class="w-full h-full object-contain p-1.5 md:p-2">`;
+                introLogoEl.innerHTML = `<img src="${db.empresa.logo}" alt="Logo" loading="lazy" decoding="async" class="w-full h-full object-contain p-2 md:p-3">`;
+                headerLogoEl.innerHTML = `<img src="${db.empresa.logo}" alt="Logo" loading="lazy" decoding="async" class="w-full h-full object-contain p-1.5 md:p-2">`;
                 introLogoEl.classList.remove('bg-orange-600');
                 headerLogoEl.classList.remove('bg-orange-600');
                 introLogoEl.classList.add('bg-black/50');
@@ -472,9 +464,9 @@
             
             const sobreImgEl = document.getElementById('sobre-imagem-container');
             if(db.empresa.foto_sobre && db.empresa.foto_sobre.trim() !== "") {
-                sobreImgEl.innerHTML = `<img src="${db.empresa.foto_sobre}" loading="lazy" decoding="async" class="w-[75%] h-[75%] md:w-[80%] md:h-[80%] object-contain rounded-[1.5rem] drop-shadow-2xl transition-transform hover:scale-105 duration-700">`;
+                sobreImgEl.innerHTML = `<img src="${db.empresa.foto_sobre}" alt="Sobre" loading="lazy" decoding="async" fetchpriority="low" class="w-[75%] h-[75%] md:w-[80%] md:h-[80%] object-contain rounded-[1.5rem] drop-shadow-2xl transition-transform hover:scale-105 duration-700">`;
             } else if (db.empresa.logo && db.empresa.logo.trim() !== "") {
-                sobreImgEl.innerHTML = `<img src="${db.empresa.logo}" loading="lazy" decoding="async" class="w-[50%] h-[50%] object-contain opacity-40">`;
+                sobreImgEl.innerHTML = `<img src="${db.empresa.logo}" alt="Logo" loading="lazy" decoding="async" class="w-[50%] h-[50%] object-contain opacity-40">`;
             } else {
                 sobreImgEl.innerHTML = `<i class="fa-solid fa-image text-5xl md:text-7xl text-white/20"></i>`;
             }
@@ -493,7 +485,7 @@
             track.innerHTML = db.cases.map((c, i) => `
                 <div class="w-[85%] sm:w-[60%] lg:w-[45%] flex-none snap-center liquid-glass rounded-[2.5rem] md:rounded-[3.5rem] p-3 md:p-4 cursor-pointer group hover:bg-orange-600 hover:border-orange-600 transition-all h-full flex flex-col reveal-on-scroll delay-${(i % 3 + 1) * 100}" onclick="openCase('${c.id}')">
                     <div class="aspect-video rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl relative flex-1">
-                        <img src="${c.imagem}" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                        <img src="${c.imagem}" alt="${c.cliente}" loading="lazy" decoding="async" fetchpriority="low" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                         <div class="absolute bottom-4 left-4 md:bottom-6 md:left-8">
                             <div class="liquid-label group-hover:bg-orange-600 group-hover:border-orange-500 transition-all px-3 py-1 md:px-4 md:py-2">
                                 <h3 class="text-[8px] md:text-[11px] font-black uppercase tracking-widest text-premium text-premium-hover truncate max-w-[120px] md:max-w-xs">${c.cliente}</h3>
@@ -515,11 +507,11 @@
         }
 
         function showModal(title, images, caption) {
-            lenis.stop(); // Interrompe o scroll suave enquanto modal aberto
+            if(lenis) lenis.stop(); 
             document.getElementById('modal-header-title').innerText = title;
             const container = document.getElementById('modal-images');
             const capt = document.getElementById('modal-caption');
-            container.innerHTML = images.map(img => `<div class="w-[85%] md:w-full flex-none snap-center aspect-video rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/10 mx-auto"><img src="${img}" loading="lazy" decoding="async" class="w-full h-full object-cover"></div>`).join('');
+            container.innerHTML = images.map(img => `<div class="w-[85%] md:w-full flex-none snap-center aspect-video rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/10 mx-auto"><img src="${img}" alt="${title}" loading="lazy" decoding="async" class="w-full h-full object-cover"></div>`).join('');
             
             if(caption) {
                 capt.innerText = `"${caption}"`;
@@ -540,7 +532,7 @@
         }
 
         function closeModal() {
-            lenis.start(); // Retoma o scroll
+            if(lenis) lenis.start(); 
             const modal = document.getElementById('immersive-modal');
             const body = document.getElementById('modal-body');
             modal.classList.add('opacity-0');
@@ -554,17 +546,20 @@
         document.addEventListener('DOMContentLoaded', () => {
             init();
 
-            // INTEGRAÇÃO: Scroll suave para âncoras de navegação usando o motor Lenis
             document.querySelectorAll('.bottom-dock .nav-item').forEach(link => {
                 link.addEventListener('click', (e) => {
-                    e.preventDefault(); // Impede o salto brusco padrão do HTML
+                    e.preventDefault(); 
                     const targetId = link.getAttribute('href');
                     
-                    lenis.scrollTo(targetId, {
-                        offset: -100, // Margem de compensação para não encostar no topo/header
-                        duration: 1.5,
-                        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
-                    });
+                    if(lenis) {
+                        lenis.scrollTo(targetId, {
+                            offset: -100, 
+                            duration: 1.5,
+                            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+                        });
+                    } else {
+                        document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+                    }
                 });
             });
         });
