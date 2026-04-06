@@ -22,23 +22,6 @@
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js" defer></script>
 
     <script>
-        const applyTheme = (theme) => {
-            document.documentElement.setAttribute('data-theme', theme);
-            const isDark = theme === 'dark';
-            document.documentElement.classList.toggle('dark', isDark);
-            localStorage.setItem('theme-pref', theme);
-            const toggle = document.getElementById('theme-toggle-check');
-            if(toggle) toggle.checked = isDark;
-        };
-
-        const initTheme = () => {
-            const saved = localStorage.getItem('theme-pref');
-            if (saved) applyTheme(saved);
-            else applyTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-        };
-
-        initTheme();
-
         function startAppSequence() {
             const gateContent = document.getElementById('gate-content');
             const bg = document.querySelector('.bg-fixed-layer');
@@ -53,17 +36,12 @@
                 setTimeout(() => {
                     appGate.style.display = 'none';
                     main.classList.remove('hidden');
-                    void main.offsetWidth; // Força reflow
+                    void main.offsetWidth; 
                     main.style.opacity = '1';
                     
                     initScrollReveal();
                 }, 1000); 
             }, 400);
-        }
-
-        function toggleThemeManual() {
-            const isChecked = document.getElementById('theme-toggle-check').checked;
-            applyTheme(isChecked ? 'dark' : 'light');
         }
 
         function initScrollReveal() {
@@ -82,42 +60,29 @@
     </script>
     <style>
         :root { 
-            /* Otimização: Imagem reduzida para w=1080 e q=40 (poupança massiva de dados, mantém estética com blur) */
             --bg-image: url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1080&q=40&fm=webp');
             --accent-color: #f97316;
             --premium-blue: #170e36; 
             
-            --glass-bg: rgba(255, 255, 255, 0.25); 
-            --glass-border: rgba(255, 255, 255, 0.18); 
-            --glass-blur: blur(15px) saturate(180%);
-
-            --text-main: #ffffff; 
-            --text-muted: #cbd5e1; 
-            --label-text: #ffffff; 
-            
-            --shadow-vision: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
-            --text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-            --smoky-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
-            --font-outline: rgba(255, 255, 255, 0.4);
-            --font-outline-dark: rgba(30, 30, 30, 0.9);
-            --nav-icon-color: #ffffff; 
-        }
-
-        html[data-theme="light"] {
-            --glass-bg: rgba(255, 255, 255, 0.55);
+            --glass-bg: rgba(255, 255, 255, 0.55); 
             --glass-border: rgba(0, 0, 0, 0.08); 
             --glass-blur: blur(15px) saturate(140%);
+
             --text-main: #0f172a; 
             --text-muted: #475569; 
             --label-text: #0f172a; 
+            
             --shadow-vision: 0 15px 35px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.5);
             --text-shadow: none;
+            --smoky-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
+            --hero-smoky-shadow: 0 15px 35px rgba(0, 0, 0, 0.9), 0 5px 15px rgba(0, 0, 0, 0.8);
             --font-outline: rgba(0, 0, 0, 0.1);
-            --nav-icon-color: #f97316;
+            --font-outline-dark: rgba(30, 30, 30, 0.9);
+            --nav-icon-color: #f97316; 
         }
 
         body { 
-            background: #000; color: var(--text-main); margin: 0; overflow-x: hidden; 
+            background: #f8fafc; color: var(--text-main); margin: 0; overflow-x: hidden; 
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif; 
             -webkit-font-smoothing: antialiased;
         }
@@ -128,19 +93,9 @@
             -webkit-text-stroke: 0 !important; 
             transition: color 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
-        .group:hover .text-premium-hover { 
-            color: #ffffff !important; 
-        }
 
-        .label-intro { color: #ffffff !important; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important; }
-        .shadow-text { text-shadow: var(--text-shadow); }
-        .smoky-highlight { text-shadow: var(--smoky-shadow); }
-        
-        .intro-btn-text { 
-            color: var(--font-outline-dark);
-            font-weight: 900;
-            text-shadow: none !important;
-            letter-spacing: 0.15em;
+        .smoky-highlight {
+            text-shadow: var(--hero-smoky-shadow);
         }
 
         .bg-fixed-layer {
@@ -148,11 +103,10 @@
             background-image: var(--bg-image);
             background-size: cover; background-position: center;
             transition: filter 2s cubic-bezier(0.25, 1, 0.5, 1), transform 2s cubic-bezier(0.25, 1, 0.5, 1);
-            filter: grayscale(0) blur(1px) brightness(0.5);
+            filter: grayscale(0) blur(1px) brightness(1.1);
         }
 
         .bg-fixed-layer.intro-mode { filter: grayscale(1) blur(1px) brightness(0.7); transform: scale(1.05); }
-        html[data-theme="light"] .bg-fixed-layer:not(.intro-mode) { filter: grayscale(0) blur(1px) brightness(1.1); }
 
         .liquid-glass { 
             background: var(--glass-bg); 
@@ -168,7 +122,6 @@
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
             padding: 6px 14px;
             border-radius: 24px;
             display: inline-flex;
@@ -189,16 +142,12 @@
             left: 0; right: 0; margin-inline: auto;
             z-index: 100; display: flex; gap: 4px; padding: 6px; border-radius: 40px;
             width: fit-content; align-items: center; justify-content: center;
-            pointer-events: auto;
         }
 
         .nav-item { 
             width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; 
             border-radius: 50%; color: var(--nav-icon-color); 
             transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), background 0.4s ease;
-            flex: none; transform-origin: center;
-            will-change: transform;
-            backface-visibility: hidden;
         }
         @media (min-width: 768px) {
             .bottom-dock { bottom: 28px; gap: 8px; padding: 8px; }
@@ -214,39 +163,9 @@
             box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
             transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
-        @media (min-width: 768px) {
-            #wa-fab { bottom: 28px; right: 28px; width: 56px; height: 56px; }
-        }
-        #wa-fab:hover { transform: scale(1.1); }
 
         #app-gate { position: fixed; inset: 0; z-index: 500; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); padding: 1rem; transition: opacity 0.8s ease; }
         #gate-content { transition: all 1s cubic-bezier(0.25, 1, 0.5, 1); text-align: center; width: 100%; max-width: 36rem; }
-
-        .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; padding: 0 0.5rem; }
-        .header-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .inline-hint { font-size: 8px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-color); }
-        @media (min-width: 768px) {
-            .section-header { margin-bottom: 2rem; padding: 0 1rem; }
-            .header-left { gap: 14px; flex-wrap: nowrap; }
-            .inline-hint { font-size: 9px; }
-        }
-
-        .switch-container { position: relative; width: 44px; height: 24px; }
-        @media (min-width: 768px) { .switch-container { width: 48px; height: 26px; } }
-        .switch-container input { opacity: 0; width: 0; height: 0; }
-        .switch-slider {
-            position: absolute; cursor: pointer; inset: 0; 
-            background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border);
-            transition: .4s cubic-bezier(0.25, 1, 0.5, 1); border-radius: 30px;
-        }
-        .switch-slider:before {
-            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 2px;
-            background: white; transition: .4s cubic-bezier(0.25, 1, 0.5, 1); border-radius: 50%;
-        }
-        @media (min-width: 768px) { .switch-slider:before { height: 20px; width: 20px; } }
-        input:checked + .switch-slider { background: var(--accent-color); }
-        input:checked + .switch-slider:before { transform: translateX(20px); }
-        @media (min-width: 768px) { input:checked + .switch-slider:before { transform: translateX(21px); } }
 
         #main-content { opacity: 0; transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1); }
         
@@ -254,13 +173,8 @@
             opacity: 0;
             transform: translateY(40px);
             transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
-            will-change: opacity, transform;
         }
         .reveal-on-scroll.is-revealed { opacity: 1; transform: translateY(0); }
-        .delay-100 { transition-delay: 100ms; }
-        .delay-200 { transition-delay: 200ms; }
-        .delay-300 { transition-delay: 300ms; }
-
         .scrollbar-hide::-webkit-scrollbar { display: none; }
     </style>
 </head>
@@ -273,7 +187,7 @@
             <div class="space-y-4 md:space-y-6">
                 <h2 id="intro-name" class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-[0.1em] text-white uppercase leading-tight shadow-text px-2"></h2>
                 <div class="flex justify-center">
-                    <span id="intro-subtitle" class="liquid-label font-bold uppercase tracking-[0.3em] md:tracking-[0.45em] text-[8px] sm:text-[9px] md:text-xs text-center label-intro"></span>
+                    <span id="intro-subtitle" class="liquid-label font-bold uppercase tracking-[0.3em] md:tracking-[0.45em] text-[8px] sm:text-[9px] md:text-xs text-center !text-slate-300"></span>
                 </div>
             </div>
             <button onclick="startAppSequence()" class="liquid-glass border-white/20 px-8 py-4 md:px-14 md:py-6 rounded-full md:rounded-[2rem] font-black uppercase text-[10px] md:text-xs tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-lg w-[80%] md:w-auto">
@@ -288,17 +202,8 @@
                 <div id="nav-brand" class="flex items-center gap-3 md:gap-4">
                     <div id="header-logo-container" class="w-10 h-10 md:w-12 md:h-12 bg-orange-600 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg overflow-hidden flex-shrink-0"></div>
                     <div class="text-left">
-                        <h1 id="brand-name" class="text-sm md:text-lg font-black tracking-tighter uppercase leading-none shadow-text truncate max-w-[150px] sm:max-w-xs"></h1>
+                        <h1 id="brand-name" class="text-sm md:text-lg font-black tracking-tighter uppercase leading-none shadow-text truncate max-w-[150px]"></h1>
                         <p class="text-orange-500 font-bold text-[6px] md:text-[8px] uppercase tracking-[0.3em] mt-1">Engenharia</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 md:gap-6">
-                    <div class="flex flex-col items-center gap-1">
-                        <span class="text-[6px] md:text-[7px] uppercase font-bold text-muted tracking-widest opacity-60">Modo</span>
-                        <label class="switch-container">
-                            <input type="checkbox" id="theme-toggle-check" onchange="toggleThemeManual()">
-                            <span class="switch-slider"></span>
-                        </label>
                     </div>
                 </div>
             </div>
@@ -312,51 +217,45 @@
                 </div>
             </section>
 
-            <section id="sobre" class="liquid-glass rounded-[2.5rem] md:rounded-[3.5rem] p-6 md:p-14 grid md:grid-cols-2 gap-8 md:gap-12 items-center reveal-on-scroll delay-100">
-                <div class="space-y-8 md:space-y-10 text-left">
+            <section id="sobre" class="liquid-glass rounded-[2.5rem] md:rounded-[3.5rem] p-6 md:p-14 flex flex-col md:flex-row gap-8 md:gap-16 items-center reveal-on-scroll delay-100">
+                <div class="space-y-8 md:space-y-10 text-left flex-1">
                     <div class="liquid-label">
                         <i class="fa-solid fa-building text-orange-500 text-xs md:text-sm"></i>
                         <h2 class="text-[9px] md:text-[11px] font-black uppercase tracking-widest text-premium">A Empresa</h2>
                     </div>
                     <p id="sobre-texto" class="text-sm md:text-base text-muted leading-relaxed font-medium"></p>
                     <div class="grid grid-cols-2 gap-3 md:gap-4">
-                        <div class="liquid-glass rounded-2xl md:rounded-[2rem] p-4 md:p-6 text-center h-full flex flex-col justify-center">
+                        <div class="liquid-glass rounded-2xl md:rounded-[2rem] p-4 md:p-6 text-center flex flex-col justify-center">
                             <span id="anos-experiencia" class="block text-3xl md:text-4xl font-black text-premium"></span>
                             <span class="text-[7px] md:text-[9px] uppercase font-black tracking-widest mt-1 text-premium">Anos Exp.</span>
                         </div>
-                        <div class="liquid-glass rounded-2xl md:rounded-[2rem] p-4 md:p-6 text-center h-full flex flex-col justify-center">
+                        <div class="liquid-glass rounded-2xl md:rounded-[2rem] p-4 md:p-6 text-center flex flex-col justify-center">
                             <span id="obras-entregues" class="block text-3xl md:text-4xl font-black text-premium"></span>
                             <span class="text-[7px] md:text-[9px] uppercase font-black tracking-widest mt-1 text-premium">Projetos</span>
                         </div>
                     </div>
                 </div>
-                <div id="sobre-imagem-container" class="aspect-square rounded-[2rem] md:rounded-[3rem] overflow-hidden liquid-glass p-1 shadow-2xl h-full flex items-center justify-center"></div>
+                <div id="sobre-imagem-container" class="w-32 h-32 md:w-48 md:h-48 rounded-2xl md:rounded-3xl overflow-hidden liquid-glass p-1 shadow-2xl flex-shrink-0 flex items-center justify-center"></div>
             </section>
 
             <section id="servicos">
                 <div class="section-header reveal-on-scroll">
-                    <div class="header-left">
-                        <div class="liquid-label">
-                            <i class="fa-solid fa-paint-roller text-orange-500 text-xs md:text-sm"></i>
-                            <h2 class="text-[9px] md:text-[11px] font-black uppercase tracking-widest text-premium">Serviços</h2>
-                        </div>
-                        <span class="inline-hint">(Clique para visualizar)</span>
+                    <div class="liquid-label">
+                        <i class="fa-solid fa-paint-roller text-orange-500 text-xs md:text-sm"></i>
+                        <h2 class="text-[9px] md:text-[11px] font-black uppercase tracking-widest text-premium">Serviços</h2>
                     </div>
                 </div>
-                <div id="grid-servicos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 items-stretch"></div>
+                <div id="grid-servicos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 items-stretch mt-8"></div>
             </section>
 
             <section id="cases">
                 <div class="section-header reveal-on-scroll">
-                    <div class="header-left">
-                        <div class="liquid-label">
-                            <i class="fa-solid fa-comment-dots text-orange-500 text-xs md:text-sm"></i>
-                            <h2 class="text-[9px] md:text-[11px] font-black uppercase tracking-widest text-premium">Depoimentos</h2>
-                        </div>
-                        <span class="inline-hint">(Clique para visualizar)</span>
+                    <div class="liquid-label">
+                        <i class="fa-solid fa-comment-dots text-orange-500 text-xs md:text-sm"></i>
+                        <h2 class="text-[9px] md:text-[11px] font-black uppercase tracking-widest text-premium">Depoimentos</h2>
                     </div>
                 </div>
-                <div id="cases-track" class="flex overflow-x-auto snap-mandatory-x scrollbar-hide gap-5 md:gap-6 pb-6 md:pb-8 items-stretch px-2 md:px-0"></div>
+                <div id="cases-track" class="flex overflow-x-auto snap-mandatory-x scrollbar-hide gap-5 md:gap-6 pb-6 md:pb-8 items-stretch px-2 md:px-0 mt-8"></div>
             </section>
         </main>
 
@@ -373,9 +272,9 @@
         <div id="modal-body" class="flex flex-col h-full w-full scale-95 opacity-0 transition-all duration-500 cubic-bezier(0.25, 1, 0.5, 1)">
             <div class="w-full max-w-5xl mx-auto px-4 md:px-8 pt-10 md:pt-16 pb-4 md:pb-6 flex justify-between items-center">
                 <div class="liquid-label">
-                    <h2 id="modal-header-title" class="text-[10px] md:text-xs font-black tracking-widest uppercase text-premium max-w-[200px] md:max-w-md truncate"></h2>
+                    <h2 id="modal-header-title" class="text-[10px] md:text-xs font-black tracking-widest uppercase text-premium truncate"></h2>
                 </div>
-                <button onclick="closeModal()" class="w-10 h-10 md:w-12 md:h-12 liquid-glass rounded-full border-none flex items-center justify-center active:scale-90 flex-shrink-0 transition-transform"><i class="fa-solid fa-xmark text-lg md:text-xl"></i></button>
+                <button onclick="closeModal()" class="w-10 h-10 md:w-12 md:h-12 liquid-glass rounded-full border-none flex items-center justify-center active:scale-90 transition-transform"><i class="fa-solid fa-xmark text-lg md:text-xl"></i></button>
             </div>
             <div class="relative w-full max-w-5xl mx-auto flex-1 flex flex-col justify-center overflow-hidden">
                 <div id="modal-images" class="w-full flex overflow-x-auto snap-mandatory-x scrollbar-hide gap-4 md:gap-8 pb-6 md:pb-10 items-center"></div>
@@ -386,26 +285,16 @@
 
     <script>
         let db = null;
-
-        // Otimização: O Lenis é carregado via defer, garantimos que é instanciado quando disponível
         let lenis;
+
         window.addEventListener('load', () => {
             if(window.Lenis) {
                 lenis = new Lenis({
                     duration: 1.2,
                     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
-                    direction: 'vertical',
-                    gestureDirection: 'vertical',
                     smooth: true,
-                    mouseMultiplier: 1,
-                    smoothTouch: false,
-                    touchMultiplier: 2,
                 });
-
-                function raf(time) {
-                    lenis.raf(time);
-                    requestAnimationFrame(raf);
-                }
+                function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
                 requestAnimationFrame(raf);
             }
         });
@@ -414,13 +303,12 @@
             db = {
                 "empresa": {
                     "logo": "", 
-                    "foto_sobre": "", 
+                    "foto_sobre": "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=60&fm=webp", 
                     "nome": "PREMIUM", "whatsapp": "5511999999999", "hero_titulo": "Engenharia de Alto Padrão",
                     "hero_subtitulo": "Estética e Tecnologia de Superfícies", "sobre_texto": "Especialistas na execução de projetos de acabamento de luxo com rigor técnico extremo. Transformamos arquitetura em ambientes exclusivos através de processos de engenharia.",
                     "anos_experiencia": "12+", "obras_entregues": "640+"
                 },
                 "servicos": [
-                    // Otimização: Imagens da DB reduzidas a w=600 e q=50 para máxima velocidade móvel
                     { "id": "airless", "titulo": "Pintura Airless", "descricao": "Acabamento mecanizado de alta precisão para superfícies espelhadas.", "fotos": ["https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=600&q=50&fm=webp"] },
                     { "id": "textura", "titulo": "Textura Nobre", "descricao": "Revestimentos técnicos com proteção hidrorrepelente de longa duração.", "fotos": ["https://images.unsplash.com/photo-1615873968403-89e068629275?w=600&q=50&fm=webp"] },
                     { "id": "marmorato", "titulo": "Marmorato Polido", "descricao": "Efeito mármore de luxo com brilho vitrificado e profundidade visual.", "fotos": ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=50&fm=webp"] }
@@ -434,22 +322,20 @@
         }
 
         function renderApp() {
-            const iconHTML = `<i class="fa-solid fa-brush text-white text-3xl md:text-4xl"></i>`;
-            const headerIconHTML = `<i class="fa-solid fa-brush text-white"></i>`;
-            
             const introLogoEl = document.getElementById('intro-logo-container');
             const headerLogoEl = document.getElementById('header-logo-container');
             
             if(db.empresa.logo && db.empresa.logo.trim() !== "") {
-                introLogoEl.innerHTML = `<img src="${db.empresa.logo}" alt="Logo" loading="lazy" decoding="async" class="w-full h-full object-contain p-2 md:p-3">`;
-                headerLogoEl.innerHTML = `<img src="${db.empresa.logo}" alt="Logo" loading="lazy" decoding="async" class="w-full h-full object-contain p-1.5 md:p-2">`;
+                const logoImg = `<img src="${db.empresa.logo}" alt="Logo" loading="lazy" class="w-full h-full object-contain p-2">`;
+                introLogoEl.innerHTML = logoImg;
+                headerLogoEl.innerHTML = logoImg;
                 introLogoEl.classList.remove('bg-orange-600');
                 headerLogoEl.classList.remove('bg-orange-600');
                 introLogoEl.classList.add('bg-black/50');
                 headerLogoEl.classList.add('bg-black/50');
             } else {
-                introLogoEl.innerHTML = iconHTML;
-                headerLogoEl.innerHTML = headerIconHTML;
+                introLogoEl.innerHTML = `<i class="fa-solid fa-brush text-white text-3xl md:text-4xl"></i>`;
+                headerLogoEl.innerHTML = `<i class="fa-solid fa-brush text-white"></i>`;
             }
 
             document.getElementById('intro-name').innerText = db.empresa.nome;
@@ -464,31 +350,40 @@
             
             const sobreImgEl = document.getElementById('sobre-imagem-container');
             if(db.empresa.foto_sobre && db.empresa.foto_sobre.trim() !== "") {
-                sobreImgEl.innerHTML = `<img src="${db.empresa.foto_sobre}" alt="Sobre" loading="lazy" decoding="async" fetchpriority="low" class="w-[75%] h-[75%] md:w-[80%] md:h-[80%] object-contain rounded-[1.5rem] drop-shadow-2xl transition-transform hover:scale-105 duration-700">`;
+                sobreImgEl.innerHTML = `<img src="${db.empresa.foto_sobre}" alt="Sobre" loading="lazy" class="w-full h-full object-cover transition-transform hover:scale-105 duration-700">`;
             } else if (db.empresa.logo && db.empresa.logo.trim() !== "") {
-                sobreImgEl.innerHTML = `<img src="${db.empresa.logo}" alt="Logo" loading="lazy" decoding="async" class="w-[50%] h-[50%] object-contain opacity-40">`;
+                sobreImgEl.innerHTML = `<img src="${db.empresa.logo}" alt="Logo" loading="lazy" class="w-[60%] h-[60%] object-contain opacity-40">`;
             } else {
-                sobreImgEl.innerHTML = `<i class="fa-solid fa-image text-5xl md:text-7xl text-white/20"></i>`;
+                sobreImgEl.innerHTML = `<i class="fa-solid fa-image text-3xl md:text-4xl text-white/20"></i>`;
             }
             
             const grid = document.getElementById('grid-servicos');
-            grid.innerHTML = db.servicos.map((s, i) => `
-                <div class="liquid-glass rounded-[2rem] md:rounded-[3.5rem] p-6 md:p-12 cursor-pointer active:scale-95 group flex flex-col items-start gap-4 md:gap-8 hover:bg-orange-600 hover:border-orange-600 transition-all h-full reveal-on-scroll delay-${(i % 3 + 1) * 100}" onclick="openServico('${s.id}')">
+            grid.innerHTML = db.servicos.map((s, i) => {
+                const thumbnail = (s.fotos && s.fotos.length > 0) ? s.fotos[0] : null;
+                return `
+                <div class="liquid-glass rounded-[2rem] md:rounded-[3.5rem] p-6 md:p-8 cursor-pointer active:scale-95 group flex flex-col items-start gap-4 hover:bg-orange-600 hover:border-orange-600 transition-all h-full reveal-on-scroll" onclick="openServico('${s.id}')">
                     <div class="liquid-label group-hover:bg-orange-600 group-hover:border-orange-500 transition-all">
-                        <h3 class="text-[9px] md:text-[11px] font-black uppercase tracking-widest text-premium text-premium-hover">${s.titulo}</h3>
+                        <h3 class="text-[9px] md:text-[11px] font-black uppercase tracking-widest text-premium group-hover:text-white">${s.titulo}</h3>
                     </div>
                     <p class="text-sm md:text-base text-muted leading-relaxed text-left font-medium group-hover:text-white/80 flex-1">${s.descricao}</p>
+                    ${thumbnail ? `
+                        <div class="w-16 h-16 md:w-20 md:h-20 rounded-[1rem] overflow-hidden mt-auto relative shadow-inner bg-black/10 flex-shrink-0">
+                            <img src="${thumbnail}" alt="${s.titulo}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+                        </div>
+                    ` : ''}
                 </div>
-            `).join('');
+                `;
+            }).join('');
             
             const track = document.getElementById('cases-track');
             track.innerHTML = db.cases.map((c, i) => `
-                <div class="w-[85%] sm:w-[60%] lg:w-[45%] flex-none snap-center liquid-glass rounded-[2.5rem] md:rounded-[3.5rem] p-3 md:p-4 cursor-pointer group hover:bg-orange-600 hover:border-orange-600 transition-all h-full flex flex-col reveal-on-scroll delay-${(i % 3 + 1) * 100}" onclick="openCase('${c.id}')">
+                <div class="w-[85%] sm:w-[60%] lg:w-[45%] flex-none snap-center liquid-glass rounded-[2.5rem] md:rounded-[3.5rem] p-3 md:p-4 cursor-pointer group hover:bg-orange-600 hover:border-orange-600 transition-all h-full flex flex-col reveal-on-scroll" onclick="openCase('${c.id}')">
                     <div class="aspect-video rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl relative flex-1">
-                        <img src="${c.imagem}" alt="${c.cliente}" loading="lazy" decoding="async" fetchpriority="low" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-                        <div class="absolute bottom-4 left-4 md:bottom-6 md:left-8">
-                            <div class="liquid-label group-hover:bg-orange-600 group-hover:border-orange-500 transition-all px-3 py-1 md:px-4 md:py-2">
-                                <h3 class="text-[8px] md:text-[11px] font-black uppercase tracking-widest text-premium text-premium-hover truncate max-w-[120px] md:max-w-xs">${c.cliente}</h3>
+                        <img src="${c.imagem}" alt="${c.cliente}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                        <div class="absolute bottom-4 left-4 md:bottom-6 md:left-8 right-4 md:right-8 flex items-end">
+                            <div class="liquid-label group-hover:bg-orange-600 group-hover:border-orange-500 transition-all px-3 py-1">
+                                <h3 class="text-[8px] md:text-[11px] font-black uppercase tracking-widest text-premium group-hover:text-white whitespace-normal break-words">${c.cliente}</h3>
                             </div>
                         </div>
                     </div>
@@ -511,7 +406,7 @@
             document.getElementById('modal-header-title').innerText = title;
             const container = document.getElementById('modal-images');
             const capt = document.getElementById('modal-caption');
-            container.innerHTML = images.map(img => `<div class="w-[85%] md:w-full flex-none snap-center aspect-video rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/10 mx-auto"><img src="${img}" alt="${title}" loading="lazy" decoding="async" class="w-full h-full object-cover"></div>`).join('');
+            container.innerHTML = images.map(img => `<div class="w-[85%] md:w-full flex-none snap-center aspect-video rounded-[2rem] overflow-hidden shadow-2xl border border-white/10 mx-auto"><img src="${img}" alt="${title}" class="w-full h-full object-cover"></div>`).join('');
             
             if(caption) {
                 capt.innerText = `"${caption}"`;
@@ -545,18 +440,12 @@
         
         document.addEventListener('DOMContentLoaded', () => {
             init();
-
             document.querySelectorAll('.bottom-dock .nav-item').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault(); 
                     const targetId = link.getAttribute('href');
-                    
                     if(lenis) {
-                        lenis.scrollTo(targetId, {
-                            offset: -100, 
-                            duration: 1.5,
-                            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
-                        });
+                        lenis.scrollTo(targetId, { offset: -100, duration: 1.5 });
                     } else {
                         document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
                     }
