@@ -33,19 +33,24 @@
 
             setTimeout(() => {
                 bg.classList.remove('intro-mode');
+                
+                // Exibe o main no DOM para pré-calcular o layout antes de revelar
+                main.classList.remove('hidden');
+                void main.offsetWidth; 
+                
+                // Transição cruzada suave
+                main.style.opacity = '1';
+                appGate.style.opacity = '0';
+                
                 setTimeout(() => {
                     appGate.style.display = 'none';
-                    main.classList.remove('hidden');
-                    void main.offsetWidth; 
-                    main.style.opacity = '1';
-                    
                     initScrollReveal();
-                }, 1000); 
+                }, 800); 
             }, 400);
         }
 
         function initScrollReveal() {
-            const observerOptions = { root: null, rootMargin: '0px 0px -10% 0px', threshold: 0.1 };
+            const observerOptions = { root: null, rootMargin: '0px 0px -5% 0px', threshold: 0.05 };
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -82,9 +87,15 @@
         }
 
         body { 
-            background: #f8fafc; color: var(--text-main); margin: 0; overflow-x: hidden; 
+            background: #f8fafc; color: var(--text-main); margin: 0; overflow-x: hidden; overflow-y: scroll;
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif; 
             -webkit-font-smoothing: antialiased;
+        }
+
+        /* Otimização de Performance de Renderização (Adia cálculo de layout) */
+        #sobre, #servicos, #cases {
+            content-visibility: auto;
+            contain-intrinsic-size: 1px 600px;
         }
 
         .text-premium { 
@@ -103,7 +114,8 @@
             background-image: var(--bg-image);
             background-size: cover; background-position: center;
             transition: filter 2s cubic-bezier(0.25, 1, 0.5, 1), transform 2s cubic-bezier(0.25, 1, 0.5, 1);
-            filter: grayscale(0) blur(1px) brightness(1.1);
+            filter: grayscale(0) blur(0px) brightness(1.1);
+            will-change: filter, transform; /* GPU Acceleration */
         }
 
         .bg-fixed-layer.intro-mode { filter: grayscale(1) blur(1px) brightness(0.7); transform: scale(1.05); }
@@ -114,7 +126,7 @@
             backdrop-filter: var(--glass-blur); 
             -webkit-backdrop-filter: var(--glass-blur); 
             box-shadow: var(--shadow-vision);
-            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.4s ease;
             transform: translateZ(0); 
         }
 
@@ -161,18 +173,20 @@
             background: #25D366; color: white; display: flex;
             align-items: center; justify-content: center;
             box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
+        #wa-fab:active { transform: scale(0.9); }
 
         #app-gate { position: fixed; inset: 0; z-index: 500; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); padding: 1rem; transition: opacity 0.8s ease; }
         #gate-content { transition: all 1s cubic-bezier(0.25, 1, 0.5, 1); text-align: center; width: 100%; max-width: 36rem; }
 
-        #main-content { opacity: 0; transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1); }
+        #main-content { opacity: 0; transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1); will-change: opacity; }
         
         .reveal-on-scroll {
             opacity: 0;
             transform: translateY(40px);
             transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            will-change: opacity, transform; /* GPU Acceleration */
         }
         .reveal-on-scroll.is-revealed { opacity: 1; transform: translateY(0); }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
@@ -182,27 +196,27 @@
     <div class="bg-fixed-layer intro-mode"></div>
 
     <div id="app-gate">
-        <div id="gate-content" class="space-y-8 md:space-y-12">
+        <div id="gate-content" class="space-y-6 md:space-y-12">
             <div id="intro-logo-container" class="w-20 h-20 md:w-24 md:h-24 bg-orange-600 rounded-[2rem] md:rounded-[2.5rem] mx-auto flex items-center justify-center shadow-2xl liquid-glass border-white/30 overflow-hidden flex-shrink-0"></div>
-            <div class="space-y-4 md:space-y-6">
-                <h2 id="intro-name" class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-[0.1em] text-white uppercase leading-tight shadow-text px-2"></h2>
+            <div class="space-y-4 md:space-y-6 px-4">
+                <h2 id="intro-name" class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-widest md:tracking-[0.1em] text-white uppercase leading-tight shadow-text"></h2>
                 <div class="flex justify-center">
-                    <span id="intro-subtitle" class="liquid-label font-bold uppercase tracking-[0.3em] md:tracking-[0.45em] text-[8px] sm:text-[9px] md:text-xs text-center !text-slate-300"></span>
+                    <span id="intro-subtitle" class="liquid-label font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em] md:tracking-[0.45em] text-[8px] sm:text-[9px] md:text-xs text-center !text-slate-300"></span>
                 </div>
             </div>
-            <button onclick="startAppSequence()" class="liquid-glass border-white/20 px-8 py-4 md:px-14 md:py-6 rounded-full md:rounded-[2rem] font-black uppercase text-[10px] md:text-xs tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-lg w-[80%] md:w-auto">
+            <button onclick="startAppSequence()" class="liquid-glass border-white/20 px-8 py-4 md:px-14 md:py-6 rounded-full md:rounded-[2rem] font-black uppercase text-[10px] md:text-xs tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-lg w-[85%] max-w-xs md:max-w-none md:w-auto mt-4">
                 <span class="intro-btn-text">Acessar portfólio</span>
             </button>
         </div>
     </div>
 
     <div id="main-content" class="hidden">
-        <header class="sticky top-0 z-40 w-full liquid-glass border-x-0 border-t-0 rounded-b-[2rem] md:rounded-b-[2.5rem] mb-8 md:mb-12">
-            <div class="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-5 flex items-center justify-between">
+        <header class="sticky top-0 z-40 w-full liquid-glass border-x-0 border-t-0 rounded-b-[2rem] md:rounded-b-[2.5rem] mb-6 md:mb-12">
+            <div class="max-w-6xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
                 <div id="nav-brand" class="flex items-center gap-3 md:gap-4">
                     <div id="header-logo-container" class="w-10 h-10 md:w-12 md:h-12 bg-orange-600 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg overflow-hidden flex-shrink-0"></div>
-                    <div class="text-left">
-                        <h1 id="brand-name" class="text-sm md:text-lg font-black tracking-tighter uppercase leading-none shadow-text truncate max-w-[150px]"></h1>
+                    <div class="text-left flex-1 min-w-0">
+                        <h1 id="brand-name" class="text-sm md:text-lg font-black tracking-tighter uppercase leading-none shadow-text truncate max-w-[140px] md:max-w-[200px]"></h1>
                         <p class="text-orange-500 font-bold text-[6px] md:text-[8px] uppercase tracking-[0.3em] mt-1">Engenharia</p>
                     </div>
                 </div>
@@ -210,15 +224,15 @@
         </header>
 
         <main class="max-w-6xl mx-auto px-4 md:px-6 space-y-12 md:space-y-16 pb-36 md:pb-44">
-            <section class="text-center py-12 md:py-16 liquid-glass rounded-[2.5rem] md:rounded-[3.5rem] p-6 md:p-10 max-w-3xl mx-auto reveal-on-scroll">
-                <h1 id="hero-title" class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight mb-6 md:mb-8 tracking-tighter uppercase text-white smoky-highlight"></h1>
+            <section class="text-center py-10 sm:py-12 md:py-16 liquid-glass rounded-[2.5rem] md:rounded-[3.5rem] p-4 sm:p-6 md:p-10 max-w-3xl mx-auto reveal-on-scroll">
+                <h1 id="hero-title" class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight mb-5 md:mb-8 tracking-tighter uppercase text-white smoky-highlight"></h1>
                 <div class="flex justify-center">
-                    <span id="hero-subtitle-label" class="liquid-label font-bold uppercase tracking-[0.3em] md:tracking-[0.55em] text-[8px] md:text-[10px] text-center text-premium"></span>
+                    <span id="hero-subtitle-label" class="liquid-label font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em] md:tracking-[0.55em] text-[8px] md:text-[10px] text-center text-premium"></span>
                 </div>
             </section>
 
-            <section id="sobre" class="liquid-glass rounded-[2.5rem] md:rounded-[3.5rem] p-6 md:p-14 flex flex-col md:flex-row gap-8 md:gap-16 items-center reveal-on-scroll delay-100">
-                <div class="space-y-8 md:space-y-10 text-left flex-1">
+            <section id="sobre" class="liquid-glass rounded-[2.5rem] md:rounded-[3.5rem] p-5 sm:p-8 md:p-14 flex flex-col md:flex-row gap-6 md:gap-16 items-center reveal-on-scroll delay-100">
+                <div class="space-y-6 md:space-y-10 text-left flex-1 w-full">
                     <div class="liquid-label">
                         <i class="fa-solid fa-building text-orange-500 text-xs md:text-sm"></i>
                         <h2 class="text-[9px] md:text-[11px] font-black uppercase tracking-widest text-premium">A Empresa</h2>
@@ -226,16 +240,16 @@
                     <p id="sobre-texto" class="text-sm md:text-base text-muted leading-relaxed font-medium"></p>
                     <div class="grid grid-cols-2 gap-3 md:gap-4">
                         <div class="liquid-glass rounded-2xl md:rounded-[2rem] p-4 md:p-6 text-center flex flex-col justify-center">
-                            <span id="anos-experiencia" class="block text-3xl md:text-4xl font-black text-premium"></span>
+                            <span id="anos-experiencia" class="block text-2xl sm:text-3xl md:text-4xl font-black text-premium"></span>
                             <span class="text-[7px] md:text-[9px] uppercase font-black tracking-widest mt-1 text-premium">Anos Exp.</span>
                         </div>
                         <div class="liquid-glass rounded-2xl md:rounded-[2rem] p-4 md:p-6 text-center flex flex-col justify-center">
-                            <span id="obras-entregues" class="block text-3xl md:text-4xl font-black text-premium"></span>
+                            <span id="obras-entregues" class="block text-2xl sm:text-3xl md:text-4xl font-black text-premium"></span>
                             <span class="text-[7px] md:text-[9px] uppercase font-black tracking-widest mt-1 text-premium">Projetos</span>
                         </div>
                     </div>
                 </div>
-                <div id="sobre-imagem-container" class="w-32 h-32 md:w-48 md:h-48 rounded-2xl md:rounded-3xl overflow-hidden liquid-glass p-1 shadow-2xl flex-shrink-0 flex items-center justify-center"></div>
+                <div id="sobre-imagem-container" class="w-28 h-28 sm:w-32 sm:h-32 md:w-48 md:h-48 rounded-2xl md:rounded-3xl overflow-hidden liquid-glass p-1 shadow-2xl flex-shrink-0 flex items-center justify-center"></div>
             </section>
 
             <section id="servicos">
@@ -245,7 +259,7 @@
                         <h2 class="text-[9px] md:text-[11px] font-black uppercase tracking-widest text-premium">Serviços</h2>
                     </div>
                 </div>
-                <div id="grid-servicos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 items-stretch mt-8"></div>
+                <div id="grid-servicos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 items-stretch mt-6 md:mt-8"></div>
             </section>
 
             <section id="cases">
@@ -255,7 +269,7 @@
                         <h2 class="text-[9px] md:text-[11px] font-black uppercase tracking-widest text-premium">Depoimentos</h2>
                     </div>
                 </div>
-                <div id="cases-track" class="flex overflow-x-auto snap-mandatory-x scrollbar-hide gap-5 md:gap-6 pb-6 md:pb-8 items-stretch px-2 md:px-0 mt-8"></div>
+                <div id="cases-track" class="flex overflow-x-auto snap-mandatory-x scrollbar-hide gap-4 sm:gap-5 md:gap-6 pb-6 md:pb-8 items-stretch px-1 mt-6 md:mt-8"></div>
             </section>
         </main>
 
@@ -270,15 +284,15 @@
 
     <div id="immersive-modal" onclick="handleModalClick(event)" class="fixed inset-0 hidden flex-col opacity-0 transition-opacity duration-500 z-[200] liquid-glass rounded-none border-none p-4 md:p-0">
         <div id="modal-body" class="flex flex-col h-full w-full scale-95 opacity-0 transition-all duration-500 cubic-bezier(0.25, 1, 0.5, 1)">
-            <div class="w-full max-w-5xl mx-auto px-4 md:px-8 pt-10 md:pt-16 pb-4 md:pb-6 flex justify-between items-center">
-                <div class="liquid-label">
+            <div class="w-full max-w-5xl mx-auto px-4 md:px-8 pt-8 sm:pt-10 md:pt-16 pb-4 md:pb-6 flex justify-between items-center">
+                <div class="liquid-label max-w-[70%]">
                     <h2 id="modal-header-title" class="text-[10px] md:text-xs font-black tracking-widest uppercase text-premium truncate"></h2>
                 </div>
-                <button onclick="closeModal()" class="w-10 h-10 md:w-12 md:h-12 liquid-glass rounded-full border-none flex items-center justify-center active:scale-90 transition-transform"><i class="fa-solid fa-xmark text-lg md:text-xl"></i></button>
+                <button onclick="closeModal()" class="w-10 h-10 md:w-12 md:h-12 liquid-glass rounded-full border-none flex items-center justify-center active:scale-90 transition-transform flex-shrink-0"><i class="fa-solid fa-xmark text-lg md:text-xl"></i></button>
             </div>
             <div class="relative w-full max-w-5xl mx-auto flex-1 flex flex-col justify-center overflow-hidden">
                 <div id="modal-images" class="w-full flex overflow-x-auto snap-mandatory-x scrollbar-hide gap-4 md:gap-8 pb-6 md:pb-10 items-center"></div>
-                <div id="modal-caption" class="p-6 md:p-10 text-center text-sm md:text-base text-muted italic font-medium max-w-2xl mx-auto opacity-0 translate-y-4 transition-all duration-700"></div>
+                <div id="modal-caption" class="p-4 sm:p-6 md:p-10 text-center text-sm md:text-base text-muted italic font-medium max-w-2xl mx-auto opacity-0 translate-y-4 transition-all duration-700"></div>
             </div>
         </div>
     </div>
@@ -287,16 +301,19 @@
         let db = null;
         let lenis;
 
+        // Lazy load inicialização de biblioteca pesada para não travar main thread
         window.addEventListener('load', () => {
-            if(window.Lenis) {
-                lenis = new Lenis({
-                    duration: 1.2,
-                    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
-                    smooth: true,
-                });
-                function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-                requestAnimationFrame(raf);
-            }
+            setTimeout(() => {
+                if(window.Lenis) {
+                    lenis = new Lenis({
+                        duration: 1.2,
+                        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
+                        smooth: true,
+                    });
+                    function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+                    requestAnimationFrame(raf);
+                }
+            }, 100);
         });
 
         async function init() {
@@ -326,7 +343,7 @@
             const headerLogoEl = document.getElementById('header-logo-container');
             
             if(db.empresa.logo && db.empresa.logo.trim() !== "") {
-                const logoImg = `<img src="${db.empresa.logo}" alt="Logo" loading="lazy" class="w-full h-full object-contain p-2">`;
+                const logoImg = `<img src="${db.empresa.logo}" alt="Logo" loading="lazy" decoding="async" class="w-full h-full object-contain p-2">`;
                 introLogoEl.innerHTML = logoImg;
                 headerLogoEl.innerHTML = logoImg;
                 introLogoEl.classList.remove('bg-orange-600');
@@ -350,9 +367,9 @@
             
             const sobreImgEl = document.getElementById('sobre-imagem-container');
             if(db.empresa.foto_sobre && db.empresa.foto_sobre.trim() !== "") {
-                sobreImgEl.innerHTML = `<img src="${db.empresa.foto_sobre}" alt="Sobre" loading="lazy" class="w-full h-full object-cover transition-transform hover:scale-105 duration-700">`;
+                sobreImgEl.innerHTML = `<img src="${db.empresa.foto_sobre}" alt="Sobre" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform hover:scale-105 duration-700">`;
             } else if (db.empresa.logo && db.empresa.logo.trim() !== "") {
-                sobreImgEl.innerHTML = `<img src="${db.empresa.logo}" alt="Logo" loading="lazy" class="w-[60%] h-[60%] object-contain opacity-40">`;
+                sobreImgEl.innerHTML = `<img src="${db.empresa.logo}" alt="Logo" loading="lazy" decoding="async" class="w-[60%] h-[60%] object-contain opacity-40">`;
             } else {
                 sobreImgEl.innerHTML = `<i class="fa-solid fa-image text-3xl md:text-4xl text-white/20"></i>`;
             }
@@ -361,14 +378,14 @@
             grid.innerHTML = db.servicos.map((s, i) => {
                 const thumbnail = (s.fotos && s.fotos.length > 0) ? s.fotos[0] : null;
                 return `
-                <div class="liquid-glass rounded-[2rem] md:rounded-[3.5rem] p-6 md:p-8 cursor-pointer active:scale-95 group flex flex-col items-start gap-4 hover:bg-orange-600 hover:border-orange-600 transition-all h-full reveal-on-scroll" onclick="openServico('${s.id}')">
+                <div class="liquid-glass rounded-[2rem] md:rounded-[3.5rem] p-5 sm:p-6 md:p-8 cursor-pointer active:scale-95 group flex flex-col items-start gap-4 hover:bg-orange-600 hover:border-orange-600 transition-all h-full reveal-on-scroll" onclick="openServico('${s.id}')">
                     <div class="liquid-label group-hover:bg-orange-600 group-hover:border-orange-500 transition-all">
                         <h3 class="text-[9px] md:text-[11px] font-black uppercase tracking-widest text-premium group-hover:text-white">${s.titulo}</h3>
                     </div>
                     <p class="text-sm md:text-base text-muted leading-relaxed text-left font-medium group-hover:text-white/80 flex-1">${s.descricao}</p>
                     ${thumbnail ? `
                         <div class="w-16 h-16 md:w-20 md:h-20 rounded-[1rem] overflow-hidden mt-auto relative shadow-inner bg-black/10 flex-shrink-0">
-                            <img src="${thumbnail}" alt="${s.titulo}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <img src="${thumbnail}" alt="${s.titulo}" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                             <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
                         </div>
                     ` : ''}
@@ -378,12 +395,12 @@
             
             const track = document.getElementById('cases-track');
             track.innerHTML = db.cases.map((c, i) => `
-                <div class="w-[85%] sm:w-[60%] lg:w-[45%] flex-none snap-center liquid-glass rounded-[2.5rem] md:rounded-[3.5rem] p-3 md:p-4 cursor-pointer group hover:bg-orange-600 hover:border-orange-600 transition-all h-full flex flex-col reveal-on-scroll" onclick="openCase('${c.id}')">
-                    <div class="aspect-video rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl relative flex-1">
-                        <img src="${c.imagem}" alt="${c.cliente}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-                        <div class="absolute bottom-4 left-4 md:bottom-6 md:left-8 right-4 md:right-8 flex items-end">
-                            <div class="liquid-label group-hover:bg-orange-600 group-hover:border-orange-500 transition-all px-3 py-1">
-                                <h3 class="text-[8px] md:text-[11px] font-black uppercase tracking-widest text-premium group-hover:text-white whitespace-normal break-words">${c.cliente}</h3>
+                <div class="w-[85%] sm:w-[60%] lg:w-[45%] flex-none snap-center liquid-glass rounded-[2rem] md:rounded-[3.5rem] p-2 sm:p-3 md:p-4 cursor-pointer group hover:bg-orange-600 hover:border-orange-600 transition-all h-full flex flex-col reveal-on-scroll" onclick="openCase('${c.id}')">
+                    <div class="aspect-video rounded-[1.5rem] md:rounded-[3rem] overflow-hidden shadow-2xl relative flex-1">
+                        <img src="${c.imagem}" alt="${c.cliente}" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                        <div class="absolute bottom-3 left-3 md:bottom-6 md:left-8 right-3 md:right-8 flex items-end">
+                            <div class="liquid-label group-hover:bg-orange-600 group-hover:border-orange-500 transition-all px-2 sm:px-3 py-1">
+                                <h3 class="text-[7px] sm:text-[8px] md:text-[11px] font-black uppercase tracking-widest text-premium group-hover:text-white whitespace-normal break-words">${c.cliente}</h3>
                             </div>
                         </div>
                     </div>
