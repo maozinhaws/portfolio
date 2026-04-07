@@ -2,7 +2,7 @@ const db = {
     "empresa": {
         "logo": "",
         "foto_sobre": "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=60&fm=webp",
-        "nome": "MOREIRA",
+        "nome": "teste",
         "whatsapp": "5511999999999",
         "hero_titulo": "Engenharia de Alto Padrão",
         "hero_subtitulo": "Estética e Tecnologia de Superfícies",
