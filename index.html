@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
     <title>Premium - Engenharia de Superfícies</title>
     
     <!-- Otimização: Resolução antecipada de DNS e Preconnect para CDNs -->
@@ -22,7 +25,14 @@
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js" defer></script>
     
     <!-- Importação dos Dados -->
-    <script src="./dados.js"></script>
+    <script>
+    (function() {
+        const script = document.createElement('script');
+        script.src = `./dados.js?v=${new Date().getTime()}`;
+        script.async = false; // Mantém a ordem de execução para o init()
+        document.head.appendChild(script);
+    })();
+</script>
 
     <script>
         function startAppSequence() {
