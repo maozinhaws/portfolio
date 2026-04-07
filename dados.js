@@ -2,7 +2,7 @@ const db = {
     "empresa": {
         "logo": "",
         "foto_sobre": "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=60&fm=webp",
-        "nome": "PREMIUM",
+        "nome": "MOREIRA",
         "whatsapp": "5511999999999",
         "hero_titulo": "Engenharia de Alto Padrão",
         "hero_subtitulo": "Estética e Tecnologia de Superfícies",
@@ -16,7 +16,8 @@ const db = {
             "titulo": "Pintura Airless",
             "descricao": "Acabamento mecanizado de alta precisão para superfícies espelhadas.",
             "fotos": [
-                "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=600&q=50&fm=webp"
+                "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=600&q=50&fm=webp",
+                "./assets/img/1775548829660-Final.png"
             ]
         },
         {
