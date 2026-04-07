@@ -22,16 +22,24 @@
             script.src = `./dados.js?v=${new Date().getTime()}`;
             script.async = false;
             script.onerror = function() {
-                console.warn("Erro ao carregar dados.js. Ativando fallback.");
+                console.warn("Erro de CORS ou rede ao carregar dados.js. Ativando fallback de segurança.");
                 window.db = {
                     "empresa": { 
                         "nome": "PREMIUM", "whatsapp": "5511999999999",
                         "hero_titulo": "Engenharia de Alto Padrão", "hero_subtitulo": "Estética e Tecnologia de Superfícies", 
-                        "sobre_texto": "Especialistas na execução de projetos de acabamento de luxo.", 
+                        "sobre_texto": "Especialistas na execução de projetos de acabamento de luxo com rigor técnico extremo.", 
                         "anos_experiencia": "12+", "obras_entregues": "640+",
                         "logo": "", "foto_sobre": "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=60&fm=webp"
                     },
-                    "servicos": [], "cases": []
+                    "servicos": [
+                        { "id": "airless", "titulo": "Pintura Airless", "descricao": "Acabamento mecanizado de alta precisão para superfícies espelhadas.", "fotos": ["https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=600&q=50&fm=webp"] },
+                        { "id": "textura", "titulo": "Textura Nobre", "descricao": "Revestimentos técnicos com proteção hidrorrepelente de longa duração.", "fotos": ["https://images.unsplash.com/photo-1615873968403-89e068629275?w=600&q=50&fm=webp"] },
+                        { "id": "marmorato", "titulo": "Marmorato Polido", "descricao": "Efeito mármore de luxo com brilho vitrificado e profundidade visual.", "fotos": ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=50&fm=webp"] }
+                    ], 
+                    "cases": [
+                        { "id": "c1", "imagem": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=50&fm=webp", "cliente": "Construtora Alpha", "comentario": "Execução técnica impecável. A equipe cumpriu rigorosamente o cronograma estipulado." },
+                        { "id": "c2", "imagem": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=50&fm=webp", "cliente": "Arquiteta Maria F.", "comentario": "Excelente qualidade no acabamento em cimento queimado. Total profissionalismo." }
+                    ]
                 };
             };
             document.head.appendChild(script);
@@ -57,7 +65,7 @@
             position: fixed; inset: 0; z-index: -2;
             background-image: var(--bg-image); background-size: cover; background-position: center;
             transition: filter 2s ease, transform 2s ease;
-            filter: grayscale(0) blur(0.2px) brightness(1.1); /* 98% Nitidez */
+            filter: grayscale(0) blur(0.2px) brightness(1.1);
         }
         .bg-fixed-layer.intro-mode { filter: grayscale(1) blur(1px) brightness(0.7); transform: scale(1.05); }
 
@@ -82,16 +90,11 @@
         .nav-item:hover { background: rgba(255,255,255,0.15); transform: scale(1.15); }
 
         #app-gate { position: fixed; inset: 0; z-index: 500; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); transition: opacity 0.8s ease; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
         
-        /* Contagem Lottie-style */
         .counter-container { position: relative; width: 120px; height: 120px; margin: 0 auto; }
         .progress-ring { transform: rotate(-90deg); transform-origin: 50% 50%; }
-        .progress-ring__circle {
-            transition: stroke-dashoffset 0.1s;
-            stroke-dasharray: 251.2;
-            stroke-dashoffset: 251.2;
-        }
-
+        .progress-ring__circle { transition: stroke-dashoffset 0.1s; stroke-dasharray: 251.2; stroke-dashoffset: 251.2; }
         .count-up { font-variant-numeric: tabular-nums; color: var(--premium-blue); }
 
         .typing-cursor {
@@ -100,14 +103,11 @@
         }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-        #wa-fab {
-            position: fixed; bottom: 20px; right: 20px; z-index: 101;
-            width: 52px; height: 52px; border-radius: 50%;
-            background: #25D366; color: white; display: flex;
-            align-items: center; justify-content: center;
-            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-        }
+        .zoom-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; border-radius: inherit; }
+        .group:hover .zoom-overlay { opacity: 1; }
+
+        #wa-fab { position: fixed; bottom: 20px; right: 20px; z-index: 101; width: 52px; height: 52px; border-radius: 50%; background: #25D366; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3); transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        #wa-fab:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
@@ -179,9 +179,9 @@
                     </div>
                 </div>
                 <div class="flex flex-col items-center order-1 md:order-2 w-full">
-                    <div class="w-full max-w-xs space-y-2">
-                        <span class="text-[8px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-1"><i class="fa-solid fa-magnifying-glass-plus"></i> Clique para ampliar</span>
-                        <div id="sobre-imagem-container" class="relative group aspect-square rounded-3xl overflow-hidden liquid-glass p-1 shadow-2xl flex items-center justify-center cursor-pointer active:scale-95 transition-transform" onclick="openSobre()"></div>
+                    <div class="w-full max-w-[260px] space-y-2">
+                        <span class="text-[8px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-1 justify-center"><i class="fa-solid fa-magnifying-glass-plus"></i> Clique para ampliar</span>
+                        <div id="sobre-imagem-container" class="relative group aspect-square rounded-[2rem] overflow-hidden liquid-glass shadow-2xl flex items-center justify-center cursor-pointer active:scale-95 transition-transform" onclick="openSobre()"></div>
                     </div>
                 </div>
             </section>
@@ -198,7 +198,6 @@
         </main>
 
         <nav class="bottom-dock liquid-glass shadow-2xl">
-            <a href="#main-content" class="nav-item"><i class="fa-solid fa-house"></i></a>
             <a href="#sobre" class="nav-item"><i class="fa-solid fa-building"></i></a>
             <a href="#servicos" class="nav-item"><i class="fa-solid fa-paint-roller"></i></a>
             <a href="#cases" class="nav-item"><i class="fa-solid fa-comment-dots"></i></a>
@@ -274,24 +273,27 @@
         }
 
         function initScrollReveal() {
-            // Ajustado para garantir que o disparo ocorra apenas quando o card estiver centralizado
-            const observerOptions = { 
-                root: null, 
-                rootMargin: '0px 0px -100px 0px', 
-                threshold: 0.5 
-            };
-            
-            const obs = new IntersectionObserver((entries) => {
+            const strictOptions = { root: null, rootMargin: '0px 0px -100px 0px', threshold: 0.5 };
+            const strictObs = new IntersectionObserver((entries) => {
                 entries.forEach(en => {
                     if (en.isIntersecting) {
                         en.target.classList.add('is-revealed');
-                        if(en.target.id === 'sobre') {
-                            triggerCounters();
-                        }
+                        if(en.target.id === 'sobre') triggerCounters();
                     }
                 });
-            }, observerOptions);
-            document.querySelectorAll('.reveal-on-scroll').forEach(el => obs.observe(el));
+            }, strictOptions);
+
+            const standardOptions = { root: null, rootMargin: '0px 0px -50px 0px', threshold: 0.1 };
+            const standardObs = new IntersectionObserver((entries) => {
+                entries.forEach(en => {
+                    if (en.isIntersecting) en.target.classList.add('is-revealed');
+                });
+            }, standardOptions);
+
+            document.querySelectorAll('.reveal-on-scroll').forEach(el => {
+                if (el.id === 'sobre') strictObs.observe(el);
+                else standardObs.observe(el);
+            });
         }
 
         function triggerCounters() {
@@ -340,10 +342,7 @@
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const targetId = link.getAttribute('href');
-                    
-                    // Se clicar no menu para ir ao "sobre", dispara os contadores
                     if (targetId === '#sobre') triggerCounters();
-
                     if(lenis) lenis.scrollTo(targetId, { offset: -100 });
                     else document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
                 });
@@ -365,7 +364,7 @@
             document.getElementById('header-logo-container').innerHTML = logoHtml;
             
             const sobreImg = document.getElementById('sobre-imagem-container');
-            sobreImg.innerHTML = `<img src="${empresa.foto_sobre}" class="w-full h-full object-cover rounded-2xl transition-transform duration-500">`;
+            sobreImg.innerHTML = `<img src="${empresa.foto_sobre}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"><div class="zoom-overlay"><i class="fa-solid fa-expand text-white text-3xl"></i></div>`;
 
             document.getElementById('grid-servicos').innerHTML = servicos.map(s => `
                 <div class="liquid-glass rounded-[2.5rem] p-8 cursor-pointer group hover:bg-orange-600 transition-all reveal-on-scroll" onclick="openServico('${s.id}')">
@@ -397,7 +396,11 @@
             const modal = document.getElementById('immersive-modal');
             const body = document.getElementById('modal-body');
             document.getElementById('modal-header-title').innerText = title;
-            document.getElementById('modal-images').innerHTML = images.map(img => `<div class="w-full aspect-video rounded-[2.5rem] overflow-hidden border border-white/10 mx-auto"><img src="${img}" class="w-full h-full object-cover"></div>`).join('');
+            document.getElementById('modal-images').innerHTML = images.map(img => `
+                <div class="w-full flex-none snap-center h-[60vh] md:h-[75vh] flex items-center justify-center p-2 mx-auto">
+                    <img src="${img}" class="max-w-full max-h-full object-contain rounded-[2rem] shadow-lg">
+                </div>
+            `).join('');
             const capt = document.getElementById('modal-caption');
             if(caption) { capt.innerText = `"${caption}"`; capt.style.display = 'block'; }
             else capt.style.display = 'none';
