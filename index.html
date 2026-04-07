@@ -2,19 +2,13 @@
 <html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <title>Premium - Engenharia de Superfícies</title>
-    
-    <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
-    <link rel="dns-prefetch" href="https://images.unsplash.com">
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
-    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js" defer></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
     
     <script>
         (function() {
@@ -22,7 +16,6 @@
             script.src = `./dados.js?v=${new Date().getTime()}`;
             script.async = false;
             script.onerror = function() {
-                console.warn("Erro de CORS ou rede ao carregar dados.js. Ativando fallback de segurança.");
                 window.db = {
                     "empresa": { 
                         "nome": "PREMIUM", "whatsapp": "5511999999999",
@@ -32,14 +25,9 @@
                         "logo": "", "foto_sobre": "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=60&fm=webp"
                     },
                     "servicos": [
-                        { "id": "airless", "titulo": "Pintura Airless", "descricao": "Acabamento mecanizado de alta precisão para superfícies espelhadas.", "fotos": ["https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=600&q=50&fm=webp"] },
-                        { "id": "textura", "titulo": "Textura Nobre", "descricao": "Revestimentos técnicos com proteção hidrorrepelente de longa duração.", "fotos": ["https://images.unsplash.com/photo-1615873968403-89e068629275?w=600&q=50&fm=webp"] },
-                        { "id": "marmorato", "titulo": "Marmorato Polido", "descricao": "Efeito mármore de luxo com brilho vitrificado e profundidade visual.", "fotos": ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=50&fm=webp"] }
+                        { "id": "airless", "titulo": "Pintura Airless", "descricao": "Acabamento mecanizado de alta precisão.", "fotos": [] }
                     ], 
-                    "cases": [
-                        { "id": "c1", "imagem": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=50&fm=webp", "cliente": "Construtora Alpha", "comentario": "Execução técnica impecável. A equipe cumpriu rigorosamente o cronograma estipulado." },
-                        { "id": "c2", "imagem": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=50&fm=webp", "cliente": "Arquiteta Maria F.", "comentario": "Excelente qualidade no acabamento em cimento queimado. Total profissionalismo." }
-                    ]
+                    "cases": []
                 };
             };
             document.head.appendChild(script);
@@ -48,184 +36,145 @@
 
     <style>
         :root { 
-            --bg-image: url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1080&q=40&fm=webp');
+            --bg-image: url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1080&q=60&fm=webp');
             --accent-color: #f97316;
             --premium-blue: #170e36; 
-            --glass-bg: rgba(255, 255, 255, 0.55); 
-            --glass-border: rgba(0, 0, 0, 0.08); 
-            --glass-blur: blur(15px) saturate(140%);
-            --text-main: #0f172a; 
-            --text-muted: #475569; 
-            --shadow-vision: 0 15px 35px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+            --glass-bg: rgba(255, 255, 255, 0.65); 
+            --glass-border: rgba(255, 255, 255, 0.2); 
+            --glass-blur: blur(12px) saturate(140%);
             --scroll-p: 0; 
         }
 
-        body { background: #f8fafc; color: var(--text-main); margin: 0; overflow-x: hidden; font-family: system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+        body { background: #f8fafc; color: #0f172a; margin: 0; overflow-x: hidden; font-family: system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
 
+        /* Fix para Background Mobile: evita scroll junto com a página */
         .bg-fixed-layer {
             position: fixed; inset: 0; z-index: -2;
             background-image: var(--bg-image); background-size: cover; background-position: center;
-            transition: filter 2s ease, transform 2s ease;
-            /* Inicia com 85% de cor para manter naturalidade imediata */
             filter: saturate(0.85) blur(0.2px) brightness(0.75);
-            transform: scale(1);
+            transform: translateZ(0); /* Força aceleração de GPU */
+            will-change: transform, filter;
+            pointer-events: none;
         }
         
-        .bg-fixed-layer.intro-mode { filter: saturate(0.85) blur(1px) brightness(0.75); transform: scale(1.05); }
+        .bg-fixed-layer.intro-mode { filter: saturate(0.85) blur(4px) brightness(0.65); transform: scale(1.1) translateZ(0); }
 
-        /* Classe ativada pós-intro para performance 3D via var(--scroll-p) */
         .bg-fixed-layer.scroll-anim {
-            transition: none; 
-            /* Sobe de 85% (0.85) para 160% (0.85 + 0.75) de saturação */
             filter: saturate(calc(0.85 + (var(--scroll-p) * 0.75))) blur(0.2px) brightness(calc(0.75 + (var(--scroll-p) * 0.35)));
-            transform: scale(calc(1 + (var(--scroll-p) * 0.15))) translateY(calc(var(--scroll-p) * 2%));
+            transform: scale(calc(1 + (var(--scroll-p) * 0.12))) translateZ(0);
         }
 
         .liquid-glass { 
             background: var(--glass-bg); border: 1px solid var(--glass-border); 
             backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); 
-            box-shadow: var(--shadow-vision); transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-            transform: translateZ(0); backface-visibility: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05); transform: translateZ(0);
         }
 
-        .liquid-label {
-            background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(25px); padding: 6px 14px; border-radius: 24px;
-            display: inline-flex; align-items: center; gap: 8px; transition: all 0.4s ease;
+        /* Ajustes mobile para alinhar elementos */
+        @media (max-width: 768px) {
+            .liquid-glass { backdrop-filter: blur(8px); } /* Blur mais leve no mobile para performance */
+            section { padding-left: 1rem !important; padding-right: 1rem !important; }
+            h1 { font-size: 2.25rem !important; line-height: 1.1 !important; }
         }
 
-        .reveal-on-scroll { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1); will-change: opacity, transform; }
+        .reveal-on-scroll { opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1); will-change: opacity, transform; }
         .reveal-on-scroll.is-revealed { opacity: 1; transform: translateY(0); }
 
-        .bottom-dock { position: fixed; bottom: 20px; left: 0; right: 0; margin-inline: auto; z-index: 100; display: flex; gap: 8px; padding: 8px; border-radius: 40px; width: fit-content; }
-        .nav-item { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--premium-blue); transition: all 0.4s ease; }
-        .nav-item:hover { background: rgba(255,255,255,0.15); transform: scale(1.15); }
+        .bottom-dock { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100; display: flex; gap: 8px; padding: 6px; border-radius: 40px; }
+        .nav-item { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--premium-blue); }
 
-        #app-gate { position: fixed; inset: 0; z-index: 500; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); transition: opacity 0.8s ease; }
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        #app-gate { position: fixed; inset: 0; z-index: 500; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); transition: opacity 0.6s ease; }
         
-        .counter-container { position: relative; width: 120px; height: 120px; margin: 0 auto; }
-        .progress-ring { transform: rotate(-90deg); transform-origin: 50% 50%; }
         .progress-ring__circle { transition: stroke-dashoffset 0.1s; stroke-dasharray: 251.2; stroke-dashoffset: 251.2; }
-        .count-up { font-variant-numeric: tabular-nums; color: var(--premium-blue); }
+        .typing-cursor { display: inline-block; width: 2px; height: 1.1em; background-color: var(--premium-blue); margin-left: 3px; animation: blink 0.8s infinite; vertical-align: middle; }
+        @keyframes blink { 50% { opacity: 0; } }
 
-        .typing-cursor {
-            display: inline-block; width: 2px; height: 1.1em; background-color: var(--premium-blue);
-            margin-left: 3px; animation: blink 0.8s step-end infinite; vertical-align: middle;
-        }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-        .zoom-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; border-radius: inherit; }
-        .group:hover .zoom-overlay { opacity: 1; }
-
-        #wa-fab { position: fixed; bottom: 20px; right: 20px; z-index: 101; width: 52px; height: 52px; border-radius: 50%; background: #25D366; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3); transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
-        #wa-fab:hover { transform: scale(1.1); }
+        #wa-fab { position: fixed; bottom: 24px; right: 24px; z-index: 90; width: 56px; height: 56px; border-radius: 50%; background: #25D366; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3); }
     </style>
 </head>
 <body>
     <div class="bg-fixed-layer intro-mode"></div>
 
     <div id="app-gate">
-        <div id="gate-content" class="text-center space-y-8 w-full max-w-xl px-6 transition-all duration-1000">
-            <div id="intro-logo-container" class="w-20 h-20 bg-orange-600 rounded-[2rem] mx-auto flex items-center justify-center shadow-2xl liquid-glass border-white/30 overflow-hidden"></div>
-            <div class="space-y-4">
-                <h2 id="intro-name" class="text-4xl font-black tracking-widest text-white uppercase"></h2>
-                <div class="flex justify-center"><span id="intro-subtitle" class="liquid-label font-bold uppercase tracking-widest text-[10px] !text-slate-300"></span></div>
+        <div class="text-center space-y-6 w-full max-w-sm px-6">
+            <div id="intro-logo-container" class="w-20 h-20 bg-orange-600 rounded-[1.5rem] mx-auto flex items-center justify-center shadow-xl"></div>
+            <div class="space-y-2">
+                <h2 id="intro-name" class="text-3xl font-black tracking-widest text-white uppercase"></h2>
+                <div class="flex justify-center"><span id="intro-subtitle" class="bg-white/10 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-white border border-white/20"></span></div>
             </div>
-            <button onclick="startAppSequence()" class="liquid-glass border-white/20 px-10 py-5 rounded-full font-black uppercase text-xs tracking-widest hover:scale-105 active:scale-95 transition-all text-white">Acessar Portfólio</button>
+            <button onclick="startAppSequence()" class="w-full bg-white text-black py-4 rounded-full font-black uppercase text-xs tracking-widest shadow-2xl active:scale-95 transition-transform">Entrar</button>
         </div>
     </div>
 
     <div id="main-content" class="hidden opacity-0">
-        <header class="sticky top-0 z-40 w-full liquid-glass border-x-0 border-t-0 rounded-b-[2.5rem] mb-12">
-            <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <div id="header-logo-container" class="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center shadow-lg overflow-hidden"></div>
-                    <div class="text-left">
-                        <h1 id="brand-name" class="text-lg font-black tracking-tighter uppercase leading-none" style="color: var(--premium-blue)"></h1>
-                        <p class="text-orange-500 font-bold text-[8px] uppercase tracking-widest mt-1">Engenharia</p>
+        <header class="sticky top-0 z-40 w-full liquid-glass border-b border-black/5">
+            <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div id="header-logo-container" class="w-10 h-10 bg-orange-600 rounded-xl flex items-center justify-center shadow-md overflow-hidden"></div>
+                    <div>
+                        <h1 id="brand-name" class="text-base font-black uppercase tracking-tighter" style="color: var(--premium-blue)"></h1>
+                        <p class="text-orange-500 font-bold text-[7px] uppercase tracking-widest">Engenharia</p>
                     </div>
                 </div>
             </div>
         </header>
 
-        <main class="max-w-6xl mx-auto px-6 space-y-16 pb-44">
-            <section class="text-center py-16 liquid-glass rounded-[3.5rem] p-10 max-w-3xl mx-auto reveal-on-scroll">
-                <h1 id="hero-title" class="text-4xl md:text-6xl font-black leading-tight mb-8 tracking-tighter uppercase text-white" style="text-shadow: 0 10px 30px rgba(0,0,0,0.5)"></h1>
+        <main class="max-w-5xl mx-auto px-4 space-y-12 pb-32 pt-8">
+            <section class="text-center py-12 liquid-glass rounded-[2.5rem] p-6 reveal-on-scroll">
+                <h1 id="hero-title" class="text-3xl md:text-6xl font-black leading-tight mb-6 tracking-tighter uppercase text-slate-800"></h1>
                 <div class="flex justify-center items-center">
-                    <span id="hero-subtitle-label" class="liquid-label font-black uppercase tracking-[0.2em] text-sm md:text-base min-h-[44px] flex items-center px-6" style="color: var(--premium-blue)"></span>
+                    <span id="hero-subtitle-label" class="bg-white/50 px-6 py-2 rounded-full font-black uppercase tracking-widest text-xs min-h-[40px] flex items-center border border-black/5" style="color: var(--premium-blue)"></span>
                 </div>
             </section>
 
-            <section id="sobre" class="liquid-glass rounded-[3.5rem] p-10 md:p-14 flex flex-col md:grid md:grid-cols-2 gap-12 items-center reveal-on-scroll">
-                <div class="space-y-10 text-left order-2 md:order-1">
-                    <div class="liquid-label"><i class="fa-solid fa-building text-orange-500"></i><h2 class="text-[11px] font-black uppercase tracking-widest" style="color: var(--premium-blue)">A Empresa</h2></div>
-                    <p id="sobre-texto" class="text-base text-muted leading-relaxed font-medium"></p>
+            <section id="sobre" class="liquid-glass rounded-[2.5rem] p-6 md:p-12 flex flex-col md:grid md:grid-cols-2 gap-8 items-center reveal-on-scroll">
+                <div class="space-y-6 text-left order-2 md:order-1">
+                    <div class="inline-flex items-center gap-2 bg-orange-500/10 px-4 py-1 rounded-full text-orange-600 font-black text-[10px] uppercase tracking-widest">
+                        <i class="fa-solid fa-building"></i> Sobre
+                    </div>
+                    <p id="sobre-texto" class="text-sm md:text-base text-slate-600 leading-relaxed font-medium"></p>
                     
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="liquid-glass rounded-[2rem] p-6 flex flex-col items-center">
-                            <div class="counter-container">
-                                <svg class="progress-ring" width="120" height="120">
-                                    <circle class="text-slate-200 stroke-current" stroke-width="8" cx="60" cy="60" r="40" fill="transparent"/>
-                                    <circle id="ring-anos" class="progress-ring__circle text-orange-500 stroke-current" stroke-width="8" stroke-linecap="round" cx="60" cy="60" r="40" fill="transparent"/>
-                                </svg>
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <span id="anos-experiencia" class="count-up text-3xl font-black">0</span>
-                                </div>
-                            </div>
-                            <span class="text-[9px] uppercase font-black tracking-widest mt-2 text-slate-500">Anos Exp.</span>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-white/40 border border-black/5 rounded-2xl p-4 flex flex-col items-center">
+                            <span id="anos-experiencia" class="text-2xl font-black text-slate-800">0</span>
+                            <span class="text-[8px] uppercase font-black tracking-widest text-slate-400">Anos Exp.</span>
                         </div>
-                        
-                        <div class="liquid-glass rounded-[2rem] p-6 flex flex-col items-center">
-                            <div class="counter-container">
-                                <svg class="progress-ring" width="120" height="120">
-                                    <circle class="text-slate-200 stroke-current" stroke-width="8" cx="60" cy="60" r="40" fill="transparent"/>
-                                    <circle id="ring-obras" class="progress-ring__circle text-orange-500 stroke-current" stroke-width="8" stroke-linecap="round" cx="60" cy="60" r="40" fill="transparent"/>
-                                </svg>
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <span id="obras-entregues" class="count-up text-3xl font-black">0</span>
-                                </div>
-                            </div>
-                            <span class="text-[9px] uppercase font-black tracking-widest mt-2 text-slate-500">Projetos</span>
+                        <div class="bg-white/40 border border-black/5 rounded-2xl p-4 flex flex-col items-center">
+                            <span id="obras-entregues" class="text-2xl font-black text-slate-800">0</span>
+                            <span class="text-[8px] uppercase font-black tracking-widest text-slate-400">Projetos</span>
                         </div>
                     </div>
                 </div>
-                <div class="flex flex-col items-center order-1 md:order-2 w-full">
-                    <div class="w-full max-w-[260px] space-y-2">
-                        <span class="text-[8px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-1 justify-center"><i class="fa-solid fa-magnifying-glass-plus"></i> Clique para ampliar</span>
-                        <div id="sobre-imagem-container" class="relative group aspect-square rounded-[2rem] overflow-hidden liquid-glass shadow-2xl flex items-center justify-center cursor-pointer active:scale-95 transition-transform" onclick="openSobre()"></div>
-                    </div>
+                <div class="order-1 md:order-2 w-full flex justify-center">
+                    <div id="sobre-imagem-container" class="relative group w-full max-w-[280px] aspect-square rounded-[2rem] overflow-hidden shadow-xl" onclick="openSobre()"></div>
                 </div>
             </section>
 
-            <section id="servicos" class="space-y-8">
-                <div class="liquid-label reveal-on-scroll"><i class="fa-solid fa-paint-roller text-orange-500"></i><h2 class="text-[11px] font-black uppercase tracking-widest" style="color: var(--premium-blue)">Serviços</h2></div>
-                <div id="grid-servicos" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
-            </section>
-
-            <section id="cases" class="space-y-8">
-                <div class="liquid-label reveal-on-scroll"><i class="fa-solid fa-comment-dots text-orange-500"></i><h2 class="text-[11px] font-black uppercase tracking-widest" style="color: var(--premium-blue)">Depoimentos</h2></div>
-                <div id="cases-track" class="flex overflow-x-auto snap-mandatory-x scrollbar-hide gap-6 pb-8"></div>
+            <section id="servicos" class="space-y-6">
+                <div class="inline-flex items-center gap-2 bg-orange-500/10 px-4 py-1 rounded-full text-orange-600 font-black text-[10px] uppercase tracking-widest reveal-on-scroll">
+                    <i class="fa-solid fa-paint-roller"></i> Serviços
+                </div>
+                <div id="grid-servicos" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
             </section>
         </main>
 
-        <nav class="bottom-dock liquid-glass shadow-2xl">
-            <a href="#sobre" class="nav-item"><i class="fa-solid fa-building"></i></a>
-            <a href="#servicos" class="nav-item"><i class="fa-solid fa-paint-roller"></i></a>
-            <a href="#cases" class="nav-item"><i class="fa-solid fa-comment-dots"></i></a>
+        <nav class="bottom-dock liquid-glass border border-white/20">
+            <a href="#sobre" class="nav-item active:scale-90 transition-transform"><i class="fa-solid fa-building"></i></a>
+            <a href="#servicos" class="nav-item active:scale-90 transition-transform"><i class="fa-solid fa-paint-roller"></i></a>
+            <a href="#cases" class="nav-item active:scale-90 transition-transform"><i class="fa-solid fa-comment-dots"></i></a>
         </nav>
 
-        <a id="wa-fab" href="#" target="_blank"><i class="fa-brands fa-whatsapp text-2xl md:text-3xl"></i></a>
+        <a id="wa-fab" href="#" target="_blank"><i class="fa-brands fa-whatsapp text-2xl"></i></a>
     </div>
 
-    <div id="immersive-modal" class="fixed inset-0 hidden flex-col opacity-0 transition-opacity duration-500 z-[200] liquid-glass rounded-none border-none">
-        <div id="modal-body" class="flex flex-col h-full w-full scale-95 opacity-0 transition-all duration-500 px-6 py-10">
-            <div class="max-w-5xl mx-auto w-full flex justify-between items-center mb-6">
-                <div class="liquid-label"><h2 id="modal-header-title" class="text-xs font-black uppercase tracking-widest truncate"></h2></div>
-                <button onclick="closeModal()" class="w-12 h-12 liquid-glass rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+    <div id="immersive-modal" class="fixed inset-0 hidden flex-col opacity-0 transition-opacity duration-300 z-[200] bg-white">
+        <div id="modal-body" class="flex flex-col h-full w-full px-4 py-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="modal-header-title" class="text-xs font-black uppercase tracking-widest truncate text-slate-800"></h2>
+                <button onclick="closeModal()" class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-800"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div id="modal-images" class="flex-1 overflow-y-auto scrollbar-hide space-y-8 pb-10"></div>
-            <div id="modal-caption" class="mt-4 text-center text-muted italic font-medium max-w-2xl mx-auto border-t border-white/10 pt-6"></div>
+            <div id="modal-images" class="flex-1 overflow-y-auto space-y-4"></div>
+            <div id="modal-caption" class="mt-4 text-center text-xs text-slate-500 italic pb-8"></div>
         </div>
     </div>
 
@@ -233,32 +182,44 @@
         let lenis;
         let typewriterStarted = false;
 
-        window.addEventListener('load', () => {
-            if(window.Lenis) {
-                lenis = new Lenis({ duration: 1.2, smooth: true });
-                
-                lenis.on('scroll', (e) => {
-                    const bg = document.querySelector('.bg-fixed-layer');
-                    if(bg.classList.contains('scroll-anim')) {
-                        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-                        const progress = maxScroll > 0 ? (e.animatedScroll / maxScroll) : 0;
-                        document.documentElement.style.setProperty('--scroll-p', Math.min(Math.max(progress, 0), 1));
-                    }
-                });
+        // Detecção inteligente de mobile para Lenis
+        const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-                function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-                requestAnimationFrame(raf);
-            }
+        window.addEventListener('load', () => {
+            initScroll();
             const checkDB = setInterval(() => {
-                if (typeof db !== 'undefined') {
+                if (window.db) {
                     clearInterval(checkDB);
                     init();
                 }
             }, 50);
         });
 
+        function initScroll() {
+            lenis = new Lenis({ 
+                duration: 1.2, 
+                smooth: !isTouch, // Desativa smooth scroll apenas em touch (melhora performance Android)
+                smoothTouch: false 
+            });
+            
+            // Loop de animação otimizado
+            function raf(time) {
+                lenis.raf(time);
+                
+                // Atualiza variável CSS de scroll apenas se necessário
+                const scrollY = window.scrollY || window.pageYOffset;
+                const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+                if(maxScroll > 0) {
+                    const progress = Math.min(Math.max(scrollY / maxScroll, 0), 1);
+                    document.documentElement.style.setProperty('--scroll-p', progress);
+                }
+                
+                requestAnimationFrame(raf);
+            }
+            requestAnimationFrame(raf);
+        }
+
         function startAppSequence() {
-            if (typeof db === 'undefined') return;
             const gate = document.getElementById('app-gate');
             const main = document.getElementById('main-content');
             const bg = document.querySelector('.bg-fixed-layer');
@@ -272,178 +233,112 @@
                     main.style.opacity = '1'; 
                     initScrollReveal();
                     startTypewriterEffect();
-                    
-                    setTimeout(() => {
-                        bg.classList.add('scroll-anim');
-                    }, 2000);
+                    setTimeout(() => bg.classList.add('scroll-anim'), 1000);
                 }, 50);
-            }, 800);
+            }, 600);
         }
 
         function startTypewriterEffect() {
             if (typewriterStarted) return;
             const el = document.getElementById('hero-subtitle-label');
-            const text = db.empresa.hero_subtitulo || "";
+            const text = window.db.empresa.hero_subtitulo || "";
             let i = 0; typewriterStarted = true;
-            const cursor = document.createElement('span');
-            cursor.className = 'typing-cursor';
             el.innerHTML = "";
             function type() {
                 if (i < text.length) {
                     el.textContent = text.substring(0, i + 1);
+                    const cursor = document.createElement('span');
+                    cursor.className = 'typing-cursor';
                     el.appendChild(cursor);
-                    i++; setTimeout(type, 60);
-                } else { el.appendChild(cursor); }
+                    i++; setTimeout(type, 50);
+                }
             }
             type();
         }
 
         function initScrollReveal() {
-            const strictOptions = { root: null, rootMargin: '0px 0px -100px 0px', threshold: 0.5 };
-            const strictObs = new IntersectionObserver((entries) => {
+            const obs = new IntersectionObserver((entries) => {
                 entries.forEach(en => {
                     if (en.isIntersecting) {
                         en.target.classList.add('is-revealed');
                         if(en.target.id === 'sobre') triggerCounters();
                     }
                 });
-            }, strictOptions);
+            }, { threshold: 0.1 });
 
-            const standardOptions = { root: null, rootMargin: '0px 0px -50px 0px', threshold: 0.1 };
-            const standardObs = new IntersectionObserver((entries) => {
-                entries.forEach(en => {
-                    if (en.isIntersecting) en.target.classList.add('is-revealed');
-                });
-            }, standardOptions);
-
-            document.querySelectorAll('.reveal-on-scroll').forEach(el => {
-                if (el.id === 'sobre') strictObs.observe(el);
-                else standardObs.observe(el);
-            });
+            document.querySelectorAll('.reveal-on-scroll').forEach(el => obs.observe(el));
         }
 
         function triggerCounters() {
-            if (typeof db === 'undefined') return;
-            animateCounter('anos-experiencia', 'ring-anos', db.empresa.anos_experiencia, 50);
-            animateCounter('obras-entregues', 'ring-obras', db.empresa.obras_entregues, 1000);
+            animateCounter('anos-experiencia', window.db.empresa.anos_experiencia);
+            animateCounter('obras-entregues', window.db.empresa.obras_entregues);
         }
 
-        function animateCounter(id, ringId, targetStr, maxValue) {
+        function animateCounter(id, targetStr) {
             const el = document.getElementById(id);
-            const ring = document.getElementById(ringId);
             if(!el || el.dataset.animated === "true") return;
-
-            const numericValue = parseInt(targetStr.replace(/\D/g, '')) || 0;
+            const num = parseInt(targetStr.replace(/\D/g, '')) || 0;
             const suffix = targetStr.replace(/[0-9]/g, '');
-            const duration = 2500;
-            const startTime = performance.now();
-            const radius = 40;
-            const circumference = 2 * Math.PI * radius;
-
-            function update(now) {
-                const elapsed = now - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                const easeProgress = 1 - Math.pow(1 - progress, 4); 
-                
-                const currentVal = Math.floor(easeProgress * numericValue);
-                el.innerText = currentVal + suffix;
-                
-                if (ring) {
-                    const ringProgress = Math.min((easeProgress * numericValue) / maxValue, 1);
-                    const offset = circumference - (ringProgress * circumference);
-                    ring.style.strokeDashoffset = offset;
-                }
-
-                if (progress < 1) requestAnimationFrame(update);
-                else el.dataset.animated = "true";
-            }
-            requestAnimationFrame(update);
+            let count = 0;
+            const step = num / 60;
+            const timer = setInterval(() => {
+                count += step;
+                if(count >= num) { el.innerText = num + suffix; clearInterval(timer); el.dataset.animated = "true"; }
+                else { el.innerText = Math.floor(count) + suffix; }
+            }, 16);
         }
 
-        async function init() {
-            if (typeof db === 'undefined') return;
-            renderApp();
-            
-            document.querySelectorAll('.nav-item').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetId = link.getAttribute('href');
-                    if (targetId === '#sobre') triggerCounters();
-                    if(lenis) lenis.scrollTo(targetId, { offset: -100 });
-                    else document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
-                });
-            });
-        }
-
-        function renderApp() {
-            const { empresa, servicos, cases } = db;
-            const waFab = document.getElementById('wa-fab');
-            if (waFab) waFab.href = `https://wa.me/${empresa.whatsapp}`;
+        function init() {
+            const { empresa, servicos, cases } = window.db;
             document.getElementById('intro-name').innerText = empresa.nome;
             document.getElementById('brand-name').innerText = empresa.nome;
             document.getElementById('intro-subtitle').innerText = empresa.hero_subtitulo;
             document.getElementById('hero-title').innerText = empresa.hero_titulo;
             document.getElementById('sobre-texto').innerText = empresa.sobre_texto;
+            document.getElementById('wa-fab').href = `https://wa.me/${empresa.whatsapp}`;
             
-            const logoHtml = empresa.logo ? `<img src="${empresa.logo}" class="w-full h-full object-contain p-2">` : `<i class="fa-solid fa-brush text-white text-3xl"></i>`;
-            document.getElementById('intro-logo-container').innerHTML = logoHtml;
-            document.getElementById('header-logo-container').innerHTML = logoHtml;
+            const logo = empresa.logo ? `<img src="${empresa.logo}" class="w-full h-full object-contain">` : `<i class="fa-solid fa-brush text-white"></i>`;
+            document.getElementById('intro-logo-container').innerHTML = logo;
+            document.getElementById('header-logo-container').innerHTML = logo;
             
-            const sobreImg = document.getElementById('sobre-imagem-container');
-            sobreImg.innerHTML = `<img src="${empresa.foto_sobre}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"><div class="zoom-overlay"><i class="fa-solid fa-expand text-white text-3xl"></i></div>`;
+            document.getElementById('sobre-imagem-container').innerHTML = `<img src="${empresa.foto_sobre}" class="w-full h-full object-cover">`;
 
             document.getElementById('grid-servicos').innerHTML = servicos.map(s => `
-                <div class="liquid-glass rounded-[2.5rem] p-8 cursor-pointer group hover:bg-orange-600 transition-all reveal-on-scroll" onclick="openServico('${s.id}')">
-                    <div class="flex justify-between items-center mb-4">
-                        <div class="liquid-label group-hover:bg-slate-900 border-none transition-colors"><h3 class="text-[10px] font-black uppercase group-hover:text-white">${s.titulo}</h3></div>
-                        <span class="text-[9px] font-black uppercase text-slate-500 group-hover:text-white flex items-center gap-1"><i class="fa-regular fa-images"></i> Ver Galeria</span>
-                    </div>
-                    <p class="text-sm text-muted font-medium group-hover:text-white/80 leading-relaxed">${s.descricao}</p>
+                <div class="liquid-glass rounded-3xl p-6 active:scale-[0.98] transition-transform reveal-on-scroll" onclick="openServico('${s.id}')">
+                    <h3 class="text-xs font-black uppercase mb-2 text-slate-800">${s.titulo}</h3>
+                    <p class="text-[11px] text-slate-500 leading-relaxed line-clamp-2">${s.descricao}</p>
                 </div>
             `).join('');
 
-            document.getElementById('cases-track').innerHTML = cases.map(c => `
-                <div class="w-[85%] md:w-[45%] flex-none snap-center liquid-glass rounded-[2.5rem] p-3 cursor-pointer group hover:bg-orange-600 transition-all reveal-on-scroll" onclick="openCase('${c.id}')">
-                    <div class="aspect-video rounded-[2rem] overflow-hidden relative mb-4">
-                        <img src="${c.imagem}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                        <div class="absolute bottom-4 left-4"><div class="liquid-label group-hover:bg-slate-900 border-none transition-colors"><h3 class="text-[9px] font-black uppercase text-white">${c.cliente}</h3></div></div>
-                    </div>
-                    <p class="px-4 pb-4 text-xs italic text-muted group-hover:text-white/80 line-clamp-2 leading-relaxed">"${c.comentario}"</p>
-                </div>
-            `).join('');
+            // Navegação suave
+            document.querySelectorAll('.nav-item').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = link.getAttribute('href');
+                    lenis.scrollTo(target, { offset: -80 });
+                });
+            });
         }
 
-        function openSobre() { showModal("Sobre a Empresa", [db.empresa.foto_sobre], db.empresa.sobre_texto); }
-        function openServico(id) { const s = db.servicos.find(x => x.id === id); showModal(s.titulo, s.fotos, ""); }
-        function openCase(id) { const c = db.cases.find(x => x.id === id); showModal(c.cliente, [c.imagem], c.comentario); }
+        function openSobre() { showModal("A Empresa", [window.db.empresa.foto_sobre], window.db.empresa.sobre_texto); }
+        function openServico(id) { const s = window.db.servicos.find(x => x.id === id); showModal(s.titulo, s.fotos, s.descricao); }
 
         function showModal(title, images, caption) {
-            if(lenis) lenis.stop();
+            lenis.stop();
             const modal = document.getElementById('immersive-modal');
-            const body = document.getElementById('modal-body');
             document.getElementById('modal-header-title').innerText = title;
-            document.getElementById('modal-images').innerHTML = images.map(img => `
-                <div class="w-full flex-none snap-center h-[60vh] md:h-[75vh] flex items-center justify-center p-2 mx-auto">
-                    <img src="${img}" class="max-w-full max-h-full object-contain rounded-[2rem] shadow-lg">
-                </div>
-            `).join('');
-            const capt = document.getElementById('modal-caption');
-            if(caption) { capt.innerText = `"${caption}"`; capt.style.display = 'block'; }
-            else capt.style.display = 'none';
+            document.getElementById('modal-images').innerHTML = images.map(img => `<img src="${img}" class="w-full rounded-2xl shadow-sm">`).join('');
+            document.getElementById('modal-caption').innerText = caption;
             modal.classList.remove('hidden');
-            setTimeout(() => { modal.classList.add('opacity-100'); body.classList.add('scale-100', 'opacity-100'); }, 10);
+            setTimeout(() => modal.classList.add('opacity-100'), 10);
             document.body.style.overflow = 'hidden';
         }
 
         function closeModal() {
-            if(lenis) lenis.start();
             const modal = document.getElementById('immersive-modal');
-            const body = document.getElementById('modal-body');
-            modal.classList.add('opacity-0'); body.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('opacity-100'); body.classList.remove('scale-100', 'opacity-100', 'scale-95'); document.body.style.overflow = ''; }, 500);
+            modal.classList.remove('opacity-100');
+            setTimeout(() => { modal.classList.add('hidden'); lenis.start(); document.body.style.overflow = ''; }, 300);
         }
-
-        function handleModalClick(e) { if(e.target.id === 'immersive-modal' || e.target.id === 'modal-body') closeModal(); }
     </script>
 </body>
 </html>
