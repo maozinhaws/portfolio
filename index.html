@@ -57,6 +57,7 @@
             --text-main: #0f172a; 
             --text-muted: #475569; 
             --shadow-vision: 0 15px 35px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+            --scroll-p: 0; 
         }
 
         body { background: #f8fafc; color: var(--text-main); margin: 0; overflow-x: hidden; font-family: system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
@@ -65,9 +66,20 @@
             position: fixed; inset: 0; z-index: -2;
             background-image: var(--bg-image); background-size: cover; background-position: center;
             transition: filter 2s ease, transform 2s ease;
-            filter: grayscale(0) blur(0.2px) brightness(1.1);
+            /* Inicia com 85% de cor para manter naturalidade imediata */
+            filter: saturate(0.85) blur(0.2px) brightness(0.75);
+            transform: scale(1);
         }
-        .bg-fixed-layer.intro-mode { filter: grayscale(1) blur(1px) brightness(0.7); transform: scale(1.05); }
+        
+        .bg-fixed-layer.intro-mode { filter: saturate(0.85) blur(1px) brightness(0.75); transform: scale(1.05); }
+
+        /* Classe ativada pós-intro para performance 3D via var(--scroll-p) */
+        .bg-fixed-layer.scroll-anim {
+            transition: none; 
+            /* Sobe de 85% (0.85) para 160% (0.85 + 0.75) de saturação */
+            filter: saturate(calc(0.85 + (var(--scroll-p) * 0.75))) blur(0.2px) brightness(calc(0.75 + (var(--scroll-p) * 0.35)));
+            transform: scale(calc(1 + (var(--scroll-p) * 0.15))) translateY(calc(var(--scroll-p) * 2%));
+        }
 
         .liquid-glass { 
             background: var(--glass-bg); border: 1px solid var(--glass-border); 
@@ -224,6 +236,16 @@
         window.addEventListener('load', () => {
             if(window.Lenis) {
                 lenis = new Lenis({ duration: 1.2, smooth: true });
+                
+                lenis.on('scroll', (e) => {
+                    const bg = document.querySelector('.bg-fixed-layer');
+                    if(bg.classList.contains('scroll-anim')) {
+                        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+                        const progress = maxScroll > 0 ? (e.animatedScroll / maxScroll) : 0;
+                        document.documentElement.style.setProperty('--scroll-p', Math.min(Math.max(progress, 0), 1));
+                    }
+                });
+
                 function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
                 requestAnimationFrame(raf);
             }
@@ -250,6 +272,10 @@
                     main.style.opacity = '1'; 
                     initScrollReveal();
                     startTypewriterEffect();
+                    
+                    setTimeout(() => {
+                        bg.classList.add('scroll-anim');
+                    }, 2000);
                 }, 50);
             }, 800);
         }
