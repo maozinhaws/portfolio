@@ -1,23 +1,28 @@
 const db = {
     "empresa": {
-        "logo": "",
-        "foto_sobre": "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=60&fm=webp",
-        "nome": "teste",
-        "whatsapp": "5511999999999",
-        "hero_titulo": "Engenharia de Alto Padrão",
-        "hero_subtitulo": "Estética e Tecnologia de Superfícies",
+        "logo": "./assets/img/1775550793120-Logotipo-removebg-preview.png",
+        "foto_sobre": "./assets/img/1775550799159-Logotipo.png",
+        "nome": "MOREIRA",
+        "whatsapp": "5541998105855",
+        "hero_titulo": "MOREIRA PINTURAS",
+        "hero_subtitulo": "Um novo olhar através das cores.",
         "sobre_texto": "Especialistas na execução de projetos de acabamento de luxo com rigor técnico extremo. Transformamos arquitetura em ambientes exclusivos através de processos de engenharia.",
-        "anos_experiencia": "12+",
-        "obras_entregues": "640+"
+        "anos_experiencia": "20+",
+        "obras_entregues": "1000+",
+        "bg_hero": "./assets/img/1775550807436-f52daeef-cedc-4dca-8340-5e62729c10a0.png"
     },
     "servicos": [
         {
             "id": "airless",
-            "titulo": "Pintura Airless",
-            "descricao": "Acabamento mecanizado de alta precisão para superfícies espelhadas.",
+            "titulo": "Teste Serviço",
+            "descricao": "blablafskdfisfsdf",
             "fotos": [
                 "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=600&q=50&fm=webp",
-                "./assets/img/1775548829660-Final.png"
+                "./assets/img/1775548829660-Final.png",
+                "./assets/img/1775550822734-elet-food-1.png",
+                "./assets/img/1775550824638-elet-food-2.png",
+                "./assets/img/1775550826204-eletrica-food-2.jpeg",
+                "./assets/img/1775550827509-Eletrica-Food.jpeg"
             ]
         },
         {
