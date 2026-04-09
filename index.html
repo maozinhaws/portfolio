@@ -135,22 +135,24 @@
         #main-content {
             display: flex;
             width: 100vw;
-            height: 100vh;
+            height: 100dvh;
             overflow-x: auto;
             overflow-y: hidden;
             scroll-snap-type: x mandatory;
             scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
         }
         .page-slide {
             flex: 0 0 100vw;
             width: 100vw;
-            height: 100vh;
+            height: 100dvh;
             scroll-snap-align: start;
+            scroll-snap-stop: always; /* IMPEDE que deslize passe de 1 slide de uma vez */
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 100px 1rem 160px 1rem;
+            padding: 90px 1rem 100px 1rem;
         }
-        @media(min-width: 768px) { .page-slide { padding: 120px 2rem 160px 2rem; } }
+        @media(min-width: 768px) { .page-slide { padding: 120px 2rem 120px 2rem; } }
         .page-slide::-webkit-scrollbar { display: none; }
         .page-slide { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -164,8 +166,6 @@
         .toast-container { position: fixed; top: 20px; right: 20px; z-index: 5000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
         .toast { background: var(--glass-bg); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); padding: 16px 24px; border-radius: 16px; box-shadow: var(--shadow-vision); transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); pointer-events: all; display: flex; align-items: center; gap: 12px; max-width: 400px; }
         .toast.show { transform: translateX(0); }
-        .swipe-hint { animation: swipeHint 2s ease-in-out infinite; }
-        @keyframes swipeHint { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(10px); } }
         
         @keyframes swipeHintX { 0%, 100% { transform: translateX(0); opacity: 0.4; } 50% { transform: translateX(15px); opacity: 1; } }
         .animate-swipe-x { animation: swipeHintX 2s ease-in-out infinite; cursor: pointer; }
@@ -214,22 +214,22 @@
         
         <!-- 0. HERO -->
         <div class="page-slide">
-            <div class="min-h-full flex flex-col items-center justify-center max-w-6xl mx-auto w-full">
-                <section class="text-center liquid-glass rounded-[2.5rem] md:rounded-[3rem] px-4 py-10 sm:px-8 md:px-10 max-w-3xl w-full reveal-on-scroll">
-                    <h1 id="hero-title" class="text-[clamp(1.75rem,6vw,3.75rem)] font-black leading-snug mb-4 md:mb-8 tracking-tighter uppercase text-white line-clamp-2 overflow-visible break-words py-1 hero-soft-shadow"></h1>
+            <div class="h-full flex flex-col items-center justify-center max-w-6xl mx-auto w-full">
+                <section class="text-center liquid-glass rounded-[2.5rem] md:rounded-[3rem] px-4 py-8 sm:px-8 md:px-10 max-w-3xl w-full reveal-on-scroll">
+                    <h1 id="hero-title" class="text-[clamp(1.75rem,6vw,3.75rem)] font-black leading-snug mb-4 tracking-tighter uppercase text-white line-clamp-2 overflow-visible break-words py-1 hero-soft-shadow"></h1>
                     <div class="flex justify-center items-center w-full">
                         <div class="liquid-label py-2 px-4 md:px-6 h-auto max-w-full label-soft-shadow">
                             <span id="hero-subtitle-label" class="font-black uppercase tracking-[0.1em] md:tracking-[0.2em] text-[10px] md:text-sm whitespace-normal line-clamp-2 text-center leading-relaxed" style="color: var(--premium-blue);"></span>
                         </div>
                     </div>
-                    <div class="mt-8 flex justify-center">
+                    <div class="mt-6 flex justify-center">
                         <button onclick="scrollToSection(5)" class="bg-orange-600 text-white px-8 py-4 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest hover:bg-orange-700 transition-all shadow-lg shadow-orange-500/30">
                             Solicitar Orçamento
                         </button>
                     </div>
                 </section>
                 
-                <div class="mt-12 md:mt-16 reveal-on-scroll flex justify-center w-full" style="transition-delay: 300ms;">
+                <div class="mt-8 reveal-on-scroll flex justify-center w-full" style="transition-delay: 300ms;">
                     <div onclick="scrollToSection(1)" class="liquid-label py-3 px-6 cursor-pointer hover:bg-white/10 transition-colors flex items-center gap-3 shadow-xl">
                         <span class="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-white">deslize para continuar</span>
                         <i class="fa-solid fa-angles-right text-orange-500 animate-swipe-x"></i>
@@ -240,7 +240,7 @@
 
         <!-- 1. SOBRE -->
         <div class="page-slide">
-            <div class="min-h-full flex items-center justify-center max-w-6xl mx-auto">
+            <div class="h-full flex items-center justify-center max-w-6xl mx-auto">
                 <section id="sobre" class="liquid-glass rounded-[2rem] md:rounded-[3.5rem] p-6 sm:p-10 md:p-14 flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-12 items-center w-full reveal-on-scroll">
                     <div class="space-y-6 md:space-y-10 text-left order-2 md:order-1">
                         <div class="liquid-label py-1 px-4"><i class="fa-solid fa-building text-orange-500"></i><h2 class="text-[10px] md:text-[11px] font-black uppercase tracking-widest" style="color: var(--premium-blue)">A Empresa</h2></div>
@@ -280,7 +280,7 @@
 
         <!-- 2. PROCESSO -->
         <div class="page-slide">
-            <div class="min-h-full flex items-center justify-center max-w-6xl mx-auto w-full">
+            <div class="h-full flex items-center justify-center max-w-6xl mx-auto w-full">
                 <section id="processo" class="space-y-6 md:space-y-8 w-full reveal-on-scroll">
                     <div class="liquid-label py-1 px-4"><i class="fa-solid fa-diagram-project text-orange-500"></i><h2 class="text-[10px] md:text-[11px] font-black uppercase tracking-widest" style="color: var(--premium-blue)">Processo de Execução</h2></div>
                     <div class="liquid-glass rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 relative">
@@ -293,7 +293,7 @@
 
         <!-- 3. SERVIÇOS -->
         <div class="page-slide">
-            <div class="min-h-full flex items-start justify-center max-w-6xl mx-auto w-full">
+            <div class="h-full flex items-start justify-center max-w-6xl mx-auto w-full">
                 <section id="servicos" class="space-y-6 md:space-y-8 w-full reveal-on-scroll">
                     <div class="liquid-label py-1 px-4"><i class="fa-solid fa-paint-roller text-orange-500"></i><h2 class="text-[10px] md:text-[11px] font-black uppercase tracking-widest" style="color: var(--premium-blue)">Serviços</h2></div>
                     <div id="grid-servicos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"></div>
@@ -303,7 +303,7 @@
 
         <!-- 4. CASES -->
         <div class="page-slide">
-            <div class="min-h-full flex items-center justify-center max-w-6xl mx-auto w-full">
+            <div class="h-full flex items-center justify-center max-w-6xl mx-auto w-full">
                 <section id="cases" class="space-y-6 md:space-y-8 w-full reveal-on-scroll">
                     <div class="liquid-label py-1 px-4"><i class="fa-solid fa-comment-dots text-orange-500"></i><h2 class="text-[10px] md:text-[11px] font-black uppercase tracking-widest" style="color: var(--premium-blue)">Depoimentos</h2></div>
                     <div id="cases-track" class="flex overflow-x-auto snap-mandatory-x scrollbar-hide gap-4 md:gap-6 pb-6 md:pb-8 w-full"></div>
@@ -313,7 +313,7 @@
 
         <!-- 5. CONTATO -->
         <div class="page-slide">
-            <div class="min-h-full flex items-center justify-center max-w-6xl mx-auto w-full">
+            <div class="h-full flex items-center justify-center max-w-6xl mx-auto w-full">
                 <section id="contato" class="w-full reveal-on-scroll">
                     <div class="liquid-glass rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 grid md:grid-cols-2 gap-8 md:gap-12">
                         <div class="space-y-6">
@@ -675,19 +675,10 @@
             const icon = document.querySelector('#btn-zoom i');
             
             if (isZoomed) {
-                currentSlide.classList.remove('flex', 'items-center', 'justify-center');
-                currentSlide.classList.add('block');
-                img.classList.remove('w-full', 'h-full', 'object-contain', 'm-auto');
-                img.classList.add('w-[250vw]', 'md:w-[150vw]', 'max-w-none', 'h-auto', 'block');
+                img.style.transform = 'scale(2.5)';
                 icon.classList.replace('fa-expand', 'fa-compress');
-                
-                currentSlide.scrollLeft = (currentSlide.scrollWidth - currentSlide.clientWidth) / 2;
-                currentSlide.scrollTop = (currentSlide.scrollHeight - currentSlide.clientHeight) / 2;
             } else {
-                currentSlide.classList.add('flex', 'items-center', 'justify-center');
-                currentSlide.classList.remove('block');
-                img.classList.add('w-full', 'h-full', 'object-contain', 'm-auto');
-                img.classList.remove('w-[250vw]', 'md:w-[150vw]', 'max-w-none', 'h-auto', 'block');
+                img.style.transform = 'scale(1)';
                 icon.classList.replace('fa-compress', 'fa-expand');
             }
         }
@@ -703,6 +694,9 @@
         function openCase(id) { const c = db.cases.find(x => x.id === id); showModal(c.cliente, [c.imagem], c.comentario, c.cliente); }
 
         function showModal(title, images, caption, subtitle = null) {
+            // Libera o gesto de pinça (zoom nativo) reconfigurando a meta tag viewport dinamicamente
+            document.getElementById('viewport-meta').content = "width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes";
+
             document.body.style.pointerEvents = 'none';
             history.pushState({ modalOpen: true }, "");
             modalHistoryPushed = true;
@@ -717,10 +711,9 @@
             if(images && images.length > 0) btnZoom.classList.remove('hidden');
             else btnZoom.classList.add('hidden');
 
-            // Correção Aplicada: shrink-0 inserido na classe da imagem para impedir encolhimento na flexbox
             document.getElementById('modal-images').innerHTML = images.map((img, idx) => `
                 <div class="carousel-slide overflow-auto w-full h-full shrink-0 snap-center flex items-center justify-center" data-index="${idx}">
-                    <img src="${img}" class="w-full h-full object-contain m-auto transition-all duration-300 origin-center" decoding="async">
+                    <img src="${img}" class="w-full h-full object-contain m-auto transition-transform duration-300 origin-center" decoding="async">
                 </div>
             `).join('');
 
@@ -754,6 +747,9 @@
         }
 
         function closeModal(fromPopState = false) {
+            // Trava o zoom nativo novamente para proteger a estrutura do site
+            document.getElementById('viewport-meta').content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
+
             if (fromPopState === true) {
                 modalHistoryPushed = false;
             } else if (modalHistoryPushed) {
