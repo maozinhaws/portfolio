@@ -166,6 +166,9 @@
         .toast.show { transform: translateX(0); }
         .swipe-hint { animation: swipeHint 2s ease-in-out infinite; }
         @keyframes swipeHint { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(10px); } }
+        
+        @keyframes swipeHintX { 0%, 100% { transform: translateX(0); opacity: 0.4; } 50% { transform: translateX(15px); opacity: 1; } }
+        .animate-swipe-x { animation: swipeHintX 2s ease-in-out infinite; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -211,7 +214,7 @@
         
         <!-- 0. HERO -->
         <div class="page-slide">
-            <div class="min-h-full flex items-center justify-center max-w-6xl mx-auto">
+            <div class="min-h-full flex flex-col items-center justify-center max-w-6xl mx-auto w-full">
                 <section class="text-center liquid-glass rounded-[2.5rem] md:rounded-[3rem] px-4 py-10 sm:px-8 md:px-10 max-w-3xl w-full reveal-on-scroll">
                     <h1 id="hero-title" class="text-[clamp(1.75rem,6vw,3.75rem)] font-black leading-snug mb-4 md:mb-8 tracking-tighter uppercase text-white line-clamp-2 overflow-visible break-words py-1 hero-soft-shadow"></h1>
                     <div class="flex justify-center items-center w-full">
@@ -225,6 +228,13 @@
                         </button>
                     </div>
                 </section>
+                
+                <div class="mt-12 md:mt-16 reveal-on-scroll flex justify-center w-full" style="transition-delay: 300ms;">
+                    <div onclick="scrollToSection(1)" class="liquid-label py-3 px-6 cursor-pointer hover:bg-white/10 transition-colors flex items-center gap-3 shadow-xl">
+                        <span class="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-white">deslize para continuar</span>
+                        <i class="fa-solid fa-angles-right text-orange-500 animate-swipe-x"></i>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -601,21 +611,23 @@
                 <svg class="w-6 h-6 md:w-8 md:h-8 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
             </div>`;
 
-            document.getElementById('grid-servicos').innerHTML = servicos.map(s => `
+            document.getElementById('grid-servicos').innerHTML = servicos.map(s => {
+                const totalFotos = Array.isArray(s.fotos) ? s.fotos.length : 0;
+                return `
                 <div class="liquid-glass rounded-3xl md:rounded-[2.5rem] p-6 md:p-8 cursor-pointer group hover:bg-orange-600 transition-all reveal-on-scroll flex flex-col justify-between h-full w-full" onclick="openServico('${s.id}')">
                     <div>
                         <div class="flex justify-between items-center mb-3 md:mb-4">
                             <div class="liquid-label py-1 px-3 group-hover:bg-slate-900 border-none transition-colors"><h3 class="text-[9px] md:text-[10px] font-black uppercase group-hover:text-white line-clamp-1">${s.titulo}</h3></div>
-                            <span class="text-[8px] md:text-[9px] font-black uppercase text-slate-500 group-hover:text-white flex items-center gap-1 shrink-0"><i class="fa-regular fa-images"></i> ${s.fotos.length}</span>
+                            <span class="text-[8px] md:text-[9px] font-black uppercase text-slate-500 group-hover:text-white flex items-center gap-1 shrink-0"><i class="fa-regular fa-images"></i> ${totalFotos}</span>
                         </div>
                         <p class="text-xs md:text-sm text-muted font-medium group-hover:text-white/80 leading-relaxed line-clamp-3 mb-4">${s.descricao}</p>
                     </div>
-                    <div class="flex justify-between items-center pt-4 border-t border-slate-200/20 group-hover:border-white/20">
-                        <span class="text-[9px] uppercase font-bold text-slate-400 group-hover:text-white/60">A partir de</span>
-                        <span class="text-sm font-black text-orange-600 group-hover:text-white">${s.preco_referencia || 'Consultar'}</span>
+                    <div class="flex justify-end items-center pt-4 border-t border-slate-200/20 group-hover:border-white/20">
+                        <span class="text-xs font-black text-orange-600 group-hover:text-white uppercase tracking-widest flex items-center">Visualizar <i class="fa-solid fa-arrow-right ml-2"></i></span>
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
 
             document.getElementById('cases-track').innerHTML = cases.map(c => `
                 <div class="w-[85%] sm:w-[70%] md:w-[45%] lg:w-[35%] flex-none snap-center liquid-glass rounded-3xl md:rounded-[2.5rem] p-3 cursor-pointer group hover:bg-orange-600 transition-all reveal-on-scroll" onclick="openCase('${c.id}')">
@@ -663,7 +675,7 @@
             const icon = document.querySelector('#btn-zoom i');
             
             if (isZoomed) {
-                currentSlide.classList.remove('flex');
+                currentSlide.classList.remove('flex', 'items-center', 'justify-center');
                 currentSlide.classList.add('block');
                 img.classList.remove('w-full', 'h-full', 'object-contain', 'm-auto');
                 img.classList.add('w-[250vw]', 'md:w-[150vw]', 'max-w-none', 'h-auto', 'block');
@@ -672,7 +684,7 @@
                 currentSlide.scrollLeft = (currentSlide.scrollWidth - currentSlide.clientWidth) / 2;
                 currentSlide.scrollTop = (currentSlide.scrollHeight - currentSlide.clientHeight) / 2;
             } else {
-                currentSlide.classList.add('flex');
+                currentSlide.classList.add('flex', 'items-center', 'justify-center');
                 currentSlide.classList.remove('block');
                 img.classList.add('w-full', 'h-full', 'object-contain', 'm-auto');
                 img.classList.remove('w-[250vw]', 'md:w-[150vw]', 'max-w-none', 'h-auto', 'block');
@@ -687,7 +699,7 @@
         };
 
         function openSobre() { showModal("Sobre a Empresa", [db.empresa.foto_sobre], ""); }
-        function openServico(id) { const s = db.servicos.find(x => x.id === id); showModal(s.titulo, s.fotos, s.descricao); }
+        function openServico(id) { const s = db.servicos.find(x => x.id === id); showModal(s.titulo, s.fotos || [], s.descricao); }
         function openCase(id) { const c = db.cases.find(x => x.id === id); showModal(c.cliente, [c.imagem], c.comentario, c.cliente); }
 
         function showModal(title, images, caption, subtitle = null) {
@@ -705,8 +717,9 @@
             if(images && images.length > 0) btnZoom.classList.remove('hidden');
             else btnZoom.classList.add('hidden');
 
+            // Correção Aplicada: shrink-0 inserido na classe da imagem para impedir encolhimento na flexbox
             document.getElementById('modal-images').innerHTML = images.map((img, idx) => `
-                <div class="carousel-slide overflow-auto w-full h-full snap-center flex" data-index="${idx}">
+                <div class="carousel-slide overflow-auto w-full h-full shrink-0 snap-center flex items-center justify-center" data-index="${idx}">
                     <img src="${img}" class="w-full h-full object-contain m-auto transition-all duration-300 origin-center" decoding="async">
                 </div>
             `).join('');
