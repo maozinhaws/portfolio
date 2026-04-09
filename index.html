@@ -66,7 +66,6 @@
             --text-main: #0f172a; 
             --text-muted: #475569; 
             --shadow-vision: 0 15px 35px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.5);
-            --scroll-p: 0; 
         }
 
         body { background: #f8fafc; color: var(--text-main); margin: 0; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
@@ -81,11 +80,6 @@
         }
         
         .bg-fixed-layer.intro-mode { filter: saturate(0.85) blur(1px) brightness(0.75); transform: scale(1.05) translateZ(0); }
-        .bg-fixed-layer.scroll-anim {
-            transition: none; 
-            filter: saturate(calc(0.85 + (var(--scroll-p) * 0.75))) blur(0.2px) brightness(calc(0.75 + (var(--scroll-p) * 0.35)));
-            transform: scale(calc(1 + (var(--scroll-p) * 0.15))) translateX(calc(var(--scroll-p) * -2%)) translateZ(0);
-        }
 
         .liquid-glass { 
             background: var(--glass-bg); border: 1px solid var(--glass-border); 
@@ -147,12 +141,13 @@
             width: 100vw;
             height: 100dvh;
             scroll-snap-align: start;
-            scroll-snap-stop: always; /* IMPEDE que deslize passe de 1 slide de uma vez */
+            scroll-snap-stop: always;
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 90px 1rem 100px 1rem;
+            overscroll-behavior-y: contain;
+            padding: 90px 1rem 140px 1rem;
         }
-        @media(min-width: 768px) { .page-slide { padding: 120px 2rem 120px 2rem; } }
+        @media(min-width: 768px) { .page-slide { padding: 120px 2rem 140px 2rem; } }
         .page-slide::-webkit-scrollbar { display: none; }
         .page-slide { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -167,8 +162,8 @@
         .toast { background: var(--glass-bg); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); padding: 16px 24px; border-radius: 16px; box-shadow: var(--shadow-vision); transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); pointer-events: all; display: flex; align-items: center; gap: 12px; max-width: 400px; }
         .toast.show { transform: translateX(0); }
         
-        @keyframes swipeHintX { 0%, 100% { transform: translateX(0); opacity: 0.4; } 50% { transform: translateX(15px); opacity: 1; } }
-        .animate-swipe-x { animation: swipeHintX 2s ease-in-out infinite; cursor: pointer; }
+        @keyframes bounceHorizontal { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(10px); } }
+        .animate-bounce-horizontal { animation: bounceHorizontal 1.5s ease-in-out infinite; }
     </style>
 </head>
 <body>
@@ -214,7 +209,7 @@
         
         <!-- 0. HERO -->
         <div class="page-slide">
-            <div class="h-full flex flex-col items-center justify-center max-w-6xl mx-auto w-full">
+            <div class="flex flex-col items-center justify-center max-w-6xl mx-auto w-full h-full">
                 <section class="text-center liquid-glass rounded-[2.5rem] md:rounded-[3rem] px-4 py-8 sm:px-8 md:px-10 max-w-3xl w-full reveal-on-scroll">
                     <h1 id="hero-title" class="text-[clamp(1.75rem,6vw,3.75rem)] font-black leading-snug mb-4 tracking-tighter uppercase text-white line-clamp-2 overflow-visible break-words py-1 hero-soft-shadow"></h1>
                     <div class="flex justify-center items-center w-full">
@@ -222,17 +217,12 @@
                             <span id="hero-subtitle-label" class="font-black uppercase tracking-[0.1em] md:tracking-[0.2em] text-[10px] md:text-sm whitespace-normal line-clamp-2 text-center leading-relaxed" style="color: var(--premium-blue);"></span>
                         </div>
                     </div>
-                    <div class="mt-6 flex justify-center">
-                        <button onclick="scrollToSection(5)" class="bg-orange-600 text-white px-8 py-4 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest hover:bg-orange-700 transition-all shadow-lg shadow-orange-500/30">
-                            Solicitar Orçamento
-                        </button>
-                    </div>
                 </section>
                 
                 <div class="mt-8 reveal-on-scroll flex justify-center w-full" style="transition-delay: 300ms;">
-                    <div onclick="scrollToSection(1)" class="liquid-label py-3 px-6 cursor-pointer hover:bg-white/10 transition-colors flex items-center gap-3 shadow-xl">
-                        <span class="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-white">deslize para continuar</span>
-                        <i class="fa-solid fa-angles-right text-orange-500 animate-swipe-x"></i>
+                    <div onclick="scrollToSection(1)" class="liquid-label py-3 px-6 cursor-pointer flex items-center gap-3 shadow-xl animate-bounce-horizontal" style="background: rgba(255, 255, 255, 0.6); border: 2px solid var(--premium-blue);">
+                        <span class="text-[9px] md:text-[10px] font-black uppercase tracking-widest" style="color: var(--premium-blue);">deslize para continuar</span>
+                        <i class="fa-solid fa-angles-right" style="color: var(--premium-blue);"></i>
                     </div>
                 </div>
             </div>
@@ -240,7 +230,7 @@
 
         <!-- 1. SOBRE -->
         <div class="page-slide">
-            <div class="h-full flex items-center justify-center max-w-6xl mx-auto">
+            <div class="flex flex-col max-w-6xl mx-auto w-full pt-4 md:pt-8">
                 <section id="sobre" class="liquid-glass rounded-[2rem] md:rounded-[3.5rem] p-6 sm:p-10 md:p-14 flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-12 items-center w-full reveal-on-scroll">
                     <div class="space-y-6 md:space-y-10 text-left order-2 md:order-1">
                         <div class="liquid-label py-1 px-4"><i class="fa-solid fa-building text-orange-500"></i><h2 class="text-[10px] md:text-[11px] font-black uppercase tracking-widest" style="color: var(--premium-blue)">A Empresa</h2></div>
@@ -280,7 +270,7 @@
 
         <!-- 2. PROCESSO -->
         <div class="page-slide">
-            <div class="h-full flex items-center justify-center max-w-6xl mx-auto w-full">
+            <div class="flex flex-col max-w-6xl mx-auto w-full pt-4 md:pt-8">
                 <section id="processo" class="space-y-6 md:space-y-8 w-full reveal-on-scroll">
                     <div class="liquid-label py-1 px-4"><i class="fa-solid fa-diagram-project text-orange-500"></i><h2 class="text-[10px] md:text-[11px] font-black uppercase tracking-widest" style="color: var(--premium-blue)">Processo de Execução</h2></div>
                     <div class="liquid-glass rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 relative">
@@ -293,7 +283,7 @@
 
         <!-- 3. SERVIÇOS -->
         <div class="page-slide">
-            <div class="h-full flex items-start justify-center max-w-6xl mx-auto w-full">
+            <div class="flex flex-col max-w-6xl mx-auto w-full pt-4 md:pt-8">
                 <section id="servicos" class="space-y-6 md:space-y-8 w-full reveal-on-scroll">
                     <div class="liquid-label py-1 px-4"><i class="fa-solid fa-paint-roller text-orange-500"></i><h2 class="text-[10px] md:text-[11px] font-black uppercase tracking-widest" style="color: var(--premium-blue)">Serviços</h2></div>
                     <div id="grid-servicos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"></div>
@@ -303,17 +293,17 @@
 
         <!-- 4. CASES -->
         <div class="page-slide">
-            <div class="h-full flex items-center justify-center max-w-6xl mx-auto w-full">
+            <div class="flex flex-col max-w-6xl mx-auto w-full pt-4 md:pt-8">
                 <section id="cases" class="space-y-6 md:space-y-8 w-full reveal-on-scroll">
                     <div class="liquid-label py-1 px-4"><i class="fa-solid fa-comment-dots text-orange-500"></i><h2 class="text-[10px] md:text-[11px] font-black uppercase tracking-widest" style="color: var(--premium-blue)">Depoimentos</h2></div>
-                    <div id="cases-track" class="flex overflow-x-auto snap-mandatory-x scrollbar-hide gap-4 md:gap-6 pb-6 md:pb-8 w-full"></div>
+                    <div id="cases-track" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 w-full"></div>
                 </section>
             </div>
         </div>
 
         <!-- 5. CONTATO -->
         <div class="page-slide">
-            <div class="h-full flex items-center justify-center max-w-6xl mx-auto w-full">
+            <div class="flex flex-col max-w-6xl mx-auto w-full pt-4 md:pt-8">
                 <section id="contato" class="w-full reveal-on-scroll">
                     <div class="liquid-glass rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 grid md:grid-cols-2 gap-8 md:gap-12">
                         <div class="space-y-6">
@@ -448,7 +438,6 @@
                     footer.style.opacity = '1';
                     initScrollReveal();
                     startTypewriterEffect();
-                    setTimeout(() => bg.classList.add('scroll-anim'), 2000);
                 }, 50);
             }, 800);
         }
@@ -480,11 +469,30 @@
                     if (en.isIntersecting) {
                         en.target.classList.add('is-revealed');
                         if(en.target.id === 'sobre') triggerCounters();
+                    } else {
+                        // Zera os contadores quando o card Sobre sair da tela
+                        if(en.target.id === 'sobre') resetCounters();
                     }
                 });
             }, options);
 
             document.querySelectorAll('.reveal-on-scroll').forEach(el => obs.observe(el));
+        }
+
+        function resetCounters() {
+            const els = ['anos-experiencia', 'obras-entregues'];
+            els.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) {
+                    el.dataset.animated = "false";
+                    el.innerText = "0";
+                }
+            });
+            const rings = ['ring-anos', 'ring-obras'];
+            rings.forEach(id => {
+                const ring = document.getElementById(id);
+                if(ring) ring.style.strokeDashoffset = 251.2;
+            });
         }
 
         function triggerCounters() {
@@ -497,15 +505,20 @@
             const el = document.getElementById(id);
             const ring = document.getElementById(ringId);
             if(!el || el.dataset.animated === "true") return;
+            
+            el.dataset.animated = "true";
 
             const numericValue = parseInt(targetStr.replace(/\D/g, '')) || 0;
             const suffix = targetStr.replace(/[0-9]/g, '');
-            const duration = 2500; 
+            const duration = 2000; 
             const startTime = performance.now();
             const radius = 40;
             const circumference = 2 * Math.PI * radius;
 
             function update(now) {
+                // Aborta animação se foi resetada durante a execução
+                if (el.dataset.animated === "false") return;
+
                 const elapsed = now - startTime;
                 const progress = Math.min(elapsed / duration, 1);
                 const easeProgress = 1 - Math.pow(1 - progress, 4); 
@@ -517,7 +530,6 @@
                     ring.style.strokeDashoffset = circumference - (ringProgress * circumference);
                 }
                 if (progress < 1) requestAnimationFrame(update);
-                else el.dataset.animated = "true";
             }
             requestAnimationFrame(update);
         }
@@ -529,19 +541,27 @@
             setupHorizontalEngine();
         }
 
+        // Navegação de menu 100x mais leve utilizando Observer ao invés de Listener de Scroll pesado
         function setupHorizontalEngine() {
-            const mc = document.getElementById('main-content');
-            mc.addEventListener('scroll', () => {
-                const index = Math.round(mc.scrollLeft / mc.clientWidth);
-                document.querySelectorAll('.nav-item').forEach((item, i) => {
-                    if(i === index) item.classList.add('active');
-                    else item.classList.remove('active');
+            const slides = document.querySelectorAll('.page-slide');
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const index = Array.from(slides).indexOf(entry.target);
+                        navItems.forEach((item, i) => {
+                            if(i === index) item.classList.add('active');
+                            else item.classList.remove('active');
+                        });
+                    }
                 });
-                
-                const maxScroll = mc.scrollWidth - mc.clientWidth;
-                const progress = maxScroll > 0 ? (mc.scrollLeft / maxScroll) : 0;
-                document.documentElement.style.setProperty('--scroll-p', Math.min(Math.max(progress, 0), 1));
+            }, { 
+                root: document.getElementById('main-content'),
+                threshold: 0.5 
             });
+
+            slides.forEach(slide => observer.observe(slide));
         }
 
         window.scrollToSection = function(index) {
@@ -614,15 +634,15 @@
             document.getElementById('grid-servicos').innerHTML = servicos.map(s => {
                 const totalFotos = Array.isArray(s.fotos) ? s.fotos.length : 0;
                 return `
-                <div class="liquid-glass rounded-3xl md:rounded-[2.5rem] p-6 md:p-8 cursor-pointer group hover:bg-orange-600 transition-all reveal-on-scroll flex flex-col justify-between h-full w-full" onclick="openServico('${s.id}')">
+                <div class="liquid-glass rounded-3xl md:rounded-[2.5rem] p-5 md:p-6 cursor-pointer group hover:bg-orange-600 transition-all reveal-on-scroll flex flex-col justify-between h-full w-full" onclick="openServico('${s.id}')">
                     <div>
-                        <div class="flex justify-between items-center mb-3 md:mb-4">
+                        <div class="flex justify-between items-center mb-2 md:mb-3">
                             <div class="liquid-label py-1 px-3 group-hover:bg-slate-900 border-none transition-colors"><h3 class="text-[9px] md:text-[10px] font-black uppercase group-hover:text-white line-clamp-1">${s.titulo}</h3></div>
                             <span class="text-[8px] md:text-[9px] font-black uppercase text-slate-500 group-hover:text-white flex items-center gap-1 shrink-0"><i class="fa-regular fa-images"></i> ${totalFotos}</span>
                         </div>
-                        <p class="text-xs md:text-sm text-muted font-medium group-hover:text-white/80 leading-relaxed line-clamp-3 mb-4">${s.descricao}</p>
+                        <p class="text-xs md:text-sm text-muted font-medium group-hover:text-white/80 leading-relaxed line-clamp-3 mb-2">${s.descricao}</p>
                     </div>
-                    <div class="flex justify-end items-center pt-4 border-t border-slate-200/20 group-hover:border-white/20">
+                    <div class="flex justify-end items-center pt-2 border-t border-slate-200/20 group-hover:border-white/20">
                         <span class="text-xs font-black text-orange-600 group-hover:text-white uppercase tracking-widest flex items-center">Visualizar <i class="fa-solid fa-arrow-right ml-2"></i></span>
                     </div>
                 </div>
@@ -630,20 +650,20 @@
             }).join('');
 
             document.getElementById('cases-track').innerHTML = cases.map(c => `
-                <div class="w-[85%] sm:w-[70%] md:w-[45%] lg:w-[35%] flex-none snap-center liquid-glass rounded-3xl md:rounded-[2.5rem] p-3 cursor-pointer group hover:bg-orange-600 transition-all reveal-on-scroll" onclick="openCase('${c.id}')">
-                    <div class="aspect-video rounded-2xl md:rounded-[2rem] overflow-hidden relative mb-3 md:mb-4 bg-black/10">
+                <div class="liquid-glass rounded-3xl md:rounded-[2.5rem] p-4 cursor-pointer group hover:bg-orange-600 transition-all reveal-on-scroll flex flex-col h-full w-full" onclick="openCase('${c.id}')">
+                    <div class="aspect-video rounded-2xl md:rounded-[2rem] overflow-hidden relative mb-3 md:mb-4 bg-black/10 shrink-0">
                         <img src="${c.imagem}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                         <div class="absolute top-3 right-3 z-10 drop-shadow-md transition-transform group-hover:scale-110">
                             <svg class="w-4 h-4 md:w-5 md:h-5 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
                         </div>
                         <div class="absolute bottom-3 left-3 z-20"><div class="liquid-label py-1 px-3 group-hover:bg-slate-900 border-none transition-colors"><h3 class="text-[8px] md:text-[9px] font-black uppercase text-white line-clamp-1">${c.cliente}</h3></div></div>
                     </div>
-                    <div class="px-3 pb-3">
+                    <div class="px-2 pb-2 flex-1 flex flex-col">
                         <div class="flex justify-between items-center mb-2 text-[10px] uppercase tracking-wider text-slate-500 group-hover:text-white/70 font-bold">
                             <span><i class="fa-solid fa-location-dot mr-1"></i> ${c.local || 'SP'}</span>
                             <span>${c.area || ''}</span>
                         </div>
-                        <p class="text-[11px] md:text-xs italic text-muted group-hover:text-white/80 line-clamp-2 leading-relaxed font-normal">"${c.comentario}"</p>
+                        <p class="text-[11px] md:text-xs italic text-muted group-hover:text-white/80 line-clamp-3 leading-relaxed font-normal flex-1">"${c.comentario}"</p>
                     </div>
                 </div>
             `).join('');
@@ -694,7 +714,6 @@
         function openCase(id) { const c = db.cases.find(x => x.id === id); showModal(c.cliente, [c.imagem], c.comentario, c.cliente); }
 
         function showModal(title, images, caption, subtitle = null) {
-            // Libera o gesto de pinça (zoom nativo) reconfigurando a meta tag viewport dinamicamente
             document.getElementById('viewport-meta').content = "width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes";
 
             document.body.style.pointerEvents = 'none';
@@ -747,7 +766,6 @@
         }
 
         function closeModal(fromPopState = false) {
-            // Trava o zoom nativo novamente para proteger a estrutura do site
             document.getElementById('viewport-meta').content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
 
             if (fromPopState === true) {
