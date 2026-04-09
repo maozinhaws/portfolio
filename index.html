@@ -2,7 +2,7 @@
 <html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta id="viewport-meta" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -14,7 +14,6 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
-    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js" defer></script>
     
     <script>
         (function() {
@@ -22,23 +21,33 @@
             script.src = `./dados.js?v=${new Date().getTime()}`;
             script.async = false;
             script.onerror = function() {
-                console.warn("Erro de CORS ou rede ao carregar dados.js. Ativando fallback de segurança.");
+                console.warn("Fallback de dados ativo.");
                 window.db = {
                     "empresa": { 
-                        "nome": "PREMIUM", "whatsapp": "5511999999999",
+                        "nome": "PREMIUM", "whatsapp": "5511999999999", "instagram": "https://instagram.com",
+                        "email": "contato@premium.com.br", "telefone": "(11) 99999-9999",
+                        "endereco": "Av. Engenheiro Luís Carlos Berrini, 1000 - São Paulo/SP",
                         "hero_titulo": "Engenharia de Alto Padrão", "hero_subtitulo": "Estética e Tecnologia de Superfícies", 
-                        "sobre_texto": "Especialistas na execução de projetos de acabamento de luxo com rigor técnico extremo.", 
+                        "sobre_texto": "Especialistas na execução de projetos de acabamento de luxo com rigor técnico extremo. Transformamos superfícies em obras de arte através de tecnologia de ponta e materiais premium.", 
                         "anos_experiencia": "12+", "obras_entregues": "640+",
-                        "logo": "", "foto_sobre": "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=60&fm=webp"
+                        "logo": "", "foto_sobre": "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=60&fm=webp",
+                        "processo": [
+                            {"etapa": 1, "titulo": "Diagnóstico Técnico", "descricao": "Análise detalhada das superfícies e condições ambientais"},
+                            {"etapa": 2, "titulo": "Projeto 3D", "descricao": "Visualização prévia do acabamento em ambiente virtual"},
+                            {"etapa": 3, "titulo": "Execução Airless", "descricao": "Aplicação mecanizada com precisão milimétrica"},
+                            {"etapa": 4, "titulo": "Vitrificação", "descricao": "Finalização com resinas especiais para durabilidade extrema"}
+                        ]
                     },
                     "servicos": [
-                        { "id": "airless", "titulo": "Pintura Airless", "descricao": "Acabamento mecanizado de alta precisão para superfícies espelhadas.", "fotos": ["https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=600&q=50&fm=webp"] },
-                        { "id": "textura", "titulo": "Textura Nobre", "descricao": "Revestimentos técnicos com proteção hidrorrepelente de longa duração.", "fotos": ["https://images.unsplash.com/photo-1615873968403-89e068629275?w=600&q=50&fm=webp"] },
-                        { "id": "marmorato", "titulo": "Marmorato Polido", "descricao": "Efeito mármore de luxo com brilho vitrificado e profundidade visual.", "fotos": ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=50&fm=webp"] }
+                        { "id": "airless", "titulo": "Pintura Airless", "descricao": "Acabamento mecanizado de alta precisão para superfícies espelhadas sem marcas de rolo.", "fotos": ["https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=600&q=50&fm=webp", "https://images.unsplash.com/photo-1615873968403-89e068629275?w=600&q=50&fm=webp"], "preco_referencia": "Sob orçamento" },
+                        { "id": "marmorato", "titulo": "Marmorato Polido", "descricao": "Efeito mármore de luxo com brilho vitrificado e profundidade visual única.", "fotos": ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=50&fm=webp"], "preco_referencia": "Consultar" },
+                        { "id": "cimento", "titulo": "Cimento Queimado", "descricao": "Textura industrial sofisticada com selantes especiais anti-manchas.", "fotos": ["https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=50&fm=webp"], "preco_referencia": "Sob consulta" },
+                        { "id": "metalico", "titulo": "Efeito Metálico", "descricao": "Acabamentos com folhas de ouro, prata e bronze liquido.", "fotos": ["https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=600&q=50&fm=webp"], "preco_referencia": "Premium" }
                     ], 
                     "cases": [
-                        { "id": "c1", "imagem": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=50&fm=webp", "cliente": "Construtora Alpha", "comentario": "Execução técnica impecável. A equipe cumpriu rigorosamente o cronograma estipulado." },
-                        { "id": "c2", "imagem": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=50&fm=webp", "cliente": "Arquiteta Maria F.", "comentario": "Excelente qualidade no acabamento em cimento queimado. Total profissionalismo." }
+                        { "id": "c1", "imagem": "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=50&fm=webp", "cliente": "Construtora Alpha", "comentario": "Execução técnica impecável. A equipe cumpriu rigorosamente o cronograma estipulado.", "local": "São Paulo/SP", "area": "450m²" },
+                        { "id": "c2", "imagem": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=50&fm=webp", "cliente": "Arquiteta Maria F.", "comentario": "Excelente qualidade no acabamento em cimento queimado. Total profissionalismo.", "local": "Rio de Janeiro/RJ", "area": "280m²" },
+                        { "id": "c3", "imagem": "https://images.unsplash.com/photo-1600585154526-41d5f57e414d?w=600&q=50&fm=webp", "cliente": "Residência Jardins", "comentario": "O marmorato ficou espetacular. Superou todas as expectativas de design.", "local": "São Paulo/SP", "area": "120m²" }
                     ]
                 };
             };
@@ -60,7 +69,7 @@
             --scroll-p: 0; 
         }
 
-        body { background: #f8fafc; color: var(--text-main); margin: 0; overflow-x: hidden; font-family: system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+        body { background: #f8fafc; color: var(--text-main); margin: 0; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
 
         .bg-fixed-layer {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2;
@@ -72,11 +81,10 @@
         }
         
         .bg-fixed-layer.intro-mode { filter: saturate(0.85) blur(1px) brightness(0.75); transform: scale(1.05) translateZ(0); }
-
         .bg-fixed-layer.scroll-anim {
             transition: none; 
             filter: saturate(calc(0.85 + (var(--scroll-p) * 0.75))) blur(0.2px) brightness(calc(0.75 + (var(--scroll-p) * 0.35)));
-            transform: scale(calc(1 + (var(--scroll-p) * 0.15))) translateY(calc(var(--scroll-p) * 2%)) translateZ(0);
+            transform: scale(calc(1 + (var(--scroll-p) * 0.15))) translateX(calc(var(--scroll-p) * -2%)) translateZ(0);
         }
 
         .liquid-glass { 
@@ -95,9 +103,9 @@
         .reveal-on-scroll { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1); will-change: opacity, transform; }
         .reveal-on-scroll.is-revealed { opacity: 1; transform: translateY(0); }
 
-        .bottom-dock { position: fixed; bottom: 20px; left: 0; right: 0; margin-inline: auto; z-index: 100; display: flex; gap: 8px; padding: 8px; border-radius: 40px; width: fit-content; }
-        .nav-item { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--premium-blue); transition: all 0.4s ease; }
-        .nav-item:hover { background: rgba(255,255,255,0.15); transform: scale(1.15); }
+        .bottom-dock { position: fixed; bottom: 60px; left: 0; right: 0; margin-inline: auto; z-index: 100; display: flex; gap: 8px; padding: 8px; border-radius: 40px; width: fit-content; }
+        .nav-item { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--premium-blue); transition: all 0.4s ease; border: none; background: transparent; cursor: pointer; }
+        .nav-item.active { background: var(--accent-color); color: white; transform: scale(1.15); box-shadow: 0 10px 15px -3px rgba(249, 115, 22, 0.4); }
 
         #app-gate { position: fixed; inset: 0; z-index: 500; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); transition: opacity 0.8s ease; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
@@ -116,12 +124,53 @@
         .zoom-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; border-radius: inherit; }
         .group:hover .zoom-overlay { opacity: 1; }
 
-        #wa-fab { position: fixed; bottom: 20px; right: 20px; z-index: 101; width: 52px; height: 52px; border-radius: 50%; background: #25D366; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3); transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        #wa-fab { position: fixed; bottom: 140px; right: 20px; z-index: 101; width: 52px; height: 52px; border-radius: 50%; background: #25D366; color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3); transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        @media(min-width: 768px) { #wa-fab { bottom: 80px; } }
         #wa-fab:hover { transform: scale(1.1); }
+        
+        .hero-soft-shadow { text-shadow: 0 4px 15px rgba(0,0,0,0.6), 0 0 40px rgba(0,0,0,0.3); }
+        .label-soft-shadow { box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important; border: none !important; }
+
+        /* ESTILOS ESPECÍFICOS & HORIZONTAIS */
+        #main-content {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+        }
+        .page-slide {
+            flex: 0 0 100vw;
+            width: 100vw;
+            height: 100vh;
+            scroll-snap-align: start;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 100px 1rem 160px 1rem;
+        }
+        @media(min-width: 768px) { .page-slide { padding: 120px 2rem 160px 2rem; } }
+        .page-slide::-webkit-scrollbar { display: none; }
+        .page-slide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .process-line { position: absolute; left: 24px; top: 40px; bottom: 40px; width: 2px; background: linear-gradient(to bottom, var(--accent-color), transparent); opacity: 0.3; }
+        .process-card { transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        .process-card:hover { transform: translateX(10px); }
+        
+        .input-glass { background: rgba(255, 255, 255, 0.4); border: 1px solid rgba(255, 255, 255, 0.3); backdrop-filter: blur(10px); transition: all 0.3s ease; }
+        .input-glass:focus { background: rgba(255, 255, 255, 0.8); border-color: var(--accent-color); outline: none; transform: translateY(-2px); box-shadow: 0 10px 25px rgba(249, 115, 22, 0.15); }
+        
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 5000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .toast { background: var(--glass-bg); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); padding: 16px 24px; border-radius: 16px; box-shadow: var(--shadow-vision); transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); pointer-events: all; display: flex; align-items: center; gap: 12px; max-width: 400px; }
+        .toast.show { transform: translateX(0); }
+        .swipe-hint { animation: swipeHint 2s ease-in-out infinite; }
+        @keyframes swipeHint { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(10px); } }
     </style>
 </head>
 <body>
     <div class="bg-fixed-layer intro-mode"></div>
+    <div class="toast-container" id="toast-container"></div>
 
     <div id="app-gate">
         <div id="gate-content" class="text-center space-y-6 w-full max-w-[90%] md:max-w-xl px-4 transition-all duration-1000">
@@ -129,7 +178,7 @@
             <div class="space-y-4">
                 <h2 id="intro-name" class="text-3xl md:text-4xl font-black tracking-widest text-white uppercase line-clamp-1"></h2>
                 <div class="flex justify-center w-full">
-                    <div class="liquid-label py-1 px-4 max-w-full">
+                    <div class="liquid-label py-1 px-4 max-w-full label-soft-shadow">
                         <span id="intro-subtitle" class="font-bold uppercase tracking-widest text-[9px] md:text-[10px] !text-slate-300 line-clamp-2 whitespace-normal leading-relaxed text-center"></span>
                     </div>
                 </div>
@@ -138,141 +187,225 @@
         </div>
     </div>
 
-    <div id="main-content" class="hidden opacity-0">
-        <header class="sticky top-0 z-40 w-full liquid-glass border-x-0 border-t-0 rounded-b-[2rem] md:rounded-b-[2.5rem] mb-8 md:mb-12">
-            <div class="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-5 flex items-center justify-between">
-                <div class="flex items-center gap-3 md:gap-4">
-                    <div id="header-logo-container" class="w-10 h-10 md:w-12 md:h-12 bg-orange-600 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg overflow-hidden shrink-0"></div>
-                    <div class="text-left">
-                        <h1 id="brand-name" class="text-base md:text-lg font-black tracking-tighter uppercase leading-none line-clamp-1" style="color: var(--premium-blue)"></h1>
-                        <p class="text-orange-500 font-bold text-[7px] md:text-[8px] uppercase tracking-widest mt-1">Engenharia</p>
-                    </div>
+    <!-- HEADER FIXO SOBRE TUDO -->
+    <header class="fixed top-0 z-40 w-full liquid-glass border-x-0 border-t-0 rounded-b-[2rem] md:rounded-b-[2.5rem] shadow-sm hidden opacity-0 transition-opacity duration-1000" id="main-header">
+        <div class="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-5 flex items-center justify-between">
+            <div class="flex items-center gap-3 md:gap-4">
+                <div id="header-logo-container" class="w-10 h-10 md:w-12 h-12 bg-orange-600 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg overflow-hidden shrink-0"></div>
+                <div class="text-left">
+                    <h1 id="brand-name" class="text-base md:text-lg font-black tracking-tighter uppercase leading-none line-clamp-1" style="color: var(--premium-blue)"></h1>
+                    <p class="text-orange-500 font-bold text-[7px] md:text-[8px] uppercase tracking-widest mt-1">Engenharia</p>
                 </div>
             </div>
-        </header>
+            <div class="flex items-center gap-4">
+                <a id="header-ig" href="#" target="_blank" rel="noopener noreferrer" class="text-slate-500 hover:text-orange-500 transition-colors"><i class="fa-brands fa-instagram text-2xl"></i></a>
+                <button onclick="scrollToSection(5)" class="hidden md:flex liquid-label py-2 px-4 text-[10px] font-black uppercase tracking-widest hover:bg-orange-600 hover:text-white transition-all">
+                    <i class="fa-solid fa-paper-plane mr-2"></i> Orçamento
+                </button>
+            </div>
+        </div>
+    </header>
 
-        <main class="max-w-6xl mx-auto px-4 md:px-6 space-y-12 md:space-y-16 pb-44">
-            <!-- Hero Corrigido: padding ajustado e line-height relaxado para não dar "sobra dura" ou cortar a fonte inferiormente -->
-            <section class="text-center py-10 md:py-16 liquid-glass rounded-[2.5rem] md:rounded-[3rem] px-4 sm:px-8 md:px-10 max-w-3xl mx-auto reveal-on-scroll">
-                <h1 id="hero-title" class="text-[clamp(1.75rem,6vw,3.75rem)] font-black leading-snug mb-4 md:mb-8 tracking-tighter uppercase text-white line-clamp-2 overflow-hidden break-words py-1" style="text-shadow: 0 10px 30px rgba(0,0,0,0.5)"></h1>
-                <div class="flex justify-center items-center w-full">
-                    <div class="liquid-label py-2 px-4 md:px-6 h-auto max-w-full">
-                        <span id="hero-subtitle-label" class="font-black uppercase tracking-[0.1em] md:tracking-[0.2em] text-[10px] md:text-sm whitespace-normal line-clamp-2 text-center leading-relaxed" style="color: var(--premium-blue);"></span>
-                    </div>
-                </div>
-            </section>
-
-            <section id="sobre" class="liquid-glass rounded-[2rem] md:rounded-[3.5rem] p-6 sm:p-10 md:p-14 flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-12 items-center reveal-on-scroll">
-                <div class="space-y-6 md:space-y-10 text-left order-2 md:order-1">
-                    <div class="liquid-label py-1 px-4"><i class="fa-solid fa-building text-orange-500"></i><h2 class="text-[10px] md:text-[11px] font-black uppercase tracking-widest" style="color: var(--premium-blue)">A Empresa</h2></div>
-                    <p id="sobre-texto" class="text-sm md:text-base text-muted leading-relaxed font-medium"></p>
-                    
-                    <div class="grid grid-cols-2 gap-3 md:gap-4">
-                        <div class="liquid-glass rounded-2xl md:rounded-[2rem] p-4 md:p-6 flex flex-col items-center">
-                            <div class="counter-container w-20 h-20 md:w-[120px] md:h-[120px]">
-                                <svg class="progress-ring" width="100%" height="100%" viewBox="0 0 120 120">
-                                    <circle class="text-slate-200 stroke-current" stroke-width="8" cx="60" cy="60" r="40" fill="transparent"/>
-                                    <circle id="ring-anos" class="progress-ring__circle text-orange-500 stroke-current" stroke-width="8" stroke-linecap="round" cx="60" cy="60" r="40" fill="transparent"/>
-                                </svg>
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <span id="anos-experiencia" class="count-up text-xl md:text-3xl font-black">0</span>
-                                </div>
-                            </div>
-                            <span class="text-[8px] md:text-[9px] uppercase font-black tracking-widest mt-2 text-slate-500">Anos Exp.</span>
-                        </div>
-                        
-                        <div class="liquid-glass rounded-2xl md:rounded-[2rem] p-4 md:p-6 flex flex-col items-center">
-                            <div class="counter-container w-20 h-20 md:w-[120px] md:h-[120px]">
-                                <svg class="progress-ring" width="100%" height="100%" viewBox="0 0 120 120">
-                                    <circle class="text-slate-200 stroke-current" stroke-width="8" cx="60" cy="60" r="40" fill="transparent"/>
-                                    <circle id="ring-obras" class="progress-ring__circle text-orange-500 stroke-current" stroke-width="8" stroke-linecap="round" cx="60" cy="60" r="40" fill="transparent"/>
-                                </svg>
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <span id="obras-entregues" class="count-up text-xl md:text-3xl font-black">0</span>
-                                </div>
-                            </div>
-                            <span class="text-[8px] md:text-[9px] uppercase font-black tracking-widest mt-2 text-slate-500">Projetos</span>
+    <!-- CONTAINER DE NAVEGAÇÃO HORIZONTAL -->
+    <div id="main-content" class="hidden opacity-0 scrollbar-hide">
+        
+        <!-- 0. HERO -->
+        <div class="page-slide">
+            <div class="min-h-full flex items-center justify-center max-w-6xl mx-auto">
+                <section class="text-center liquid-glass rounded-[2.5rem] md:rounded-[3rem] px-4 py-10 sm:px-8 md:px-10 max-w-3xl w-full reveal-on-scroll">
+                    <h1 id="hero-title" class="text-[clamp(1.75rem,6vw,3.75rem)] font-black leading-snug mb-4 md:mb-8 tracking-tighter uppercase text-white line-clamp-2 overflow-visible break-words py-1 hero-soft-shadow"></h1>
+                    <div class="flex justify-center items-center w-full">
+                        <div class="liquid-label py-2 px-4 md:px-6 h-auto max-w-full label-soft-shadow">
+                            <span id="hero-subtitle-label" class="font-black uppercase tracking-[0.1em] md:tracking-[0.2em] text-[10px] md:text-sm whitespace-normal line-clamp-2 text-center leading-relaxed" style="color: var(--premium-blue);"></span>
                         </div>
                     </div>
-                </div>
-                <div class="flex flex-col items-center order-1 md:order-2 w-full">
-                    <div class="w-full max-w-[200px] md:max-w-[260px] space-y-2">
-                        <span class="text-[8px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-1 justify-center"><i class="fa-solid fa-magnifying-glass-plus"></i> Clique para ampliar</span>
-                        <div id="sobre-imagem-container" class="relative group aspect-square rounded-[1.5rem] md:rounded-[2rem] overflow-hidden liquid-glass shadow-2xl flex items-center justify-center cursor-pointer active:scale-95 transition-transform" onclick="openSobre()"></div>
+                    <div class="mt-8 flex justify-center">
+                        <button onclick="scrollToSection(5)" class="bg-orange-600 text-white px-8 py-4 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest hover:bg-orange-700 transition-all shadow-lg shadow-orange-500/30">
+                            Solicitar Orçamento
+                        </button>
                     </div>
-                </div>
-            </section>
+                </section>
+            </div>
+        </div>
 
-            <section id="servicos" class="space-y-6 md:space-y-8">
-                <div class="liquid-label py-1 px-4 reveal-on-scroll"><i class="fa-solid fa-paint-roller text-orange-500"></i><h2 class="text-[10px] md:text-[11px] font-black uppercase tracking-widest" style="color: var(--premium-blue)">Serviços</h2></div>
-                <div id="grid-servicos" class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6"></div>
-            </section>
+        <!-- 1. SOBRE -->
+        <div class="page-slide">
+            <div class="min-h-full flex items-center justify-center max-w-6xl mx-auto">
+                <section id="sobre" class="liquid-glass rounded-[2rem] md:rounded-[3.5rem] p-6 sm:p-10 md:p-14 flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-12 items-center w-full reveal-on-scroll">
+                    <div class="space-y-6 md:space-y-10 text-left order-2 md:order-1">
+                        <div class="liquid-label py-1 px-4"><i class="fa-solid fa-building text-orange-500"></i><h2 class="text-[10px] md:text-[11px] font-black uppercase tracking-widest" style="color: var(--premium-blue)">A Empresa</h2></div>
+                        <p id="sobre-texto" class="text-sm md:text-base text-muted leading-relaxed font-medium"></p>
+                        <div class="grid grid-cols-2 gap-3 md:gap-4">
+                            <div class="liquid-glass rounded-2xl md:rounded-[2rem] p-4 md:p-6 flex flex-col items-center">
+                                <div class="counter-container w-20 h-20 md:w-[100px] md:h-[100px]">
+                                    <svg class="progress-ring" width="100%" height="100%" viewBox="0 0 120 120">
+                                        <circle class="text-slate-200 stroke-current" stroke-width="8" cx="60" cy="60" r="40" fill="transparent"/>
+                                        <circle id="ring-anos" class="progress-ring__circle text-orange-500 stroke-current" stroke-width="8" stroke-linecap="round" cx="60" cy="60" r="40" fill="transparent"/>
+                                    </svg>
+                                    <div class="absolute inset-0 flex items-center justify-center"><span id="anos-experiencia" class="count-up text-lg md:text-2xl font-black">0</span></div>
+                                </div>
+                                <span class="text-[8px] md:text-[9px] uppercase font-black tracking-widest mt-2 text-slate-500">Anos Exp.</span>
+                            </div>
+                            <div class="liquid-glass rounded-2xl md:rounded-[2rem] p-4 md:p-6 flex flex-col items-center">
+                                <div class="counter-container w-20 h-20 md:w-[100px] md:h-[100px]">
+                                    <svg class="progress-ring" width="100%" height="100%" viewBox="0 0 120 120">
+                                        <circle class="text-slate-200 stroke-current" stroke-width="8" cx="60" cy="60" r="40" fill="transparent"/>
+                                        <circle id="ring-obras" class="progress-ring__circle text-orange-500 stroke-current" stroke-width="8" stroke-linecap="round" cx="60" cy="60" r="40" fill="transparent"/>
+                                    </svg>
+                                    <div class="absolute inset-0 flex items-center justify-center"><span id="obras-entregues" class="count-up text-lg md:text-2xl font-black">0</span></div>
+                                </div>
+                                <span class="text-[8px] md:text-[9px] uppercase font-black tracking-widest mt-2 text-slate-500">Projetos</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center order-1 md:order-2 w-full">
+                        <div class="w-full max-w-[200px] md:max-w-[260px] space-y-2">
+                            <span class="text-[8px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-1 justify-center">Clique para ampliar</span>
+                            <div id="sobre-imagem-container" class="relative group aspect-square rounded-[1.5rem] md:rounded-[2rem] overflow-hidden liquid-glass shadow-2xl flex items-center justify-center cursor-pointer active:scale-95 transition-transform" onclick="openSobre()"></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
 
-            <section id="cases" class="space-y-6 md:space-y-8">
-                <div class="liquid-label py-1 px-4 reveal-on-scroll"><i class="fa-solid fa-comment-dots text-orange-500"></i><h2 class="text-[10px] md:text-[11px] font-black uppercase tracking-widest" style="color: var(--premium-blue)">Depoimentos</h2></div>
-                <div id="cases-track" class="flex overflow-x-auto snap-mandatory-x scrollbar-hide gap-4 md:gap-6 pb-6 md:pb-8"></div>
-            </section>
-        </main>
+        <!-- 2. PROCESSO -->
+        <div class="page-slide">
+            <div class="min-h-full flex items-center justify-center max-w-6xl mx-auto w-full">
+                <section id="processo" class="space-y-6 md:space-y-8 w-full reveal-on-scroll">
+                    <div class="liquid-label py-1 px-4"><i class="fa-solid fa-diagram-project text-orange-500"></i><h2 class="text-[10px] md:text-[11px] font-black uppercase tracking-widest" style="color: var(--premium-blue)">Processo de Execução</h2></div>
+                    <div class="liquid-glass rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 relative">
+                        <div class="process-line hidden md:block"></div>
+                        <div id="process-container" class="space-y-6 md:space-y-8"></div>
+                    </div>
+                </section>
+            </div>
+        </div>
 
-        <nav class="bottom-dock liquid-glass shadow-2xl">
-            <a href="#sobre" class="nav-item"><i class="fa-solid fa-building"></i></a>
-            <a href="#servicos" class="nav-item"><i class="fa-solid fa-paint-roller"></i></a>
-            <a href="#cases" class="nav-item"><i class="fa-solid fa-comment-dots"></i></a>
-        </nav>
+        <!-- 3. SERVIÇOS -->
+        <div class="page-slide">
+            <div class="min-h-full flex items-start justify-center max-w-6xl mx-auto w-full">
+                <section id="servicos" class="space-y-6 md:space-y-8 w-full reveal-on-scroll">
+                    <div class="liquid-label py-1 px-4"><i class="fa-solid fa-paint-roller text-orange-500"></i><h2 class="text-[10px] md:text-[11px] font-black uppercase tracking-widest" style="color: var(--premium-blue)">Serviços</h2></div>
+                    <div id="grid-servicos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"></div>
+                </section>
+            </div>
+        </div>
 
-        <!-- Corrigido: target _blank com rel secure opener para saltar o iframe bloqueador -->
+        <!-- 4. CASES -->
+        <div class="page-slide">
+            <div class="min-h-full flex items-center justify-center max-w-6xl mx-auto w-full">
+                <section id="cases" class="space-y-6 md:space-y-8 w-full reveal-on-scroll">
+                    <div class="liquid-label py-1 px-4"><i class="fa-solid fa-comment-dots text-orange-500"></i><h2 class="text-[10px] md:text-[11px] font-black uppercase tracking-widest" style="color: var(--premium-blue)">Depoimentos</h2></div>
+                    <div id="cases-track" class="flex overflow-x-auto snap-mandatory-x scrollbar-hide gap-4 md:gap-6 pb-6 md:pb-8 w-full"></div>
+                </section>
+            </div>
+        </div>
+
+        <!-- 5. CONTATO -->
+        <div class="page-slide">
+            <div class="min-h-full flex items-center justify-center max-w-6xl mx-auto w-full">
+                <section id="contato" class="w-full reveal-on-scroll">
+                    <div class="liquid-glass rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 grid md:grid-cols-2 gap-8 md:gap-12">
+                        <div class="space-y-6">
+                            <div class="liquid-label py-1 px-4 w-fit"><i class="fa-solid fa-envelope text-orange-500"></i><h2 class="text-[10px] md:text-[11px] font-black uppercase tracking-widest" style="color: var(--premium-blue)">Orçamento</h2></div>
+                            <h3 class="text-2xl md:text-3xl font-black text-slate-800 leading-tight">Solicite um projeto<br><span class="text-orange-600">sob medida</span></h3>
+                            <p class="text-sm text-slate-600 leading-relaxed">Preencha o formulário ao lado com os detalhes do seu projeto. Nossa equipe técnica retornará em até 24h úteis.</p>
+                            
+                            <div class="space-y-4 pt-4">
+                                <a href="#" id="contato-wa" target="_blank" class="flex items-center gap-4 p-4 liquid-glass rounded-2xl hover:bg-orange-600/10 transition-all group">
+                                    <div class="w-12 h-12 rounded-full bg-green-500 text-white flex items-center justify-center text-xl shadow-lg"><i class="fa-brands fa-whatsapp"></i></div>
+                                    <div>
+                                        <div class="text-[10px] uppercase font-black text-slate-400 tracking-widest">WhatsApp</div>
+                                        <div class="text-sm font-bold text-slate-800 group-hover:text-orange-600 transition-colors">Fale conosco agora</div>
+                                    </div>
+                                </a>
+                                <div class="flex items-center gap-4 p-4 liquid-glass rounded-2xl">
+                                    <div class="w-12 h-12 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-xl"><i class="fa-solid fa-location-dot"></i></div>
+                                    <div>
+                                        <div class="text-[10px] uppercase font-black text-slate-400 tracking-widest">Localização</div>
+                                        <div id="endereco-texto" class="text-xs font-medium text-slate-700 leading-tight"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form id="orcamento-form" class="space-y-4" onsubmit="handleFormSubmit(event)">
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <input type="text" id="nome" required placeholder="Nome completo" class="input-glass w-full px-5 py-4 rounded-2xl text-sm font-medium text-slate-700 placeholder:text-slate-400">
+                                <input type="tel" id="telefone" required placeholder="Telefone / WhatsApp" class="input-glass w-full px-5 py-4 rounded-2xl text-sm font-medium text-slate-700 placeholder:text-slate-400">
+                            </div>
+                            <input type="email" id="email" required placeholder="E-mail profissional" class="input-glass w-full px-5 py-4 rounded-2xl text-sm font-medium text-slate-700 placeholder:text-slate-400">
+                            <select id="tipo-projeto" required class="input-glass w-full px-5 py-4 rounded-2xl text-sm font-medium text-slate-700 bg-transparent">
+                                <option value="" disabled selected>Tipo de projeto</option>
+                                <option value="residencial">Residencial de Alto Padrão</option>
+                                <option value="comercial">Espaço Comercial/Loja</option>
+                                <option value="corporativo">Corporativo/Escritório</option>
+                            </select>
+                            <textarea id="mensagem" rows="4" placeholder="Descreva o projeto (metragem, acabamentos desejados, prazo...)" class="input-glass w-full px-5 py-4 rounded-2xl text-sm font-medium text-slate-700 placeholder:text-slate-400 resize-none"></textarea>
+                            <button type="submit" id="btn-enviar" class="w-full bg-orange-600 text-white font-black uppercase tracking-widest text-xs py-5 rounded-2xl hover:bg-orange-700 transition-all shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2">
+                                <span>Enviar Solicitação</span><i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </div>
+
         <a id="wa-fab" href="#" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp text-2xl md:text-3xl"></i></a>
     </div>
 
-    <!-- Modal com Controles de Zoom e Setas do Carrossel -->
-    <div id="immersive-modal" class="fixed inset-0 hidden flex-col opacity-0 transition-opacity duration-500 z-[200] liquid-glass rounded-none border-none">
-        <div id="modal-body" class="flex flex-col h-full w-full scale-95 opacity-0 transition-all duration-500 px-4 md:px-6 py-8 md:py-10 relative">
-            <div class="max-w-5xl mx-auto w-full flex justify-between items-center mb-4 md:mb-6 z-50">
-                <div class="liquid-label py-1 px-4 max-w-[70%]"><h2 id="modal-header-title" class="text-[10px] md:text-xs font-black uppercase tracking-widest truncate line-clamp-1"></h2></div>
-                <button onclick="closeModal()" class="w-10 h-10 md:w-12 h-12 liquid-glass rounded-full border-none flex items-center justify-center active:scale-90 transition-transform"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <!-- Setas do Carrossel -->
-            <button onclick="moveCarousel(-1)" class="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-[250] w-10 h-10 md:w-14 md:h-14 bg-black/40 hover:bg-black/70 text-white rounded-full flex items-center justify-center backdrop-blur-md transition-all hidden" id="carousel-prev"><i class="fa-solid fa-chevron-left text-xl"></i></button>
-            <button onclick="moveCarousel(1)" class="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 z-[250] w-10 h-10 md:w-14 md:h-14 bg-black/40 hover:bg-black/70 text-white rounded-full flex items-center justify-center backdrop-blur-md transition-all hidden" id="carousel-next"><i class="fa-solid fa-chevron-right text-xl"></i></button>
+    <!-- BOTTOM DOCK HORIZONTAL PAGER -->
+    <nav class="bottom-dock liquid-glass shadow-2xl flex md:flex hidden opacity-0 transition-opacity duration-1000" id="main-dock">
+        <button class="nav-item active" onclick="scrollToSection(0)"><i class="fa-solid fa-home"></i></button>
+        <button class="nav-item" onclick="scrollToSection(1)"><i class="fa-solid fa-building"></i></button>
+        <button class="nav-item" onclick="scrollToSection(2)"><i class="fa-solid fa-diagram-project"></i></button>
+        <button class="nav-item" onclick="scrollToSection(3)"><i class="fa-solid fa-paint-roller"></i></button>
+        <button class="nav-item" onclick="scrollToSection(4)"><i class="fa-solid fa-comment-dots"></i></button>
+        <button class="nav-item" onclick="scrollToSection(5)"><i class="fa-solid fa-envelope"></i></button>
+    </nav>
 
-            <div id="modal-images" class="flex-1 overflow-x-auto overflow-y-hidden snap-mandatory-x scrollbar-hide space-x-4 pb-32 flex items-center scroll-smooth"></div>
-            
-            <div id="modal-caption" class="fixed bottom-[90px] left-1/2 -translate-x-1/2 w-full max-w-md px-6 text-center text-white italic font-medium drop-shadow-md z-40 pointer-events-none text-sm"></div>
-
-            <!-- Zoom Controls -->
-            <div id="zoom-controls" class="hidden absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center gap-3 bg-slate-900/90 backdrop-blur-md px-5 py-2 md:py-3 rounded-full border border-white/20 shadow-2xl z-[300]">
-                <button onclick="changeZoom(-0.25)" class="w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 active:scale-95 transition-all"><i class="fa-solid fa-minus text-xs"></i></button>
-                <span id="zoom-level" class="text-white text-[10px] md:text-xs font-bold font-mono w-10 text-center select-none">100%</span>
-                <button onclick="changeZoom(0.25)" class="w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 active:scale-95 transition-all"><i class="fa-solid fa-plus text-xs"></i></button>
-                <div class="w-px h-4 bg-white/20 mx-1"></div>
-                <button onclick="resetZoom()" class="w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 active:scale-95 transition-all" title="Restaurar"><i class="fa-solid fa-expand text-xs"></i></button>
+    <!-- FOOTER FIXO MINIMALISTA -->
+    <footer id="main-footer" class="fixed bottom-0 left-0 w-full z-[100] bg-slate-950/90 backdrop-blur-md border-t border-slate-800 py-3 px-4 md:px-8 flex justify-between items-center hidden opacity-0 transition-opacity duration-1000">
+        <div class="flex items-center gap-3">
+            <div id="footer-logo-mini" class="w-6 h-6 bg-orange-600 rounded flex items-center justify-center text-[8px] text-white"></div>
+            <div class="text-[8px] md:text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                <span id="footer-brand-mini" class="text-white"></span> © 2024
             </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <span id="footer-tel-mini" class="hidden md:inline text-[9px] font-bold uppercase tracking-widest text-slate-400"></span>
+            <a href="#" id="footer-wa-mini" target="_blank" class="text-slate-400 hover:text-green-500 transition-colors"><i class="fa-brands fa-whatsapp text-sm md:text-base"></i></a>
+        </div>
+    </footer>
+
+    <!-- Modal Tela Cheia (Carousel + Zoom) -->
+    <div id="immersive-modal" onclick="handleModalClick(event)" class="fixed inset-0 hidden flex-col opacity-0 transition-opacity duration-300 z-[2000] bg-black p-0 m-0">
+        <button onclick="closeModal()" class="fixed top-4 right-4 md:top-6 md:right-6 z-[3000] w-12 h-12 bg-black/50 hover:bg-black/90 text-white rounded-full flex items-center justify-center backdrop-blur-md transition-all active:scale-90 border border-white/10 shadow-xl"><i class="fa-solid fa-xmark text-xl"></i></button>
+        
+        <button id="btn-zoom" onclick="toggleZoom(event)" class="fixed bottom-[120px] right-4 md:right-6 z-[3000] w-12 h-12 bg-black/50 hover:bg-black/90 text-white rounded-full flex items-center justify-center backdrop-blur-md transition-all active:scale-90 border border-white/10 shadow-xl hidden">
+            <i class="fa-solid fa-expand text-xl"></i>
+        </button>
+
+        <div class="absolute top-4 left-4 md:top-6 md:left-6 z-[3000] md:hidden">
+            <div class="liquid-label py-2 px-4 text-white text-[10px] font-black uppercase tracking-widest swipe-hint">
+                <i class="fa-solid fa-hand-pointer mr-2"></i> Deslize
+            </div>
+        </div>
+
+        <div id="modal-body" class="flex flex-col h-full w-full opacity-0 transition-all duration-300 relative">
+            <div id="modal-images" class="flex-1 overflow-x-auto overflow-y-hidden snap-mandatory-x scrollbar-hide flex items-center scroll-smooth w-full h-full relative z-[2000] snap-x"></div>
+            <div id="carousel-dots" class="fixed bottom-12 left-1/2 -translate-x-1/2 flex gap-2 z-[2500] pointer-events-none"></div>
+            <div id="modal-caption" class="fixed bottom-[40px] md:bottom-[60px] left-1/2 -translate-x-1/2 w-[90%] max-w-md p-5 z-[2500] pointer-events-none liquid-glass rounded-3xl text-left shadow-2xl border border-white/20" style="display: none;"></div>
         </div>
     </div>
 
     <script>
-        let lenis;
         let typewriterStarted = false;
-        let currentZoom = 1;
         let currentCarouselIndex = 0;
+        let modalHistoryPushed = false;
+        let isZoomed = false;
 
         window.addEventListener('load', () => {
-            if(window.Lenis) {
-                const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-                lenis = new Lenis({ duration: 1.2, smooth: !isTouch });
-                
-                lenis.on('scroll', (e) => {
-                    const bg = document.querySelector('.bg-fixed-layer');
-                    if(bg.classList.contains('scroll-anim')) {
-                        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-                        const progress = maxScroll > 0 ? (e.animatedScroll / maxScroll) : 0;
-                        document.documentElement.style.setProperty('--scroll-p', Math.min(Math.max(progress, 0), 1));
-                    }
-                });
-                function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-                requestAnimationFrame(raf);
-            }
             const checkDB = setInterval(() => {
                 if (typeof db !== 'undefined') {
                     clearInterval(checkDB);
@@ -285,6 +418,9 @@
             if (typeof db === 'undefined') return;
             const gate = document.getElementById('app-gate');
             const main = document.getElementById('main-content');
+            const header = document.getElementById('main-header');
+            const dock = document.getElementById('main-dock');
+            const footer = document.getElementById('main-footer');
             const bg = document.querySelector('.bg-fixed-layer');
             
             gate.style.opacity = '0';
@@ -292,8 +428,14 @@
                 gate.style.display = 'none';
                 bg.classList.remove('intro-mode');
                 main.classList.remove('hidden');
+                header.classList.remove('hidden');
+                dock.classList.remove('hidden');
+                footer.classList.remove('hidden');
                 setTimeout(() => { 
                     main.style.opacity = '1'; 
+                    header.style.opacity = '1';
+                    dock.style.opacity = '1';
+                    footer.style.opacity = '1';
                     initScrollReveal();
                     startTypewriterEffect();
                     setTimeout(() => bg.classList.add('scroll-anim'), 2000);
@@ -321,27 +463,18 @@
         }
 
         function initScrollReveal() {
-            const strictOptions = { root: null, rootMargin: '0px 0px -50px 0px', threshold: 0.2 };
-            const strictObs = new IntersectionObserver((entries) => {
+            const mc = document.getElementById('main-content');
+            const options = { root: mc, rootMargin: '0px', threshold: 0.1 };
+            const obs = new IntersectionObserver((entries) => {
                 entries.forEach(en => {
                     if (en.isIntersecting) {
                         en.target.classList.add('is-revealed');
                         if(en.target.id === 'sobre') triggerCounters();
                     }
                 });
-            }, strictOptions);
+            }, options);
 
-            const standardOptions = { root: null, rootMargin: '0px 0px -30px 0px', threshold: 0.1 };
-            const standardObs = new IntersectionObserver((entries) => {
-                entries.forEach(en => {
-                    if (en.isIntersecting) en.target.classList.add('is-revealed');
-                });
-            }, standardOptions);
-
-            document.querySelectorAll('.reveal-on-scroll').forEach(el => {
-                if (el.id === 'sobre') strictObs.observe(el);
-                else standardObs.observe(el);
-            });
+            document.querySelectorAll('.reveal-on-scroll').forEach(el => obs.observe(el));
         }
 
         function triggerCounters() {
@@ -355,9 +488,9 @@
             const ring = document.getElementById(ringId);
             if(!el || el.dataset.animated === "true") return;
 
-            const numericValue = parseInt(targetStr.replace(/\\D/g, '')) || 0;
+            const numericValue = parseInt(targetStr.replace(/\D/g, '')) || 0;
             const suffix = targetStr.replace(/[0-9]/g, '');
-            const duration = 2500;
+            const duration = 2500; 
             const startTime = performance.now();
             const radius = 40;
             const circumference = 2 * Math.PI * radius;
@@ -369,13 +502,10 @@
                 const currentVal = Math.floor(easeProgress * numericValue);
                 
                 el.innerText = currentVal + suffix;
-                
                 if (ring) {
                     const ringProgress = Math.min((easeProgress * numericValue) / maxValue, 1);
-                    const offset = circumference - (ringProgress * circumference);
-                    ring.style.strokeDashoffset = offset;
+                    ring.style.strokeDashoffset = circumference - (ringProgress * circumference);
                 }
-
                 if (progress < 1) requestAnimationFrame(update);
                 else el.dataset.animated = "true";
             }
@@ -385,134 +515,298 @@
         async function init() {
             if (typeof db === 'undefined') return;
             renderApp();
-            document.querySelectorAll('.nav-item').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetId = link.getAttribute('href');
-                    if (targetId === '#sobre') triggerCounters();
-                    if(lenis) lenis.scrollTo(targetId, { offset: -80 });
-                    else document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+            renderProcess();
+            setupHorizontalEngine();
+        }
+
+        function setupHorizontalEngine() {
+            const mc = document.getElementById('main-content');
+            mc.addEventListener('scroll', () => {
+                const index = Math.round(mc.scrollLeft / mc.clientWidth);
+                document.querySelectorAll('.nav-item').forEach((item, i) => {
+                    if(i === index) item.classList.add('active');
+                    else item.classList.remove('active');
                 });
+                
+                const maxScroll = mc.scrollWidth - mc.clientWidth;
+                const progress = maxScroll > 0 ? (mc.scrollLeft / maxScroll) : 0;
+                document.documentElement.style.setProperty('--scroll-p', Math.min(Math.max(progress, 0), 1));
             });
+        }
+
+        window.scrollToSection = function(index) {
+            const mc = document.getElementById('main-content');
+            mc.scrollTo({
+                left: mc.clientWidth * index,
+                behavior: 'smooth'
+            });
+        }
+
+        function renderProcess() {
+            if(!db.empresa.processo) return;
+            const container = document.getElementById('process-container');
+            container.innerHTML = db.empresa.processo.map((p, idx) => `
+                <div class="process-card flex gap-4 md:gap-6 items-start reveal-on-scroll" style="transition-delay: ${idx * 100}ms">
+                    <div class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-orange-600 text-white flex items-center justify-center font-black text-xl shadow-lg shrink-0 z-10 relative">
+                        ${p.etapa}
+                    </div>
+                    <div class="flex-1 liquid-glass rounded-2xl p-5 md:p-6">
+                        <h3 class="font-black text-sm md:text-base uppercase tracking-wider mb-2" style="color: var(--premium-blue)">${p.titulo}</h3>
+                        <p class="text-xs md:text-sm text-slate-600 leading-relaxed">${p.descricao}</p>
+                    </div>
+                </div>
+            `).join('');
         }
 
         function renderApp() {
             const { empresa, servicos, cases } = db;
+            
             const waFab = document.getElementById('wa-fab');
             if (waFab) waFab.href = `https://wa.me/${empresa.whatsapp}`;
+            
+            const contatoWa = document.getElementById('contato-wa');
+            if(contatoWa) contatoWa.href = `https://wa.me/${empresa.whatsapp}?text=Olá! Gostaria de um orçamento para projeto de acabamento.`;
+
+            const headerIg = document.getElementById('header-ig');
+            if (headerIg && empresa.instagram) {
+                headerIg.href = empresa.instagram;
+                headerIg.style.display = 'block';
+            } else if(headerIg) {
+                headerIg.style.display = 'none';
+            }
+
             document.getElementById('intro-name').innerText = empresa.nome;
             document.getElementById('brand-name').innerText = empresa.nome;
             document.getElementById('intro-subtitle').innerText = empresa.hero_subtitulo;
             document.getElementById('hero-title').innerText = empresa.hero_titulo;
             document.getElementById('sobre-texto').innerText = empresa.sobre_texto;
+            document.getElementById('endereco-texto').innerText = empresa.endereco || "São Paulo/SP";
+            
+            /* Footer injection */
+            document.getElementById('footer-brand-mini').innerText = empresa.nome;
+            document.getElementById('footer-tel-mini').innerText = empresa.telefone || empresa.whatsapp;
+            const footerWa = document.getElementById('footer-wa-mini');
+            if (footerWa) footerWa.href = `https://wa.me/${empresa.whatsapp}`;
             
             const logoHtml = empresa.logo ? `<img src="${empresa.logo}" class="w-full h-full object-contain p-2">` : `<i class="fa-solid fa-brush text-white text-2xl md:text-3xl"></i>`;
+            const logoMiniHtml = empresa.logo ? `<img src="${empresa.logo}" class="w-full h-full object-contain p-0.5">` : `<i class="fa-solid fa-brush"></i>`;
+            
             document.getElementById('intro-logo-container').innerHTML = logoHtml;
             document.getElementById('header-logo-container').innerHTML = logoHtml;
+            document.getElementById('footer-logo-mini').innerHTML = logoMiniHtml;
             
             const sobreImg = document.getElementById('sobre-imagem-container');
-            sobreImg.innerHTML = `<img src="${empresa.foto_sobre}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"><div class="zoom-overlay"><i class="fa-solid fa-expand text-white text-3xl"></i></div>`;
+            sobreImg.innerHTML = `<img src="${empresa.foto_sobre}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute top-3 right-3 md:top-4 md:right-4 z-10 drop-shadow-lg transition-transform group-hover:scale-110">
+                <svg class="w-6 h-6 md:w-8 md:h-8 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+            </div>`;
 
             document.getElementById('grid-servicos').innerHTML = servicos.map(s => `
-                <div class="liquid-glass rounded-3xl md:rounded-[2.5rem] p-6 md:p-8 cursor-pointer group hover:bg-orange-600 transition-all reveal-on-scroll" onclick="openServico('${s.id}')">
-                    <div class="flex justify-between items-center mb-3 md:mb-4">
-                        <div class="liquid-label py-1 px-3 group-hover:bg-slate-900 border-none transition-colors"><h3 class="text-[9px] md:text-[10px] font-black uppercase group-hover:text-white line-clamp-1">${s.titulo}</h3></div>
-                        <span class="text-[8px] md:text-[9px] font-black uppercase text-slate-500 group-hover:text-white flex items-center gap-1 shrink-0"><i class="fa-regular fa-images"></i> Galeria</span>
+                <div class="liquid-glass rounded-3xl md:rounded-[2.5rem] p-6 md:p-8 cursor-pointer group hover:bg-orange-600 transition-all reveal-on-scroll flex flex-col justify-between h-full w-full" onclick="openServico('${s.id}')">
+                    <div>
+                        <div class="flex justify-between items-center mb-3 md:mb-4">
+                            <div class="liquid-label py-1 px-3 group-hover:bg-slate-900 border-none transition-colors"><h3 class="text-[9px] md:text-[10px] font-black uppercase group-hover:text-white line-clamp-1">${s.titulo}</h3></div>
+                            <span class="text-[8px] md:text-[9px] font-black uppercase text-slate-500 group-hover:text-white flex items-center gap-1 shrink-0"><i class="fa-regular fa-images"></i> ${s.fotos.length}</span>
+                        </div>
+                        <p class="text-xs md:text-sm text-muted font-medium group-hover:text-white/80 leading-relaxed line-clamp-3 mb-4">${s.descricao}</p>
                     </div>
-                    <p class="text-xs md:text-sm text-muted font-medium group-hover:text-white/80 leading-relaxed line-clamp-2">${s.descricao}</p>
+                    <div class="flex justify-between items-center pt-4 border-t border-slate-200/20 group-hover:border-white/20">
+                        <span class="text-[9px] uppercase font-bold text-slate-400 group-hover:text-white/60">A partir de</span>
+                        <span class="text-sm font-black text-orange-600 group-hover:text-white">${s.preco_referencia || 'Consultar'}</span>
+                    </div>
                 </div>
             `).join('');
 
             document.getElementById('cases-track').innerHTML = cases.map(c => `
-                <div class="w-[80%] sm:w-[60%] md:w-[45%] flex-none snap-center liquid-glass rounded-3xl md:rounded-[2.5rem] p-3 cursor-pointer group hover:bg-orange-600 transition-all reveal-on-scroll" onclick="openCase('${c.id}')">
+                <div class="w-[85%] sm:w-[70%] md:w-[45%] lg:w-[35%] flex-none snap-center liquid-glass rounded-3xl md:rounded-[2.5rem] p-3 cursor-pointer group hover:bg-orange-600 transition-all reveal-on-scroll" onclick="openCase('${c.id}')">
                     <div class="aspect-video rounded-2xl md:rounded-[2rem] overflow-hidden relative mb-3 md:mb-4 bg-black/10">
                         <img src="${c.imagem}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                        <div class="absolute bottom-3 left-3"><div class="liquid-label py-1 px-3 group-hover:bg-slate-900 border-none transition-colors"><h3 class="text-[8px] md:text-[9px] font-black uppercase text-white line-clamp-1">${c.cliente}</h3></div></div>
+                        <div class="absolute top-3 right-3 z-10 drop-shadow-md transition-transform group-hover:scale-110">
+                            <svg class="w-4 h-4 md:w-5 md:h-5 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                        </div>
+                        <div class="absolute bottom-3 left-3 z-20"><div class="liquid-label py-1 px-3 group-hover:bg-slate-900 border-none transition-colors"><h3 class="text-[8px] md:text-[9px] font-black uppercase text-white line-clamp-1">${c.cliente}</h3></div></div>
                     </div>
-                    <p class="px-3 pb-3 text-[11px] md:text-xs italic text-muted group-hover:text-white/80 line-clamp-2 leading-relaxed">"${c.comentario}"</p>
+                    <div class="px-3 pb-3">
+                        <div class="flex justify-between items-center mb-2 text-[10px] uppercase tracking-wider text-slate-500 group-hover:text-white/70 font-bold">
+                            <span><i class="fa-solid fa-location-dot mr-1"></i> ${c.local || 'SP'}</span>
+                            <span>${c.area || ''}</span>
+                        </div>
+                        <p class="text-[11px] md:text-xs italic text-muted group-hover:text-white/80 line-clamp-2 leading-relaxed font-normal">"${c.comentario}"</p>
+                    </div>
                 </div>
             `).join('');
         }
 
-        // --- Módulo de Zoom & Carrossel ---
-        window.changeZoom = function(delta) {
-            currentZoom = Math.max(0.5, Math.min(4, currentZoom + delta));
-            updateZoomCSS();
-        };
-        
-        window.resetZoom = function() {
-            currentZoom = 1;
-            updateZoomCSS();
-        };
-        
-        function updateZoomCSS() {
-            document.getElementById('zoom-level').innerText = Math.round(currentZoom * 100) + '%';
-            document.querySelectorAll('.modal-zoom-target').forEach(img => {
-                img.style.transform = `scale(${currentZoom})`;
-            });
+        const container = document.getElementById('modal-images');
+        container.addEventListener('scroll', () => {
+            const index = Math.round(container.scrollLeft / container.clientWidth);
+            if (currentCarouselIndex !== index) {
+                if (isZoomed) toggleZoom(); 
+                currentCarouselIndex = index;
+                const dots = document.querySelectorAll('.carousel-dot');
+                dots.forEach((dot, i) => {
+                    dot.className = i === index 
+                        ? 'carousel-dot w-2 h-2 rounded-full transition-all duration-300 bg-orange-500 scale-125' 
+                        : 'carousel-dot w-2 h-2 rounded-full transition-all duration-300 bg-slate-400 opacity-50';
+                });
+            }
+        });
+
+        window.toggleZoom = function(event) {
+            if(event) event.stopPropagation();
+            isZoomed = !isZoomed;
+            const slides = document.querySelectorAll('.carousel-slide');
+            const currentSlide = slides[currentCarouselIndex];
+            if(!currentSlide) return;
+            
+            const img = currentSlide.querySelector('img');
+            const icon = document.querySelector('#btn-zoom i');
+            
+            if (isZoomed) {
+                currentSlide.classList.remove('flex');
+                currentSlide.classList.add('block');
+                img.classList.remove('w-full', 'h-full', 'object-contain', 'm-auto');
+                img.classList.add('w-[250vw]', 'md:w-[150vw]', 'max-w-none', 'h-auto', 'block');
+                icon.classList.replace('fa-expand', 'fa-compress');
+                
+                currentSlide.scrollLeft = (currentSlide.scrollWidth - currentSlide.clientWidth) / 2;
+                currentSlide.scrollTop = (currentSlide.scrollHeight - currentSlide.clientHeight) / 2;
+            } else {
+                currentSlide.classList.add('flex');
+                currentSlide.classList.remove('block');
+                img.classList.add('w-full', 'h-full', 'object-contain', 'm-auto');
+                img.classList.remove('w-[250vw]', 'md:w-[150vw]', 'max-w-none', 'h-auto', 'block');
+                icon.classList.replace('fa-compress', 'fa-expand');
+            }
         }
 
-        window.moveCarousel = function(dir) {
-            const container = document.getElementById('modal-images');
-            const slides = container.querySelectorAll('.carousel-slide');
-            if(!slides.length) return;
-            
-            currentCarouselIndex += dir;
-            if(currentCarouselIndex < 0) currentCarouselIndex = slides.length - 1;
-            if(currentCarouselIndex >= slides.length) currentCarouselIndex = 0;
-            
-            resetZoom();
-            slides[currentCarouselIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        window.handleModalClick = function(e) {
+            if(e.target.id === 'immersive-modal' || e.target.classList.contains('carousel-slide')) {
+                closeModal();
+            }
         };
 
         function openSobre() { showModal("Sobre a Empresa", [db.empresa.foto_sobre], ""); }
-        function openServico(id) { const s = db.servicos.find(x => x.id === id); showModal(s.titulo, s.fotos, ""); }
-        function openCase(id) { const c = db.cases.find(x => x.id === id); showModal(c.cliente, [c.imagem], c.comentario); }
+        function openServico(id) { const s = db.servicos.find(x => x.id === id); showModal(s.titulo, s.fotos, s.descricao); }
+        function openCase(id) { const c = db.cases.find(x => x.id === id); showModal(c.cliente, [c.imagem], c.comentario, c.cliente); }
 
-        function showModal(title, images, caption) {
-            if(lenis) lenis.stop();
+        function showModal(title, images, caption, subtitle = null) {
+            document.body.style.pointerEvents = 'none';
+            history.pushState({ modalOpen: true }, "");
+            modalHistoryPushed = true;
+
             const modal = document.getElementById('immersive-modal');
             const body = document.getElementById('modal-body');
-            document.getElementById('modal-header-title').innerText = title;
+            const btnZoom = document.getElementById('btn-zoom');
             
             currentCarouselIndex = 0;
+            isZoomed = false;
             
-            // Correção de overflow-hidden limitador de zoom: O contêiner pai agora é livre
+            if(images && images.length > 0) btnZoom.classList.remove('hidden');
+            else btnZoom.classList.add('hidden');
+
             document.getElementById('modal-images').innerHTML = images.map((img, idx) => `
-                <div class="w-full flex-none snap-center h-[50vh] md:h-[65vh] flex items-center justify-center p-1 md:p-2 mx-auto relative carousel-slide" data-index="${idx}">
-                    <img src="${img}" class="modal-zoom-target max-w-full max-h-full object-contain rounded-2xl shadow-lg transition-transform duration-300 transform-gpu cursor-move">
+                <div class="carousel-slide overflow-auto w-full h-full snap-center flex" data-index="${idx}">
+                    <img src="${img}" class="w-full h-full object-contain m-auto transition-all duration-300 origin-center" decoding="async">
                 </div>
             `).join('');
-            
+
+            const dotsContainer = document.getElementById('carousel-dots');
             if(images.length > 1) {
-                document.getElementById('carousel-prev').classList.remove('hidden');
-                document.getElementById('carousel-next').classList.remove('hidden');
+                dotsContainer.innerHTML = images.map((_, i) => `<div class="carousel-dot w-2 h-2 rounded-full transition-all duration-300 ${i === 0 ? 'bg-orange-500 scale-125' : 'bg-slate-400 opacity-50'}"></div>`).join('');
             } else {
-                document.getElementById('carousel-prev').classList.add('hidden');
-                document.getElementById('carousel-next').classList.add('hidden');
+                dotsContainer.innerHTML = '';
             }
             
             const capt = document.getElementById('modal-caption');
-            if(caption) { capt.innerText = `"${caption}"`; capt.style.display = 'block'; }
+            if(caption) { 
+                capt.innerHTML = subtitle ? `
+                    <div class="flex items-center mb-3">
+                        <div class="py-1 px-3 rounded-full bg-white/40 border border-black/5 shadow-sm backdrop-blur-md">
+                            <h3 class="text-[9px] md:text-[10px] font-black uppercase tracking-widest" style="color: var(--premium-blue);">${subtitle}</h3>
+                        </div>
+                    </div>
+                    <p class="text-[12px] md:text-sm font-medium leading-relaxed" style="color: var(--premium-blue);">${caption}</p>
+                ` : `<p class="text-[12px] md:text-sm font-medium leading-relaxed" style="color: var(--premium-blue);">${caption}</p>`;
+                capt.style.display = 'block'; 
+            }
             else { capt.style.display = 'none'; }
             
             modal.classList.remove('hidden');
-            document.getElementById('zoom-controls').classList.remove('hidden');
-            resetZoom();
-
-            setTimeout(() => { modal.classList.add('opacity-100'); body.classList.add('scale-100', 'opacity-100'); }, 10);
-            document.body.style.overflow = 'hidden';
+            setTimeout(() => { 
+                modal.classList.add('opacity-100'); 
+                body.classList.add('opacity-100'); 
+                document.body.style.pointerEvents = '';
+            }, 10);
         }
 
-        function closeModal() {
-            if(lenis) lenis.start();
+        function closeModal(fromPopState = false) {
+            if (fromPopState === true) {
+                modalHistoryPushed = false;
+            } else if (modalHistoryPushed) {
+                modalHistoryPushed = false;
+                history.back(); 
+            }
+
             const modal = document.getElementById('immersive-modal');
             const body = document.getElementById('modal-body');
-            modal.classList.add('opacity-0'); body.classList.add('scale-95', 'opacity-0');
-            document.getElementById('zoom-controls').classList.add('hidden');
-            resetZoom();
-            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('opacity-100'); body.classList.remove('scale-100', 'opacity-100', 'scale-95'); document.body.style.overflow = ''; }, 400);
+            modal.classList.add('opacity-0'); body.classList.add('opacity-0');
+            document.getElementById('btn-zoom').classList.add('hidden');
+            
+            setTimeout(() => { 
+                modal.classList.add('hidden'); 
+                modal.classList.remove('opacity-100'); 
+                body.classList.remove('opacity-100'); 
+            }, 300);
         }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-enviar');
+            const originalContent = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Enviando...`;
+            
+            setTimeout(() => {
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+                showToast('Orçamento enviado com sucesso!', 'success');
+                e.target.reset();
+            }, 1500);
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `
+                <div class="w-8 h-8 rounded-full ${type === 'success' ? 'bg-green-500' : 'bg-orange-500'} text-white flex items-center justify-center shrink-0">
+                    <i class="fa-solid ${type === 'success' ? 'fa-check' : 'fa-exclamation'}"></i>
+                </div>
+                <div class="flex-1">
+                    <div class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-0.5">${type === 'success' ? 'Sucesso' : 'Atenção'}</div>
+                    <div class="text-sm font-medium text-slate-800 leading-tight">${message}</div>
+                </div>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 4000);
+        }
+
+        window.addEventListener('popstate', () => {
+            if (modalHistoryPushed) {
+                modalHistoryPushed = false;
+                closeModal(true); 
+            }
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('immersive-modal');
+                if (modal && !modal.classList.contains('hidden')) closeModal();
+            }
+        });
     </script>
 </body>
 </html>
